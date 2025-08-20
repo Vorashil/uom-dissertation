@@ -1,0 +1,95 @@
+\chapter{Literature review}
+\chaptermark{Background} %shortened running header
+
+This chapter discusses some  related research.
+This chapter is optional and the discussion about
+the related research could be done in the Introduction.
+
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+Another intermediate page to demonstrate the shortened running header.
+
+\chapter{Another chapter}
+
+\section[My short title]{This is a really really long title}
+\label{sec:My short title}
+
+Lets write an equation that will get a label
+\begin{equation}
+    g(z) = \int_0^z\int_0^{x^2} \frac{\pi}{x^2+y^2} e^{-x^2} dy dx 	,
+    \label{eqn:g(z) function}
+\end{equation}
+where $g(z)$ is some function we wish to calculate.
+You can refer to equation~(\ref{eqn:g(z) function}) using this label.
+
+We can also add a list of things that we would like to do in this demonstration:
+\begin{itemize}
+    \item \textbf{structure} a large tex document,
+    \item \textbf{cross-reference} within your document,
+    \item include \textbf{tables} and \textbf{figures} in your document,
+    \item create and maintain a \textbf{bibliography}.
+\end{itemize}
+We could also add a numbered list, such as list of tasks you could try out.
+\begin{enumerate}
+    \item Add the packages \texttt{fullpage}, \texttt{amsmath} and  \texttt{amssymb} to the \texttt{main.tex} file.
+    \item Create your own list, what happens if you create a list inside a list? Be careful to end environments that you start.
+    \item Try out writing equations on multiple lines using the following environments, \texttt{eqnarray}, \texttt{align} and \texttt{gather}.
+\end{enumerate}
+
+
+Now we are going to create a table. First create the tabular environment and put some values in.
+
+\begin{table}
+    \begin{center} % center the table and caption
+        \begin{tabular}{c|ccc}
+            & \multicolumn{3}{c}{Attendance at Course} \\
+            Week & MATH10121 & MATH10212 & MATH10222 \\
+            \hline
+            1 & 234 & 157 & 153 \\
+            2 & 223 & 167 & 148 \\
+            3 & 227 & 129 & 133 \\
+            4 & 236 & 134 & 113 \\
+            5 & 212 & 127 & 101
+        \end{tabular}
+        \caption{My table showing preparations times} % caption for the table (gives it a number)
+        \label{tab:myTable}
+    \end{center}
+\end{table}
+
+\section{Another Section}
+
+Can drill down further into subsections \cite{Feller71}.
+
+\subsection{Case 1}
+
+Can drill down further into subsections using the method in preprint~\cite{Perelman}.
+This is a reference to a journal paper~\cite{Akaike} or~\cite{GreengardRokhlin1987}.
+
+\subsection{Case 2}
+
+Can drill down further into subsections.
+
+\subsection{Case 3}
+
+Can drill down further into subsections.
+
+\chapter{Conclusions}
+And here is the final chapter summarising what you have learned/found out by doing this dissertation project.
+

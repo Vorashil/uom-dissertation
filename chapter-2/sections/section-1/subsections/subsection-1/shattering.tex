@@ -1,0 +1,36 @@
+\subsection{Shattering}
+
+We begin with a purely combinatorial setup. Fix an infinite set $X$ and a collection of its subsets, $\mathcal{C} \subseteq \mathcal{P}(X)$. For any finite set $F\subseteq X$, we are interested in the subsets of $F$ that can be \emph{cut out} by the sets in $\mathcal{C}$. This is called the \emph{trace} of $\mathcal{C}$ on $F$.
+\[
+    \mathcal{C}\cap F=\{C\cap F:C\in\mathcal{C}\}.
+\]
+Since $F$ is finite, it has $2^n$ subsets, ie $|\mathcal{P}(F)| = 2^n$. If all of the subsets of $F$ can be cut out by $\mathcal{C}$, we say \emph{$\mathcal{C}$ shatters $F$}. We define this more formally below.
+
+\begin{definition}[Shattering]
+    Let $\mathcal{C} \subseteq \mathcal{P}(X)$. We say that $\mathcal{C}$ \emph{shatters} a finite set $F \subseteq X$ if the trace of $\mathcal{C}$ on $F$ is the entire power set of $F$. That is, if $\mathcal{C} \cap F = \mathcal{P}(F)$, or equivalently, $|\mathcal{C} \cap F| = 2^{|F|}$.
+\end{definition}
+
+Note that, shattering is the key concept that underlying the combinatorial dichotomy we will introduce below. It's also important to emphasize that, generally speaking, we are not interested in $\mathcal{C}$ shattering any specific finite subset, rather we want to know given $n\in \mathbb{N}$, can $\mathcal{C}$ shatter some finite set of size $n$. If the answer is "no" for given $n$, then we want to know what is the maximum number of subsets $\mathcal{C}$ can cut out from a finite set of size $n$. To measure this \textit{combinatorial complexity} of $\mathcal{C}$, we define its \emph{growth function}, which measures the maximum size of a trace on any set of size $n$.
+\begin{equation}\label{eq:growth-func-def-1}
+f_{\mathcal{C}}(n)\coloneq\max\bigl\{|\mathcal{C}\cap F|:F\subseteq X,\ |F|=n\bigr\}.
+\end{equation}
+Note that, we always have $f_{\mathcal{C}}(n) \le 2^n$. Following theorem states that the combinatorial complexity of $\mathcal{C}$, which is determined by its growth function, can only be polynomial or exponential.
+
+\begin{theorem}[Combinatorial Dichotomy]
+    \label{thm:vc-dichotomy}
+    Let $X$ and $\mathcal{C}$ be given as above. Then exactly one of the following holds:
+    \begin{enumerate}[label=(\roman*)]
+        \item $f_{\mathcal{C}}(n)=2^{n}$ for every $n\in\mathbb{N}$.
+        \item There exists an integer $d\ge 1$ such that
+        \[
+            f_{\mathcal{C}}(n)\le n^d
+        \]
+        for all sufficiently large $n \in \mathbb{N}$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{remark}
+    In the first case of~\ref{thm:vc-dichotomy}, we say that $\mathcal{C}$ has \emph{exponential growth}. In the second case, we say that $\mathcal{C}$ has \emph{polynomial growth} and we call $d$ the \emph{degree} of the polynomial bound. The dichotomy is a powerful tool in combinatorial geometry and model theory, as it allows us to classify families of sets based on their growth behavior.
+
+    We will prove this theorem using the following lemma.
+\end{remark}

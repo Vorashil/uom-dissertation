@@ -1,0 +1,52 @@
+\documentclass[12pt,MSc]{muthesis_2023}
+%This is not a thesis. Do not call it a paper either.
+%Single-sided printing for producing pdf to be read on screen.
+%No need for wordcount.
+
+% add a few important packages 
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{lipsum}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{stmaryrd} % Required for inserting images
+\usepackage{tikz}
+\usepackage{dsfont}
+\usepackage{hyperref}
+
+\bibliography{refs}
+
+% Listing package to control how code appears in your document
+\usepackage{listings}
+\lstset{language=c++,frame=single,showstringspaces=false,basicstyle=\footnotesize,breaklines=true,keywordstyle=\color{blue},commentstyle=\color{grey},stringstyle=\color{red},identifierstyle=\color{green}}
+
+\usepackage{hyperref}
+
+\usepackage{float}
+
+
+\input{utilities/constructs-utility}
+\input{utilities/equation-numbering-utility}
+\input{utilities/proof-environment-utility}
+
+\begin{document}
+    \input{boilerplate/preface}
+
+% Finally, you can start writing your dissertation
+
+
+    \input{chapter-1/index}
+
+    \input{chapter-2/index}
+    \input{chapter-3/index}
+%    \input{chapter-4/index}
+
+
+
+
+    \input{bibliography/index}
+
+% Comment the following THREE lines if you do NOT have an Appendix
+%   \input{placeholder/appendix}
+\end{document}

@@ -1,0 +1,20 @@
+\subsection{Dependence in o-minimal structures}
+
+
+
+\begin{corollary}
+    Let $(R, \mathcal{S})$ be an o-minimal structure and $\Phi \subseteq R^{p} \times R^q$ for all $p, q > 0$ be a definable relation. Then $\Phi$ is dependent. In particular, there is $d_{\Phi} \in \mathbb{N}$ such that for all sufficiently large $n$ each subset $F \subseteq R^q$ with $|F| = n$ has at most $n^{d_{\Phi}}$ subsets of the form $\Phi_{x} \cap F$ with $x \in R^p$.
+\end{corollary}
+
+\begin{proof}
+
+    We use~\ref{lem:o-minimal-dependence-hypothesis} to deduce that for any definable set $\Phi \subseteq R^{p}\times R $ is dependent. This satisfies the assumption of the Theorem~\ref{thm:main-theorem-ch-2}, hence $\Phi \subseteq R^{p}\times R^{q}$ is dependent for any $q > 0$. Hence,
+    \[
+        \Phi_{X} \coloneq \{\Phi_x \mid  x \in R^p\}
+    \]
+    is VC-class.
+\end{proof}
+
+This corollary represents the central achievement of this section, formally establishing that o-minimal structures possess the NIP (Not Independence Property). The statement that every definable relation is dependent is a profound regularity theorem. It asserts that the geometric complexity of sets definable within these structures is fundamentally constrained. Unlike more 'wild' mathematical settings where one can define sets of arbitrary complexity, o-minimal structures only permit sets that behave, in a combinatorial sense, like simple geometric objects such as lines, planes, and their finite Boolean combinations. This inherent tameness prevents the definable families of sets from shattering arbitrarily large finite sets, a key insight into their well-behaved nature.
+
+The second part of the corollary translates this abstract property into a concrete, quantitative guarantee. It reveals that while the family of fibers $\{\Phi_x \mid x \in R^p\}$ may be infinite, its expressive power on any finite set is severely limited. Given any finite 'test set' $F$ of $n$ points, the number of distinct patterns that can be 'cut out' by the fibers does not grow exponentially, but only polynomially, as $n^{d_\Phi}$. This polynomial bound ensures that the concept class defined by $\Phi$ has a finite VC-dimension, $d_\Phi$. As we will explore in the next chapter, this finite VC-dimension is the key parameter that guarantees a concept class is efficiently learnable from a finite number of examples, directly linking the logical property of o-minimality to the statistical property of PAC learnability.

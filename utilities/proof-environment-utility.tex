@@ -1,0 +1,32 @@
+% This command repeats \blacksquare n times (no numbers printed).
+\NewDocumentCommand{\RepeatBlackSquares}{m}
+ { \blacksquare\kern0.2em }
+
+\ExplSyntaxOff
+
+% Our custom subproof environment:
+%   1st optional arg = proof title   (default \proofname)
+%   2nd optional arg = number of squares (default 1)
+\NewDocumentEnvironment{subproof}{O{\proofname} O{1}}
+{
+    \renewcommand{\qedsymbol}{\RepeatBlackSquares{#2}}
+    \begin{proof}[#1]
+    }
+    {
+    \end{proof}
+}
+
+
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{\par
+\pushQED{\qed}%
+\normalfont \topsep6\p@\@plus6\p@\relax
+\trivlist
+\item[\hskip\labelsep
+\itshape
+#1\@addpunct{:}]\leavevmode\\[-3ex]  % smaller vertical space than \mbox{}\\*
+}{%
+\popQED\endtrivlist\@endpefalse
+}
+\makeatother
+%#######

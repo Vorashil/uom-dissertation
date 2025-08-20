@@ -1,0 +1,73 @@
+\section{Motivation}
+
+\subsection{Notations}\label{subsec:notations}
+
+We denote the set of positive natural numbers by $\mathbb{N}$ and use $\mathbb{N}_0 =\mathbb{N} \cup \{0\}$. Given $m \in \mathbb{N}$, we use
+\[
+    [m] = \{1, 2, \ldots, m\} \textrm{ and }  [m]_0 = \{0, 1, 2, \ldots, m\}.
+\]
+
+\noindent
+We denote the tuples by using underlying letters such as $\underline{z} = (z_1, \dots, z_n)$ for some $n \in \mathbb{N}$. Write $A \subseteq X$ for a subset of arbitrary set $X$. Then the powerset of  $A$ is denoted as $\mathcal{P}(A)$, which is the collection of all subsets of $A$. If $f : X \to \mathbb{R}$ is real valued functions, the restriction of $f$ to a subset $A \subseteq X$ is denoted by $f|_A$.
+
+\subsection{Pre-requisites to read this dissertation}
+
+In the next sections, we include some preliminary concepts that can be found in more generality in other literature as a standard graduate mathematics course. However, to aim this dissertation for the someone with background in model theory only, we have added a section of required concepts from probability theory and introduce notations that will be useful for the later discussions of learning theory. In general, the definition of learning is formally described using the language of probability theory \cite[Chap 2]{MartinAnthony}. Moreover, the probability theory itself is formalised using the language of measure theory, so it's crucial to understand the concepts of measure theory and model theory. The topics on Measure theory closely follows the presentation of \cite{MeasureTheoryLeGall}.
+
+
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+        \hline
+        &
+        \textbf{Probability Theory}
+        &
+        \textbf{Model Theory}
+        &
+        \textbf{Measure Theory} \\
+        \hline
+        Structure
+        &
+        $(\Omega,\mathcal{F},P)$
+        &
+        Structure $\mathcal{M}$, formulas $\varphi$, $\psi$
+        &
+        $(X,\Sigma,\mu)$ \\
+        \hline
+        $A,B$ &
+        Events $A,B\in\mathcal{F}$
+        &
+        Definable sets \newline
+        $\varphi(\mathcal{M}), \psi(\mathcal{M}) \subseteq M^n$
+        &
+        Measurable sets $A,B\in\Sigma$ \\
+        \hline
+        $A \lor B$
+        &
+        $A\cup B \in \mathcal{F}$
+        &
+        $(\varphi \lor \psi)(\mathcal{M}) \subseteq M^n$ is definable.
+        &
+        $A\cup B \in \Sigma$ \\
+        \hline
+        $A \land B$
+        &
+        $A\cap B \in \mathcal{F}$
+        &
+        $(\varphi \land \psi)(\mathcal{M}) \subseteq M^n$ is definable.
+        &
+        $A\cap B \in \Sigma$ \\
+        \hline
+        $\lnot A$
+        &
+        $A^c \in \mathcal{F}$
+        &
+        $\lnot\varphi(\mathcal{M})  \subseteq M^n$ is definable.
+        &
+        $X\setminus A \in \Sigma$ \\
+        \hline
+    \end{tabular}
+    \caption{Logical operations in three frameworks.}\label{tab:table-comparison}
+\end{table}

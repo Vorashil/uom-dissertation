@@ -1,0 +1,53 @@
+\subsection{Dependence of relations in dimension 1}
+
+
+We first consider the application of lemmas~\ref{lem:suff-cond-dependencty} and \ref{lem:dependent-boolean-comb} in O-minimal structures. We will assume the reader is familiar with axioms and properties of o-minimal structures, including the cell decomposition theorem from~\cite[Chap 1, 3]{vandenDries1998}.
+
+
+
+We denote an arbitrary o-minimal structure by the tuple $(R, \mathcal{S})$ where $R$ is densely linearly ordered set without endpoints and $\mathcal{S}$ is a collection of definable sets in $R$. Let $\Psi \subseteq R^{m+1}$ be a definable set and consider the definable family $\mathcal{C} = \{\Psi_x: x \in R^m\}$ of fibers of $\Psi$ over $R^m$. The primary goal of this subsection will be to prove that the collection $\mathcal{C}$ is dependent with polynomial bound on the . More formally,
+
+\begin{lemma}{\label{lem:o-minimal-dependence-hypothesis}}
+    Let $(R, \mathcal{S})$ be an o-minimal structure and let $\Psi \subseteq R^m \times R$ be a definable for any $m > 0$. Then $\mathcal{C} = \{\Psi_x: x \in R^m\} \subseteq \mathcal{P}(R)$ is dependent.
+\end{lemma}
+
+To obtain the desired result using~\ref{lem:dependent-boolean-comb} we need two components. Firstly, we need collection of subsets of $R$ that satisfies the hypothesis of the lemma~\ref{lem:suff-cond-dependencty} with some positive integer $d$. For this we will consider the collection of definably connected sets in $R$ and show that it satisfies the statement of the lemma~\ref{lem:suff-cond-dependencty} with $d=3$. Secondly, we will use cell decomposition theorem to show each set in $\mathcal{C}$ is boolean combination of at most $e \in \mathbb{N}$ definably connected sets. Following two lemmas, will give us the desired result of this subsection.
+
+Recall that, in $R$, the definable connected sets are points and intervals. In the proof of this lemma, we consider points also as intervals, since any point $a \in R$, can be expressed as interval $[a, a] \subset R$.
+\begin{lemma}
+    Let $\mathcal{G}$ be a collection of definably connected sets of $R$. Then any collection of 3 sets from $\mathcal{G}$ is dependent.
+\end{lemma}
+
+\begin{proof}{\label{lem:o-minimality-application-1}}
+
+    Let $S_1, S_2, S_3$ be three definably connected sets in $\mathcal{G}$ and assume their intersection $I = S_1 \cap S_2 \cap S_3$ is non-empty. Since the intersection of any number of intervals is itself an interval, $I$ is a non-empty interval.
+
+    Let $l = \inf(I)$ and $r = \sup(I)$. By the definition of intersection, the endpoints of $I$ are determined by the endpoints of $S_1, S_2, S_3$ as follows:
+    $$ l = \max\{\inf(B_1), \inf(B_2), \inf(B_3)\} $$
+    $$ r = \min\{\sup(B_1), \sup(B_2), \sup(B_3)\} $$
+    By the properties of $\max$ and $\min$, there must exist indices $i, j \in \{1, 2, 3\}$ such that:
+    $$ \inf(B_i) = l \quad \text{and} \quad \sup(B_j) = r $$
+    Now, consider the intersection of just these two intervals, $B_i \cap B_j$. The infimum of this intersection is $\max\{\inf(B_i), \inf(B_j)\} = \max\{l, \inf(B_j)\}$. Since $l$ is the maximum of all three infima, $l \ge \inf(B_j)$, so $\max\{l, \inf(B_j)\} = l$.
+
+    Similarly, the supremum of $B_i \cap B_j$ is $\min\{\sup(B_i), \sup(B_j)\} = \min\{\sup(B_i), r\}$. Since $r$ is the minimum of all three suprema, $r \le \sup(B_i)$, so $\min\{\sup(B_i), r\} = r$.
+
+    Thus, the interval $B_i \cap B_j$ has infimum $l$ and supremum $r$, which means it is identical to the original intersection $I$.
+    $$ B_1 \cap B_2 \cap B_3 = I = B_i \cap B_j $$
+    The set of indices $\{i, j\}$ is a subset of $\{1, 2, 3\}$ of size at most 2, and therefore a proper subset.
+\end{proof}
+
+The second part of proof utilizes a powerful consequence of the Cell Decomposition Theorem (CDT). Recall that, by CDT there is a decomposition of $R^{m+1}$ that partitions $\Psi \subseteq R^{m+1}$ into cells. The following result establishes a uniform bound on the number of cells of the fibers of a definable set.
+
+\begin{lemma}{\label{lem:o-minimality-application-2}}
+    Let $S \subseteq R^m \times R^n$ be definable. Then there is a number $e_S \in \mathbb{N}$ such that for each $a \in R^m$, the set $S_a$ has a partition into at most $e_S$ cells. In particular, each fiber $S_a$ has at most $e_S$ definably connected components.
+\end{lemma}
+
+\begin{proof}
+
+    Consider the decomposition $\mathcal{D}$ of $R^{m+n}$ partitioning $S$. We can then consider for each $a \in R^m$ the decomposition $\mathcal{D}_a = \{C_a: C \in \mathcal{D}, a \in \pi(C) \subseteq R^m\}$ of $R^n$, where $\pi: R^{m+n} \to R^m$ is a projection onto first $m$ coordinates. Since, each $C_a$ is still a cell, $\mathcal{D}_a$ decomposes $S_a$ and has at most $|\mathcal{D}|$ cells. Hence, we can take $e_S = |\mathcal{D}|$.
+\end{proof}
+
+\begin{proof}[Proof of~\ref{lem:o-minimal-dependence-hypothesis}]
+
+    Applying the lemma~\ref{lem:o-minimality-application-2} to the definable set $\Psi$ and its fibers, we get that each set in $\mathcal{C} = \{\Psi_x: x \in R^m\}$ is boolean combination of at most $e_{\Psi}$ definably connected sets. Hence, we can apply the Lemma~\ref{lem:dependent-boolean-comb} to $\mathcal{G}$ with $d=3$ and $\mathcal{C}$, we conclude that $\mathcal{C}$ is dependent collection.
+\end{proof}

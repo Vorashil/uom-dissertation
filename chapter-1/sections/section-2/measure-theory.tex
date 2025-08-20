@@ -1,0 +1,218 @@
+\section{Measure Theory}\label{sec:measure-theory}
+
+
+
+Measure theory's central goal is to assign a numerical size (or "measure") to subsets of a set, generalizing familiar concepts like length, area, and volume. The measure must be non-negative and should satisfy certain properties such as additivity, which says the measure of a union of disjoint sets is the sum of their individual measures. However, some significant mathematical challenges prevent assigning a measure to every possible subset. A famous example for this is Vitali sets, whose construction relies on Axiom of choice~\cite{HerrlichAxiomOfChoice}. The solution to non-measurability of every set is to restrict the theory to a specific collection of "measurable sets" called a sigma-algebra (or σ-field). This collection is essential because its structure ensures that combinations of measurable sets are themselves measurable, allowing the additivity property to function consistently.
+
+
+In this section we will introduce some required concepts in measure theory to formalise the language of probability space. This new formalism will be very useful in the next chapters when we talk about learning theory. For that reason, we decided to add this section before a section in probability theory. Our presentation closely follows~\cite{MeasureTheoryCohn} and~\cite{MeasureTheoryLeGall}.
+
+\subsection{Sigma algebra}
+
+Given any set $X$ and its subset $E \subset X$, we denote the complement of $E$ in $X$ by $E^c \coloneq X \setminus E$. We also denote the power set of $X$ by $\mathcal{P}(X)$, which is the collection of all subsets of $X$.
+
+\begin{definition}[$\sigma$-algebra \textnormal{\cite[Def. 1.1]{MeasureTheoryCohn}}]
+    \label{def:sigma-algebra}
+    A \emph{$\sigma$-algebra} on a set $X$ is a collection $\mathcal{A} \subseteq \mathcal{P}(X)$ such that:
+    \begin{enumerate}[label=(\roman*)]
+        \item $X \in \mathcal{A}$,
+        \item if $E \in \mathcal{A}$, then $E^c \in \mathcal{A}$,
+        \item if $E_i \in \mathcal{A}$ for $i \in \mathbb{N}$
+        \[
+            \bigcup_{i=1}^\infty E_i \in \mathcal{A} \textrm{ and } \bigcap_{i=1}^\infty E_i \in \mathcal{A}.
+        \]
+    \end{enumerate}
+
+\end{definition}
+
+\begin{notenl}
+    Some immediate consequences and remarks of the definition~\ref{def:sigma-algebra}:
+    \begin{itemize}
+        \item By $(i)$ and $(ii)$, $\emptyset \in \mathcal{A}$.
+        \item  $(iii)$ can be read as "$\sigma$-algebras are closed under countable unions".
+        \item To define the space of events rigorously, we need \textit{$\sigma$-algebras}.
+        \item If $\mathcal{A}_1$ and $\mathcal{A}_2$ are $\sigma$-algebras, we can define some operations on them, such as product $\mathcal{A}_1 \otimes \mathcal{A}_2$.
+    \end{itemize}
+\end{notenl}
+
+\begin{definition}[Product of $\sigma$-algebras \textnormal{\cite[Def. 1.4]{MeasureTheoryCohn}}]
+    Let $X_1, X_2$ be sets and $\mathcal{A}_1, \mathcal{A}_2$ be $\sigma$-algebras on $X_1, X_2$, respectively. The \emph{product $\sigma$-algebra} $\mathcal{A}_1 \otimes \mathcal{A}_2$ is defined as the smallest $\sigma$-algebra containing all sets of the form $A_1 \times A_2$, where $A_1 \in \mathcal{A}_1$ and $A_2 \in \mathcal{A}_2$. Formally,
+    \[
+        \mathcal{A}_1 \otimes \mathcal{A}_2 \coloneq \sigma\left(\{A_1 \times A_2 \mid A_1 \in \mathcal{A}_1, A_2 \in \mathcal{A}_2\}\right).
+    \]
+\end{definition}
+
+\subsection{Measurable space}
+
+Let $X$ be a set and $A \subseteq X$ be a subset. It's natural to ask "what would be the \texit{size} or \textit{measure} of the subset $A$ relative to $X$". However, it's also natural to follow up and ask "what would be the size of $X$". In essence, this relativity part of this question distinguish probability theory from more generic measure theory. It's because, in probabily theory we set the size of $X$ as $1$, in which case, we can compare the size of \textit{measurable} subset $A$ to the size of $X$. However, in general, measure theory we don't have any such assumption on $X$ other than the assumption that $X$ is itself measurable. Note that, in our original question we also make an assumption about \textit{measurability} of $A$, which will be formalised using $\sigma$-algebras.
+
+\begin{definition}[Measurable space]
+    A measurable space is a pair $(X, \mathcal{A})$, where $X$ is a set and $\mathcal{A}$ is a $\sigma$-algebra on $X$. The elements of $\mathcal{A}$ are called \emph{measurable sets}.
+\end{definition}
+
+Let $(X, \mathcal{A})$ be a measurable set. As mentioned earlier, it's possible to have a measurable space $(X, \mathcal{A})$ where not all subsets of $X$ are measurable. However, if we want to assume a collection of subsets, such as $\mathcal{F} \subseteq \mathcal{P}(X)$ is measurable (here, we abuse the terminology to use shorthand for "every set in $\mathcal{F}$ is measurable), we denote the smallest $\sigma$-algebra containing $\mathcal{F}$ by $\sigma(\mathcal{F}) $. This is the \emph{generated $\sigma$-algebra}, more formally $\sigma(\mathcal{F})$ is defined as
+
+\begin{equation}
+    \sigma(\mathcal{F}) \coloneq \bigcap \mathcal{A}_\mathcal{F},\label{eq:generated-sigma-algebra-def}
+\end{equation}
+where
+\begin{equation}
+    \mathcal{A}_{\mathcal{F}}
+    \in \{\mathcal{A} \subseteq  \mathcal{P}(X) \mid \mathcal{F} \subseteq \mathcal{A} \text{ and } \mathcal{A} \text{ is a } \sigma\text{-algebra} \}.\label{eq:generated-sigma-algebra}
+\end{equation}
+
+\begin{remarknl}
+    Note that,by~\ref{eq:generated-sigma-algebra-def}, $\sigma(\mathcal{F})$ always exists and is necessarily unique $\sigma$-algebra. To see this:
+    \begin{itemize}
+        \item The set in~\ref{eq:generated-sigma-algebra} is always non-empty since it contains $\mathcal{P}(X)$.
+        \item Intersection of any collection of $\sigma$-algebras is a $\sigma$-algebra~\cite[Prop 1.1.2]{MeasureTheoryCohn}, hence $\sigma(\mathcal{F})$ is a $\sigma$-algebra.
+    \end{itemize}
+\end{remarknl}
+
+\subsection{Measure functions}\label{subsec:measure-functions}
+
+If we have a measurable space $(X, \mathcal{A})$, the logical step is to define a measure for all $A \in \mathcal{A}$. In this dissertation we will assume that measure is always non-negative real function $\mathcal{A} \to [0, \infty)$. We will call the measurable space $(X,\mathcal{A})$ with associated measure function $\mu$ as \emph{measure space} and denote it by the triple $(X, \mathcal{A}, \mu)$. The definition of such measure functions is as follows:
+
+\begin{definition}[Measure]
+    A measure $\mu$ on a measurable space $(X, \mathcal{A})$ is a function $\mu: \mathcal{A} \to [0, +\infty]$ satisfying:
+    \begin{enumerate}[label=(\roman*)]
+        \item $\mu(\emptyset) = 0$,
+        \item $\mu(E) < +\infty$ for all $E \in \mathcal{A}$,
+        \item if $E_i \in \mathcal{A}$ for $i \in \mathbb{N}$ are pairwise disjoint sets, then
+        \[
+            \mu\left(\bigcup_{i=1}^\infty E_i\right) = \sum_{i=1}^\infty \mu(E_i).
+        \]
+    \end{enumerate}
+\end{definition}
+
+\begin{notenl}
+    Some important special cases and notions related to measures:
+    \begin{itemize}
+        \item A measure $\mu$ is called \emph{finite} if $\mu(X) < \infty$.
+        \item A measure $\mu$ is a \emph{probability measure} if $\mu(X) = 1$. In this case, the triple $(X, \mathcal{A}, \mu)$ is called a \emph{probability space}.
+        \item A point $x \in X$ is said to be an \emph{atom} of the measure $\mu$ if $\mu(\{x\}) > 0$.
+    \end{itemize}
+\end{notenl}
+
+One of the important special cases of a measure will be Dirac measure that's based on \emph{indicator functions} (also known as a characteristic function) $\mathds{1}_A: X \to \{0, 1\}$ for a set $A \subseteq X$ and is defined as
+\begin{equation}
+    \label{eq:indicator-function-def}
+    \mathds{1}_A: X \to \{0, 1\}, \quad \mathds{1}_A(x) =
+    \begin{cases}
+        1 & \text{if } x \in A, \\
+        0 & \text{if } x \notin A.
+    \end{cases}
+\end{equation}
+These functions provide a convenient way to express membership in a set and are fundamental to the construction of measures and integration theory.
+
+
+\begin{definition}[Dirac Measure]
+%    taken from the paper
+    Given a measurable space $(\Omega, \Sigma)$, where $\Sigma \subseteq \mathcal{P}(\Omega)$ and an element $\omega \in \Omega$, we denote the \emph{Dirac measure} $\delta_{\omega}: \Sigma \to \{0, 1\}$ as
+    \[
+        \begin{aligned}
+            \delta_{\omega}: \Sigma &\to \{0, 1\} \\
+            A &\mapsto \delta_{\omega}(A) = \mathds{1}_A(\omega)
+        \end{aligned}
+    \]
+\end{definition}
+
+\subsection{Borel $\sigma$-algebra}
+
+Throughout this dissertation, we will focus on a particular class of $\sigma$-algebras that naturally arise in the context of topological spaces. Let $(X, \tau)$ be a topological space, where $\tau \subseteq \mathcal{P}(X)$ denotes the collection of open sets in $X$. The $\sigma$-algebra generated by $\tau$, denoted by $\sigma(\tau)$ (see~\ref{eq:generated-sigma-algebra-def}), is called the \emph{Borel $\sigma$-algebra} on $X$ and is written as
+\[
+    \mathcal{B}(X) \coloneq \sigma(\tau).
+\]
+
+\begin{example}[Borel $\sigma$-algebra on $\mathbb{R}$]
+    Consider the metric space $(\mathbb{R}, d)$, where $d$ is the Euclidean metric. The open sets in $\mathbb{R}$ are generated by the open intervals $(a, b)$ with $a, b \in \mathbb{R}$ and $a < b$. Therefore, the Borel $\sigma$-algebra $\mathcal{B}(\mathbb{R})$ is the smallest $\sigma$-algebra containing all open intervals. Equivalently, $\mathcal{B}(\mathbb{R})$ can also be generated by half-open rays of the form $(-\infty, a)$ for $a \in \mathbb{R}$. This flexibility in generators will be useful later when we discuss measurability of functions.
+\end{example}
+
+\begin{lemma}[Product of Borel $\sigma$-algebras \textnormal{\cite[Lemma 1.5]{MeasureTheoryLeGall}}]
+    \label{lem:product-borel-sigma}
+    Suppose that $E$ and $F$ are separable metric spaces, and equip the product $E \times F$ with the product topology. Then
+    \[
+        \mathcal{B}(E \times F) = \mathcal{B}(E) \otimes \mathcal{B}(F).
+    \]
+\end{lemma}
+
+\begin{remarknl}
+    An important application of~\ref{lem:product-borel-sigma} is the case $E = F = \mathbb{R}$. In this setting, we obtain
+    \[
+        \mathcal{B}(\mathbb{R}^2) = \mathcal{B}(\mathbb{R}) \otimes \mathcal{B}(\mathbb{R}).
+    \]
+    This identification is fundamental: it guarantees that the Borel structure on the Euclidean plane $\mathbb{R}^2$ coincides with the product $\sigma$-algebra generated by intervals of the form $(a, b) \times (c, d)$. In particular, this fact underpins the rigorous construction of multivariate random variables and joint distributions. Without this identification, extending probability theory from one-dimensional random variables to higher-dimensional vectors would not be straightforward.
+\end{remarknl}
+
+\subsection{Measurable functions}\label{subsec:measurable-functions}
+
+So far, we have introduced measurable spaces and measures. The next step is to formalize the notion of functions that are compatible with these structures. Such functions are called \emph{measurable functions}. This concept will allow us to define random variables in the next section~\ref{def:random-variable-prob}.
+
+\begin{definition}[Measurable function \textnormal{\cite[Def.~1.8]{MeasureTheoryCohn}}]
+    \label{def:measurable-function}
+    Let $(X, \mathcal{A})$ and $(Y, \mathcal{B})$ be measurable spaces. A function $f : X \to Y$ is said to be \emph{measurable} if
+    \[
+        \forall B \in \mathcal{B}, \quad f^{-1}(B) \in \mathcal{A}.
+    \]
+    When $X$ and $Y$ are topological spaces equipped with their respective Borel $\sigma$-algebras, we also say that $f$ is \emph{Borel measurable}.
+\end{definition}
+
+There is a direct analogy between the definition of a continuous function in topology and that of a measurable function in measure theory~\cite[Cor.~2.2]{FollandRealAnalysis}. In topology, a function is continuous if the preimage of every open set is open. Similarly, a function is measurable if the preimage of every measurable set belongs to a given $\sigma$-algebra. To emphasize the role of the $\sigma$-algebra $\mathcal{A}$—just as continuity is relative to the topology on the domain—we often say that a function $f$, as in~\ref{def:measurable-function}, is \emph{$\mathcal{A}$-measurable}. In probability theory, $\mathcal{A}$ typically denotes the $\sigma$-algebra of events, in which case measurable functions correspond precisely to random variables.
+
+\begin{remarknl}
+    \label{rem:measurable-functions}
+    Measurable functions satisfy the following useful properties:
+    \begin{enumerate}
+        \item The composition of two measurable functions is measurable~\cite[Prop.~1.9]{MeasureTheoryCohn}.
+        \item Let $(X, \mathcal{B}(X))$ be a measurable space where $\mathcal{B}(X)$ denotes the Borel $\sigma$-algebra. If $f, g : X \to \mathbb{R}$ are measurable, then so are $f+g$ and $fg$. A stronger version holds for $f, g : X \to \mathbb{C}$~\cite[Prop.~2.6]{FollandRealAnalysis}. Moreover, a function $f : X \to \mathbb{C}$ is measurable if and only if its real and imaginary parts $\Re(f), \Im(f) : X \to \mathbb{R}$ are measurable~\cite[Cor.~2.5]{FollandRealAnalysis}. Hence, the measurability results for real-valued functions extend directly to the complex-valued case.
+    \end{enumerate}
+\end{remarknl}
+
+As an application of the second property, we obtain the following result.
+
+\begin{corollary}
+    Let $(X, \mathcal{B}(X))$ be a measurable space and let $f, g : X \to \mathbb{R}$. Suppose $f$ is measurable and $g$ is non-measurable. Then $g-f$ is not measurable.
+\end{corollary}
+
+\begin{proof}
+
+    Assume, for the sake of contradiction, that $h \coloneq g - f$ is measurable. Then, by the second property in~\ref{rem:measurable-functions}, the function $h+f$ is measurable. But $h+f = g$, which contradicts the assumption that $g$ is non-measurable. Hence $h$ is not measurable.
+\end{proof}
+
+A useful sufficient condition for measurability is the following (see~\cite[Prop.~1.9]{MeasureTheoryLeGall}):
+
+\begin{proposition}
+    \label{prop:measurability-sufficient-cond}
+    Let $(X, \mathcal{A})$ and $(Y, \mathcal{B})$ be measurable spaces, and let $f : X \to Y$. In order for $f$ to be measurable, it suffices that there exists a subclass $\mathcal{C} \subseteq \mathcal{B}$ such that $\sigma(\mathcal{C}) = \mathcal{B}$ and
+    \[
+        f^{-1}(C) \in \mathcal{A}, \quad \forall C \in \mathcal{C}.
+    \]
+\end{proposition}
+
+\begin{example}
+    Suppose $(Y, \mathcal{B}) = (\mathbb{R}, \mathcal{B}(\mathbb{R}))$. To verify that $f$ is measurable, it suffices to check that for every $a < b$, the preimages $f^{-1}((a,b))$ are measurable. In fact, it is already enough to check measurability for sets of the form $f^{-1}((-\infty,a))$, with $a \in \mathbb{R}$.
+\end{example}
+
+
+%
+%\subsection{Rigorous definition of Random variable}
+%
+%Recall that, a probability space is a triple $(\Omega, \mathcal{F}, P)$, where $\Omega$ is a sample space, $\mathcal{F}$ is a $\sigma$-algebra on $\Omega$, called events, and $P$ is a probability measure on $(\Omega, \mathcal{F})$. The measure $P$ assigns probabilities to events in $\mathcal{F}$.
+%
+%
+%\begin{definition}[Random variable]
+%    Let $(\Omega, \mathcal{F}, P)$ be a probability space where
+%    \begin{itemize}
+%        \item $\Omega$ is a sample space
+%        \item $\mathcal{F}$ is a $\sigma$-algebra on $\Omega$
+%        \item and $P: \mathcal{F} \to [0, 1]$ is a probability measure on $(\Omega, \mathcal{F})$.
+%    \end{itemize}
+%    Write $\mathcal{B}(\mathbb{R})$ be the Borel $\sigma$-algebra on $\mathbb{R}$. A function $X : \Omega \to \mathbb{R}$ such that
+%    for all $B \in \mathcal{B}(\mathbb{R})$
+%    \[
+%        X^{-1}(B) = \{w \in \Omega: X(w) \in B\} \in \mathcal{F}
+%    \]
+%    is said to be a \emph{random variable} on $\Omega$.
+%\end{definition}
+
+

@@ -1,0 +1,184 @@
+\section{Probability space}
+
+We denote by $\Omega$ the set of all possible outcomes of a probabilistic experiment, called a \emph{sample space}.
+
+\begin{definition}[Random variable]
+    A \emph{random variable} $X$ is a function from the sample $\Omega$ to the set of real numbers $\mathbb{R}$:
+    \[
+        X: \Omega \to \mathbb{R}
+    \]
+    \begin{itemize}
+        \item The real number $X(w) \in \mathbb{R}$ associated to a sample point $w \in \Omega$ is called a \emph{realization} of the random variable.
+        \item The set of all possible realizations $\{X(w) \mid w \in \Omega\} \subseteq \mathbb{R}$ is called \emph{support} and is denoted by $\mathbb{R}_X$.
+    \end{itemize}
+\end{definition}
+
+\begin{example}[Coin flip]
+    $\Omega = \{T, H\}$ and $P(T) = P(H) = \frac{1}{2}$
+
+    $X: \Omega \to \mathbb{R}$ is defined as follows
+    \[
+        X(w) = \left\{
+                   \begin{aligned}
+                       1  \quad &\textrm{  if } w = T \\
+                       -1  \quad &\textrm{  if } w = H \\
+                   \end{aligned}
+        \right
+    \]
+
+    Then
+    \[
+        \begin{aligned}
+            P(X = 1) &= P(\{w \in \Omega: X(w) = 1\}) = \frac{1}{2} \\
+            P(X = -1) &= P(\{w \in \Omega: X(w) = -1\}) = \frac{1}{2} \\
+            P(X = 2) &= P(\{w \in \Omega: X(w) = 2\}) = 0 \\
+        \end{aligned}
+    \]
+\end{example}
+
+\begin{notenl}[Notation]
+    We usually write $X$ instead of $X(w)$. If $A \subseteq \mathbb{R}$, we write
+    \[
+        P_X(A) = P(X \in A) = P(\{w \in \Omega: X(w) \in A\})
+    \]
+\end{notenl}
+
+\subsection{Discrete and Continuous random variables}
+%https://www.statlect.com/fundamentals-of-probability/random-variables#rigor
+\begin{definition}[Discrete Random Variable]
+    A random variable $X$ is \emph{discrete} if
+    \begin{enumerate}
+        \item its support $\mathbb{R}_X$ is a countable set
+        \item there is a \emph{probability mass function}  $p_X: \mathbb{R} \to [0, 1]$ (PMF or probability function) of $X$ such that for any $y \in \mathbb{R}$
+        \[
+            p_X(y) = \left\{
+            \begin{aligned}
+                &P(X = y) &\text{ if } y \in \mathbb{R}_X\\
+                &0 &\text{ if } y \not \in \mathbb{R}_X\\
+            \end{aligned}
+        \]
+
+    \end{enumerate}
+\end{definition}
+
+\begin{example}[Bernoulli random variable]
+    A Bernoulli random variable $X$ is a discrete random variable that takes two values
+    \begin{itemize}
+        \item it takes $1$ with probability $q$
+        \item it takes $0$ with probability $1 - q$
+    \end{itemize}
+    where $0 \leq q \leq 1$. So the support of this random variable is $\mathbb{R}_X = \{0, 1\}$ and its probability mass function is
+    \[
+        \[
+            p_X(y) = \left\{
+            \begin{aligned}
+                &q &\text{ if } y = 1\\
+                &1-q &\text{ if } y = 0\\
+                &0 &\text{ otherwise }\\
+            \end{aligned}
+        \]
+    \]
+\end{example}
+
+\begin{notenl}[Properties of probability mass function]
+    PMF is characterised by two fundamental properties:
+    \begin{itemize}
+        \item \textbf{Non-negativity}: $p_X(x) \geq 0$ for any $x \in \mathbb{R}$.
+        \item \textbf{Total sum is 1}: $\sum_{x \in \mathbb{R}_X}p_X(x) = 1$.
+    \end{itemize}
+
+    Any PMF satisfies these two properties and any function satisfying these properties is legitimate PMF.
+\end{notenl}
+
+\begin{definition}[Continuous random variables]
+    A random variable $X$ is \emph{continuous} if
+    \begin{itemize}
+        \item its support $\mathbb{R}_X$ is an uncountable set
+        \item there is a \emph{probability density function} $f_X: \mathbb{R} \to [0, \infty)$ (PDF or density function) of $X$ such that for any interval $[a, b] \subset \mathbb{R}$
+        \[
+            P(X \in [a, b]) = \int_{a}^{b} f_X(x)dx
+        \]
+    \end{itemize}
+\end{definition}
+
+\begin{example}[Uniform random variable]
+    A uniform random variable $X$ (on the interval $[0, 1]$) is a continuous variable that can take any value in the interval $[0, 1]$ (i.e $\mathbb{R}_X = [0, 1]$). Its probability density function is
+    \[
+        f_X(x) = \left\{
+                     \begin{aligned}
+                         &1 &\text{ if } x \in [0, 1]\\
+                         &0 &\text{ otherwise }
+                     \end{aligned}
+        \right.
+    \]
+
+    Probability that the realization of $X$ belongs to $[\frac{1}{4}, \frac{3}{4}]$ is
+    \[
+        \begin{aligned}
+            P(X \in [\frac{1}{4}, \frac{3}{4}]) &= \int_{\frac{1}{4}}^{\frac{3}{4}} f_X(x)dx \\
+            &= \int_{\frac{1}{4}}^{\frac{3}{4}} 1 dx \\
+            &= \left[ x \right]_{\frac{1}{4}}^{\frac{3}{4}} \\
+            &= \frac{3}{4} - \frac{1}{4} = \frac{1}{2}.
+        \end{aligned}
+    \]
+\end{example}
+
+\begin{notenl}[Properties of probability density function]
+    PDF is characterised by two fundamental properties:
+    \begin{itemize}
+        \item \textbf{Non-negativity}: $f_X(x) \geq 0$ for any $x \in \mathbb{R}$.
+        \item \textbf{Total integral is 1}: $\int_{-\infty}^{+\infty} f_X(x)dx = 1$.
+    \end{itemize}
+
+    Any PDF satisfies these two properties and any function satisfying these properties is legitimate PDF.
+\end{notenl}
+
+\begin{definition}[Probability measure]
+    Let $\Omega$ be a sample space and $\mathcal{F}$ be space of events, i.e. a $\sigma$-algebra on $\Omega$. We say that $P: \mathcal{F} \to [0, 1] $ is a \emph{probability measure} if it satisfies the following properties:
+    \begin{enumerate}[label=(\roman*)]
+        \item $P(\emptyset) = 0$,
+        \item $P(\Omega) = 1$,
+        \item If $E_1, E_2, \dots$ are pairwise disjoint sets in $\mathcal{F}$, then
+        \[
+            P\left(\bigcup_{i=1}^\infty E_i\right) = \sum_{i=1}^\infty P(E_i).
+        \]
+    \end{enumerate}
+\end{definition}
+
+\subsection{Expected value}
+%https://www.stat.auckland.ac.nz/~fewster/325/notes/ch3.pdf
+
+\begin{definition}[Expected value]
+    The definition of the expected value of a random variable $X$ depends on whether $X$ is discrete or continuous.
+    \begin{itemize}
+        \item If $X$ is discrete, then the expected value of $X$ is defined as
+        \[
+            \mathbb{E}[X] = \sum_{x \in \mathbb{R}_X} x \cdot p_X(x)
+        \]
+        where $p_X(x)$ is the probability mass function of $X$.
+
+        \item If $X$ is continuous, then the expected value of $X$ is defined as
+        \[
+            \mathbb{E}[X] = \int_{-\infty}^{+\infty} x f_X(x)dx
+        \]
+        where $f_X(x)$ is the probability density function of $X$.
+    \end{itemize}
+\end{definition}
+
+\subsection{Probability distribution function}
+%https://math.arizona.edu/~jwatkins/G_randomvariables.pdf
+Having a random variable of interest $X$, the question typically becomes "What is the probability that $X$ takes a value in a certain range?" To answer this, we need to define the distribution function of the random variable.
+
+\begin{definition}[Distribution function]
+    The $X$ be a random variable. The \emph{distribution function} (or cumulative distribution function, CDF) of $X$ is defined as
+    \[
+        F_X(x) = P(X \leq x) = P(\{w \in \Omega: X(w) \leq x\})
+    \]
+    for all $x \in \mathbb{R}$.
+\end{definition}
+
+By knowing the distribution function $F_X(x)$, we can find the probability of $X$ being in an interval $[a, b]$:
+\begin{equation}
+    \label{eq:probability-interval}
+    P(X \in [a, b]) = F_X(b) - F_X(a)
+\end{equation}

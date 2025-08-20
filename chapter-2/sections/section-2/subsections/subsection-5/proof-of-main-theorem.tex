@@ -1,0 +1,407 @@
+\subsection{Propagation of Dependence Across Dimensions}
+
+The central aim of this subsection is to establish our main theorem, which asserts a powerful inheritance property for dependence within a model-theoretic structure. We will prove that if all definable relations linking a $p$-dimensional set to a 1-dimensional set are dependent, then this property extends to relations between a $p$-dimensional set and any $q$-dimensional set. This result is a cornerstone of the argument, as it provides the inductive mechanism to generalize from a simple case to arbitrary dimensions. To achieve this, we will employ combinatorial methods rooted in Ramsey's Theorem. The core strategy involves using this theorem to extract highly uniform sequences, known as indiscernible sequences, which allow us to control the behavior of the definable relations in question.
+
+\begin{theorem}{\label{thm:main-theorem-ch-2}}
+    Let $\mathcal{R} = (R, \dots)$ be an infinite model-theoretic structure and suppose all definable relations $\Phi \subseteq R^{p+1}$, for all $p > 0$, are dependent. Then all definable relations $\Phi \subseteq R^{p+q}$, for all $p, q > 0$, are dependent.
+\end{theorem}
+
+To establish this we will use combinatorial techniques, so we need to introduce some notation. Let $X$ be a set and $r \in \mathbb{N}$ be given. We put
+\[
+    X^{(r)} \coloneq \text{ the collection of all $r$-element subsets of $X$}
+\]
+
+\subsubsection{Indiscernibility}
+
+To establish this powerful reduction, we must first introduce a fundamental result from combinatorics: Ramsey's Theorem.
+
+\begin{theorem}[Ramsey's Theorem]
+    \label{thm:ramsey}
+    Given positive integers $M, r, k$, there exists a positive integer $N = N(M, r, k)$ such that if $X$ is a set with
+    \[
+        |X| \ge N \text{ and } X^{(r)} = P_1 \cup P_2 \cup \dots \cup P_k,
+    \]
+    then there exists a subset $Y \subseteq X$ with $|Y| = M$ that satisfies $Y^{(r)} \subseteq P_j$ for some $j \in \{1, \dots, k\}$.
+\end{theorem}
+
+
+
+\begin{proof}
+
+    It is sufficient to prove the theorem for $k=2$, as we only care about one of the partitions in the general case where $k \geq 2$. The proof will be an induction on $r$.
+
+    The base case $r=1$ is a direct application of the pigeonhole principle. Take $N = 2M-1$. For any set $X$ with $|X| \geq N$ and partition $X^{(1)} = X = P_1 \cup P_2$. By the pigeonhole principle, one of $P_1$ or $P_2$ contains at least $M$ elements. Let $Y$ be a set of $M$ elements from the larger part. Then we can just pick any of the partitions with at least $M$ elements and choose a subset $Y \subseteq P_j$ for $j \in \{1, 2\}$ trivially.
+
+    Assume, the theorem holds for a fixed $r$, so we have $N = N(M, r, 2)$ such that for any set $X'$ with $|X'| \geq N$ and $X'^{(r)} = P'_1 \cup P'_2$, we can find a subset $Y' \subseteq X'$ with $|Y'| = M$ satisfying $Y'^{(r)} \subseteq P'_1$ or $Y^{(r)} \subseteq P'_2$.
+
+    To show the theorem holds for $r+1$, we define a sequence of integers recursively
+    \[
+        N_{2M} = 1 \text{ and } N_{i} \coloneq N(N_{i+1}, r, 2) + 1 \text{ for } 1 \leq i \leq M.
+    \]
+    Set $N = N_{1} = N(M, r+1, 2)$. Let $X$ be a set with $|X| \geq N_{1}$ and let $X^{(r+1)} = P_1 \cup P_2$ be a partition. We will inductively construct a descending sequence of subsets and elements
+    \[
+        X \supset A_1 \supset A_2 \supset \cdots \supset A_{2M}
+    \]
+    and distinct points $a_1,\dots,a_{2M}$ with the property that for $1 \le i < 2M$:
+    \begin{enumerate}
+        \item $a_i \in A_i$ and $a_i \notin A_{i+1}$,
+        \item $|A_i| \ge N_i$,
+        \item all $(r+1)$-sets in $A_i \setminus\{a_i\}$ containing $a_i$ are all in $P_1$ or all in $P_2$.{\label{enum-item:clause-4}}
+    \end{enumerate}
+
+
+    \textit{Construction of $A_2$ from $A_1$: }Set $A_1=X$ and choose $a_1\in A_1$ arbitrarily. Partition $(A_1\setminus\{a_1\})^{(r)}$ into
+    \[
+        \begin{aligned}
+            Q_1 &\coloneq \{R\in (A_1\setminus\{a_1\})^{(r)}:\ \{a_1\}\cup R\in P_1\},\\
+            Q_2 &\coloneq \{R\in (A_1\setminus\{a_1\})^{(r)}:\ \{a_1\}\cup R\in P_2\}.
+        \end{aligned}
+    \]
+    Since $|A_1\setminus\{a_1\}|=|A_1|-1\ge N_1-1\ge N(N_2,r,2)$, we can apply the induction hypothesis for $r$ to $A_1\setminus\{a_1\}$ with $(A_1\setminus\{a_1\})^{(r)}=Q_1\cup Q_2$ to obtain a subset $A_2 \subset A_1$
+    \[
+        A_2\subseteq A_1\setminus\{a_1\} \subseteq A_1 \quad\text{with}\quad |A_2|\ge N_2
+    \]
+    such that either $A_2^{(r)}\subseteq Q_1$ or $A_2^{(r)}\subseteq Q_2$. Hence every $(r+1)$-subset of $A_2\cup\{a_1\}$ containing $a_1$ lies in the same part $P_j$ ($j\in\{1,2\}$). Then choose any $a_2\in A_2$ and continue construction.
+
+    \textit{Construction of $A_{i+1}$ from $A_i$: }Now suppose $A_i$ and $a_i$ have been chosen with $|A_i|\ge N_i$ and clause~\ref{enum-item:clause-4} holds for $a_i$.
+    \[
+        \begin{aligned}
+            Q_1&\coloneqq\{R\in (A_i\setminus\{a_i\})^{(r)}:\ \{a_i\}\cup R\in P_1\},\\
+            Q_2&\coloneqq\{R\in (A_i\setminus\{a_i\})^{(r)}:\ \{a_i\}\cup R\in P_2\}.
+        \end{aligned}
+    \]
+    Since $|A_i\setminus\{a_i\}|=|A_i|-1\ge N_i-1\ge N(N_{i+1},r,2)$, the induction hypothesis for $r$ gives a subset
+    \[
+        A_{i+1}\subseteq A_i\setminus\{a_i\} \quad\text{with}\quad |A_{i+1}|\ge N_{i+1}
+    \]
+    and $A_{i+1}^{(r)}\subseteq Q_1$ or $A_{i+1}^{(r)}\subseteq Q_2$. In particular, every $(r+1)$-subset of $A_{i+1}\cup\{a_i\}$ containing $a_i$ lies entirely in one of $P_1,P_2$. Choose any $a_{i+1}\in A_{i+1}$.
+
+    This yields distinct points $a_1,\dots,a_{2M}$. For each $i$ let $j(i)\in\{1,2\}$ be the index guaranteed by clause~\ref{enum-item:clause-4}. Define
+    \[
+        Y_1\coloneqq\{a_i:\ j(i)=1\},\qquad Y_2\coloneqq\{a_i:\ j(i)=2\}.
+    \]
+    Then $|Y_1|+|Y_2|=2M$, so one of $Y_1,Y_2$ has size at least $M$; call that set $Y$ and let $j$ be its associated index.
+
+    We claim $Y^{(r+1)}\subseteq P_j$. Take any $S\in Y^{(r+1)}$ and let $a_i$ be the unique element of $S$ with smallest index. The remaining $r$ elements of $S$ lie in $A_{i+1}\subseteq A_i\setminus\{a_i\}$, so $S=\{a_i\}\cup R$ with $R\in (A_i\setminus\{a_i\})^{(r)}$. By clause~\ref{enum-item:clause-4} for $a_i$, we have $S\in P_j$. Hence $Y^{(r+1)}\subseteq P_j$ and  $|Y|=M$ can be obtained by discarding extra elements if necessary, as required.
+
+\end{proof}
+
+Let $X$ be an infinite set.
+If $A \subseteq X^r$ is an $r$-ary relation, a finite sequence $x_1, \dots, x_M$ of elements of $X$ is called \emph{$A$-indiscernible} if for all increasing $r$-tuples of indices
+\[
+    1 \le i(1) < \cdots < i(r) \le M, \quad 1 \le j(1) < \cdots < j(r) \le M,
+\]
+we have
+\[
+    \bigl(x_{i(1)}, \dots, x_{i(r)}\bigr) \in A
+    \quad\Longleftrightarrow\quad
+    \bigl(x_{j(1)}, \dots, x_{j(r)}\bigr) \in A.
+\]
+In other words, whether a given $r$-tuple from the sequence lies in $A$ depends only on the positions chosen, not on which specific elements occupy those positions.
+
+If $\mathcal{A}$ is a finite family of relations on $X$, each $A \in \mathcal{A}$ having its own arity $r(A)$, we say that $x_1, \dots, x_M$ is \emph{$\mathcal{A}$-indiscernible} if it is $A$-indiscernible for every $A \in \mathcal{A}$.
+
+\begin{remarknl}
+    Indiscernibility means that the truth values of all relations in $\mathcal{A}$ on subtuples of the sequence are constant across all choices of indices of the same length.
+    For example, if $A$ is binary, $A$-indiscernibility says: for any two pairs $(x_i, x_j)$ and $(x_{i'}, x_{j'})$ with $i<j$ and $i'<j'$, either both pairs are in $A$ or both are not.
+\end{remarknl}
+
+\begin{example}
+    Let $X = \mathbb{Z}$ and $A \subseteq X^2$ be the binary relation
+    \[
+        A(m, n) \quad\text{means}\quad m < n \ \text{ and } \ m+n \ \text{is even}.
+    \]
+    Consider the sequence
+    \[
+        x_1 = 2,\quad x_2 = 4,\quad x_3 = 6,\quad x_4 = 8.
+    \]
+    For any $i < j$, $x_i + x_j$ is even, so $(x_i, x_j) \in A$.
+    This holds for \emph{every} pair of indices in the sequence, so it is $A$-indiscernible: the truth value of $A(x_i, x_j)$ is constant (true) for all index pairs.
+
+    Similarly, the sequence $1, 3, 5, 7$ is $A$-indiscernible since all sums are even again.
+    In contrast, the sequence $2, 3, 4, 5$ is \emph{not} $A$-indiscernible, because some pairs have even sum and others have odd sum.
+\end{example}
+
+\begin{corollary}{\label{cor:ramsey-cor}}
+    Let $X$ be infinite and $\mathcal{A}$ a finite family of relations on $X$. For every $M \in \mathbb{N}$ there exists $N \in \mathbb{N}$ such that every sequence in $X$ of length $N$ contains an $\mathcal{A}$-indiscernible subsequence of length $M$.
+\end{corollary}
+
+\begin{proof}
+
+    It's enough to show this holds for $|\mathcal{A}| = 1$, since for $|\mathcal{A}| > 1$ we can find indiscernible sequence for one of the relations $A \in \mathcal{A}$ and repeatedly apply Ramsey's theorem~\ref{thm:ramsey} for remaining relations in $\mathcal{A}$ one by one to obtain subsequence of the $A$-indiscernible sequence.
+
+    Suppose $\mathcal{A} = \{A\}$ with $A \subseteq X^r$ for some $r \in \mathbb{N}$ and let $x_1, \dots, x_N$ be a sequence in $X$ where $N = N(M, r, 2)$ and write $Z \coloneq\{1, \dots, N\}$. Consider partition of $Z^{(r)} = P_1 \cup P_2$ given by
+    \[
+        \begin{aligned}
+            P_1 &\coloneq \left\{ \{i_1, \dots, i_r\} \mid 1 \leq i_1 \leq \dots \leq i_r \leq N \text{ and } (x_{i_1}, \dots, x_{i_r}) \in A\right\} \\
+            P_2 &\coloneq \left\{ \{i_1, \dots, i_r\} \mid 1 \leq i_1 \leq \dots \leq i_r \leq N \text{ and } (x_{i_1}, \dots, x_{i_r}) \notin A\right\} \\
+        \end{aligned}
+    \]
+    Hence, by Ramsey's theorem~\ref{thm:ramsey} there is a subset
+    \[
+        \{i_1, \dots, i_M\} \subseteq Z \text{ with } i_1 < \dots < i_M,
+    \]
+    such that $\{i_1, \dots, i_M\}^{(r)} \subseteq P_1$ or $P_2$. Then, the sequence $x_{i_1}, \dots, x_{i_M}$ is $A$-indiscernible.
+\end{proof}
+
+
+\begin{examplenl}
+    Let $X = \mathbb{R}$ and let $\mathcal{A} = \{A_1, A_2\}$ where $A_1(x, y)$ means $x < y$ and $A_2(x, y, z)$ means $x + y > z$.
+    Then $\mathcal{A}$-indiscernibility for a sequence $x_1, \dots, x_M$ means:
+    \begin{itemize}
+        \item all ordered pairs $(x_i, x_j)$ with $i < j$ satisfy $A_1$ or none do, and
+        \item all triples $(x_i, x_j, x_k)$ with $i < j < k$ satisfy $A_2$ or none do.
+    \end{itemize}
+    Corollary~\ref{cor:ramsey-cor} says that if the starting sequence is long enough, we can always extract a subsequence where these two uniformity conditions hold simultaneously.
+\end{examplenl}
+
+For the rest of this section we fix infinite sets $X$ and $Y$ and a binary relation $\Phi \subseteq X \times Y$.
+
+\begin{lemma}{\label{lem:indiscernible-seq-1}}
+    Suppose $\Phi$ is independent and $\mathcal{A}$ is a finite collection of relations on $X$. Then, for each $M \in \mathbb{N}$ there are $\mathcal{A}$-indiscernible sequence
+    \[
+        a_1, \dots, a_M \in X \text{ and } b \in Y,
+    \]
+    such that for all $m \in \{1, \dots, M\}$, we have $(a_m, b) \in \Phi \iff m \text{ is even.}$
+\end{lemma}
+
+\begin{proof}
+
+    Let $M \in \mathbb{N}$ be given. By Corollary~\ref{cor:ramsey-cor}, we can find a natural number $N$ such that each sequence $x_1, \dots, x_N \in X$ contains $\mathcal{A}$-indiscernible subsequence of length $M$.
+
+    Recall that, by Definition~\ref{def:relation-dependence}, $\Phi \subseteq X \times Y$ is independent means $\Phi_X \subseteq \mathcal{P}(Y)$ is independent. Hence, we can find elements $x_1, \dots, x_N$ such that the sets $\Phi_{x_1}, \dots, \Phi_{x_N} \in \mathcal{P}(Y)$ are independent. Hence, for any subset $W \in \mathcal{P}(\{1, \dots, N\})$, the intersection
+    \begin{equation}
+        \label{eq:lemma-independence-indiscernible}
+        \Bigl(\bigcap_{i \in W} \Phi_{x_i}\Bigr) \cap \Bigl( \bigcap_{i \notin W} Y \setminus \Phi_{x_i} \Bigr)
+    \end{equation}
+    is non-empty.
+
+    Applying Ramsey's theorem to the sequence $x_1, \dots, x_N \in X$, we obtain $\mathcal{A}$-indiscernible subsequence $x_{i_1}, \dots, x_{i_M} \in X$, where $1 \leq i_1 \leq \dots \leq i_M \leq N$.
+
+    Let the sequence be $a_m \coloneq x_{i_m}$ for $m \in \{1, \dots, M\}$. Now, choose the set of indices $W \subseteq \{1, \dots, N\}$ to be $W \coloneq \{i_m \mid m \in \{1, \dots, M\} \text{ is even}\}$. Since the sets $\Phi_{x_i}$ are independent, the intersection in (\ref{eq:lemma-independence-indiscernible}) for this $W$ is non-empty; let $b$ be an element of this intersection. By this choice, $b \in \Phi_{x_{i_m}}$ if and only if its index $i_m$ is in $W$, which occurs precisely when $m$ is even. This is equivalent to $(a_m, b) \in \Phi \iff m \text{ is even}$, as required.
+
+\end{proof}
+
+Next we introduce certain relations that we can define from $\Phi$. Let $x_1, \dots, x_M \in X$ and $y \in Y$ be given, where $M \in \mathbb{N}$. For any set $U \subseteq \{1, \dots, M\}$, we write the formula defining a subset $\Phi_{U} \subseteq X^{M}\timesY$ as below:
+\begin{equation}{\label{eq:new-way-of-relation}}
+    \Phi_{U}(x_1, \dots, x_M; y) \coloneq \Biggl( \bigwedge_{i \in U} \Phi(x_i, y) \Biggr) \land \Biggl( \bigwedge_{i \notin U} \neg\Phi(x_i, y)\Biggr).
+\end{equation}
+The image of $\Phi_{U}$ under the projection map $\pi: X^M\times Y \to X^M$ is defined by the formula
+\[
+    \exists y \Phi_{U}(x_1, \dots, x_M; y)
+\]
+We denote the collection of $M$-ary relation of this form as follows:
+\[
+    \mathcal{A}_{\Phi, M} \coloneq \{\exists y \Phi_{U}(x_1, \dots, x_M; y) \mid U \subseteq \{1, \dots, M\} \}
+\]
+
+Following lemma is the converse of~\ref{lem:indiscernible-seq-1}.
+
+\begin{lemma}{\label{lem:indiscernible-seq-2}}
+    Let $a_1, \dots, a_N \in X$ be an $\mathcal{A}_{\Phi, M}$-indiscernible sequence where, $N \geq 2M$. Suppose, $a_{i_1}, \dots, a_{i_{2M}}$ is a subsequence and $b \in Y$ such that
+    \begin{equation}{\label{eq:lem-indiscerible-seq-2-asumption}}
+        \forall m \in \{1, \dots, 2M\}, (a_{i_m}, b) \in \Phi \iff m \text{ is even}.
+    \end{equation}
+    Then, $D(\Phi) > M$.
+\end{lemma}
+
+\begin{proof}
+
+    Recall, that $D(\Phi) > M$ means $f_{\Phi_X}(M) = 2^M$, so it's sufficient to show that $\Phi_{a_1}, \dots, \Phi_{a_M} \subseteq Y$ are independent. Write $E \subseteq \{1, \dots, 2M\}$ for the subset of even integers, then by assumption following holds:
+    \begin{equation}{\label{eq:indiscernible-lemma-2-eq-1}}
+        \bigwedge_{i \in E}\Phi(a_i, b) = \Phi(a_2, b) \land \dots \land \Phi(a_{2M}, b)
+    \end{equation}
+    Given any subset $U \subseteq \{1, \dots, M\}$, take a sequence $k_1, \dots, k_M \in \{1, \dots, 2M\}$ such that
+    \begin{equation}{\label{eq:indiscernible-lemma-2-eq-2}}
+        1 \leq k_1 \leq \dots \leq k_M \leq 2M, \quad \begin{cases}
+                                                          \text{ for } i \in U, k_i \text{ is even} \\
+                                                          \text{ for } i \notin U, k_i \text{ is odd}
+        \end{cases}
+    \end{equation}
+    Combining,~\ref{eq:indiscernible-lemma-2-eq-1} and~\ref{eq:indiscernible-lemma-2-eq-2} we get that
+    \[
+        \Phi_{U}(a_{i_{k_1}}, \dots,a_{i_{k_M}}; b) = \Bigl(\bigwedge_{i \in U} \Phi(a_{k_i}; b) \Bigr) \land \Bigl(\bigwedge_{i \notin U} \neg \Phi(a_{k_i}; b)\Bigr)
+    \]
+    holds, which implies $\exists y \Phi_{U}(a_{i_{k_1}}, \dots,a_{i_{k_M}}; y)$ holds. Hence, by $\mathcal{A}_{\Phi, M}$-indiscerniblity of  $a_1, \dots, a_N \in X$
+    \[
+        \exists y \Phi_{U}(a_{1}, \dots,a_{M}; y)
+    \]
+    holds. Since, $U \subseteq \{1, \dots, M\}$ was arbitrary, this shows that $\Phi_{a_1}, \dots, \Phi_{a_M} \subseteq Y$ is independent sequence.
+\end{proof}
+
+\begin{remark}
+    Informally speaking, the Lemma~\ref{lem:indiscernible-seq-2} provides a sufficient condition for the boolean algebra $\mathcal{B}(\Phi_{a_1}, \dots, \Phi_{a_M})$ to have $2^M$ atoms. To observe this, note that, $\mathcal{A}_{\Phi, M}$-indiscernibility of $a_1, \dots, a_N$ is not strong enough condition for us to conclude the desired result, as there is a possibility that for any subsequence $a_{i_1}, \dots, a_{i_M}$ and any relation $A \in \mathcal{A}_{\Phi, M}$, $A(a_{i_1}, \dots, a_{i_M})$ does not hold. Hence, we need extra condition~\ref{eq:lem-indiscerible-seq-2-asumption} for ensuring that any subsequence of size $M$ satisfies any relation in $\mathcal{A}_{\Phi, M}$. Once, this is established we use $\mathcal{A}_{\Phi, M}$-indiscernibility to show $\mathcal{B}(\Phi_{a_1}, \dots, \Phi_{a_M})$ has $2^M$ atoms. Choice of $a_1, \dots, a_M$ here was arbitrary, since we could also argue that  $\mathcal{B}(\Phi_{a_{M+1}}, \dots, \Phi_{a_{2M}})$ also has $2^M$ atoms.
+\end{remark}
+
+Next, we assume that $Y = Y_1 \times Y_2$, where both $Y_1, Y_2$ are infinite. Write $y_1 \in Y_1$ and $y_2 \in Y_2$ for arbitrary elements and consider the formula $\Phi(x; y_1, y_2)$ and corresponding relation $\Phi$
+
+From now on assume that the parameter set splits as a Cartesian product
+\[
+    Y \;=\; Y_1\times Y_2,
+\]
+with both $Y_1$ and $Y_2$ infinite. We regard the original binary relation
+\[
+    \Phi \;\subseteq\; X\times Y \;=\; X\times (Y_1\times Y_2)
+\]
+as a ternary relation and we write it as a formula $\Phi(x;y_1,y_2)$ with
+$x\in X$, $y_1\in Y_1$, and $y_2\in Y_2$. It is convenient to ``re-index’’
+$\Phi$ by grouping $(x,y_1)$ together and keeping $y_2$ separate:
+\[
+    \Phi^\ast \;\subseteq\; (X\times Y_1)\times Y_2,
+    \qquad
+    \Phi^\ast\bigl((x,y_1);y_2\bigr) \iff \Phi(x;y_1,y_2).
+\]
+In words, $\Phi^\ast$ parametrizes a family of subsets of $Y_2$ indexed by
+$X\times Y_1$:
+\[
+    \bigl(\Phi^\ast\bigr)_{(x,y_1)}
+    \;=\; \{\,y_2\in Y_2 : \Phi(x;y_1,y_2)\,\}
+    \;\subseteq\; Y_2.
+\]
+Thus the dependence/independence of $\Phi^\ast$ is the usual VC/NIP property
+for a family of subsets of $Y_2$ with index set $X\times Y_1$. In particular,
+it makes sense to assert that $\Phi^\ast$ is dependent (equivalently, that the
+family $\{(\Phi^\ast)_{(x,y_1)} : (x,y_1)\in X\times Y_1\}$ has finite VC-dimension).
+
+
+Fix $M\in\mathbb{N}$ and a subset $U\subseteq \{1,\dots,M\}$. For variables
+$x_1,\dots,x_M\in X$ and $y_1\in Y_1$ we define
+\[
+    \Phi_{U}(x_1,\dots,x_M; y_1,y_2)\coloneq\Bigl(\bigwedge_{i\in u}\Phi(x_i;y_1,y_2)\Bigr)\ \land\
+    \Bigl(\bigwedge_{i\notin u}\neg\Phi(x_i;y_1,y_2)\Bigr).
+\]
+We now existentially eliminate $y_2$ and obtain a relation on $X^M\times Y_1$:
+\[
+    \Gamma_{\Phi,U}(x_1,\dots,x_M; y_1) \coloneq \exists y_2\, \Phi_{U}(x_1,\dots,x_M; y_1,y_2).
+\]
+The subset $\Gamma_{\Phi,U}$ parametrises a collection of subsets of $Y_1$ with index set $X^M$, hence we can talk about the dependence of $\Gamma_{\Phi,U}$.
+
+\begin{theorem}{\label{thm:main-theorem-2}}
+    Suppose there are positive integers $M, N \in \mathbb{N}$ such that
+    \[
+        D(\Phi^{*}) \leq M \text{ and } D(\Gamma_{\Phi, U}) \leq N
+    \]
+    for all $U \subseteq \{1, \dots, M\}$. Then $\Phi$ is dependent.
+\end{theorem}
+
+\begin{proof}
+
+    Let $U \subseteq \{1, \dots, M\}$ and $V \subseteq \{1, \dots, N\}$ be subsets and $\Psi_{U, V} \subseteq X^{MN}$ be a subset defined by the formula
+    \[
+        \Psi_{U, V}(\overline{x}_1, \dots, \overline{x}_N) \coloneq \exists y_1 \Biggl(\Bigl(\bigwedge_{j \in V} \Gamma_{\Phi, U} (\overline{x}_j, y_1)\Bigr) \land \Bigl(\bigwedge_{j \notin V} \Gamma_{\Phi, U} (\overline{x}_j, y_1)\Bigr) \Biggr)
+    \]
+    where $\overline{x}_j = (x_1, \dots, x_M) \in X^M$ for $j \in \{1, \dots, N\}$. Note that, with the notation defined earlier in~\ref{eq:new-way-of-relation}, $\Psi_{U, V}$ can be expressed as
+    \[
+        \Psi_{U, V}(\overline{x}_1, \dots, \overline{x}_N) = \exists y_1 (\Gamma_{\Phi, U})_{V}(\overline{x}_1, \dots, \overline{x}_N, y_1).
+    \]
+    Write $\mathcal{A}_{U} \coloneq \{\Psi_{U, V} \mid V \subseteq \{1, \dots, N\}\}$ and
+    \[
+        \mathcal{A} \coloneq \{\Psi_{U, V} \mid U \subseteq \{1, \dots, M\}, V \subseteq \{1, \dots, N\}\}.
+    \]
+    Hence,
+    \[
+        \mathcal{A} = \bigcup_{U \subseteq \{1, \dots, M\}} \mathcal{A}_U.
+    \]
+    We will use argument by contradiction to show $\Phi$ is dependent. Assume $\Phi$ is independent. Write
+    \[
+        K \coloneq (2N)^{2^M} \cdot 2M
+    \]
+    Since $\Phi$ is independent, by assumption, and $\mathcal{A}$ is finite collection of relations on $X$, we can apply~\ref{lem:indiscernible-seq-1} to get $\mathcal{A}$-indiscernible sequence $a_1, \dots, a_K \in X$ and an element $b = (b_1, b_2) \in Y = Y_1 \times Y_2$ such that
+    \[
+        (a_k, b) \in \Phi \iff k \text{ is even.}
+    \]
+    Note that, each relation in $\mathcal{A}_{\Phi^{*}, M}$ is of the form
+    \[
+        A^*_{U} \coloneq \exists y_2 \Phi^{*}_{U}\bigl((x_1, y_{1, 1}), \dots,(x_M, y_{1, M}), y_2 \bigr)
+    \]
+    where $U \subseteq \{1, \dots, M\}$ and $(x_i, y_{1, i}) \in X \times Y_1$ for $i \in \{1, \dots, M\}$.
+    Since, $D(\Phi^{*}) \leq M$, we can apply the contrapositive of~\ref{lem:indiscernible-seq-2} to derive that there is no sequence $(a_{i_1}, b_1), \dots, (a_{i_{2M}}, b_1) \in X \times Y_1$ that is $\mathcal{A}_{\Phi^{*}, M}$-indiscernible.
+
+    Note that,
+    \[
+        \begin{aligned}
+            &\begin{array}{c}
+            (a_1, b_1)
+                 , \dots, (a_{2M}, b_1) \\
+                 \text{is $A^*_{U}$-indiscernible}
+            \end{array}
+            \iff
+            \begin{array}{c}
+                a_1, \dots, a_{2M} \\
+                \text{is $\Gamma_{\Phi,U}(x_1, \dots, x_M, b_1)$-indiscernible}
+            \end{array}
+        \end{aligned}
+    \]
+    Hence, there is no sequence $a_1, \dots, a_{2M}$ that is $\Gamma_{\Phi,U}(x_1, \dots, x_M, b)$-indiscernible for all $U \subseteq \{1, \dots, M\}$. We will show that such a sequence must exist, using the following claim, leading to a contradiction.
+
+
+
+    \textbf{Claim:} Let $P, Q \in \mathbb{N}$ with $Q \geq 2NP$. Let $I \subseteq \{1, \dots, K\}$ be an interval of length $Q$. For any given $U \subseteq \{1, \dots, M\}$, there exists a subinterval $J \subseteq I$ of length $P$ such that the sequence $(a_k)_{k \in J}$ is $\Gamma_{\Phi,U}(x_1, \dots, x_M ; b_1)$-indiscernible.
+
+    \begin{subproof}[Proof of the Claim]
+
+        Let $I = \{k \mid i_0 \leq k < i_0 + Q\}$. We prove the claim by contradiction. Assume no such subinterval $J$ exists.
+
+        We partition $I$ into $2N$ disjoint consecutive subintervals $J(j)$ for $j \in \{0, \dots, 2N-1\}$, each of length $P$:
+        \[
+            J(j) \coloneq \{k \mid i_0 + jP \leq k < i_0 + (j+1)P\}.
+        \]
+        By our assumption, for each $j$, the sequence $(a_k)_{k \in J(j)}$ is \emph{not} $\Gamma_{\Phi,U}(x_1, \dots, x_M ; b_1)$-indiscernible. This means that for each $j$, there must exist at least two strictly increasing sequences of indices of length $M$ within $J(j)$ that behave differently under $\Gamma_{\Phi,U}$. That is, there exist subsequences of $(a_k)_{k \in J(j)}$ of length $M$ for which $\Gamma_{\Phi,U}$ holds, and others for which it fails.
+
+        We can therefore choose, for each $j \in \{0, \dots, 2N-1\}$, a strictly increasing sequence of indices $k(j,1) < \dots < k(j,M)$ from $J(j)$ as follows:
+        \begin{itemize}
+            \item If $j$ is even, choose the indices so that $\Gamma_{\Phi,U}(a_{k(j,1)}, \dots, a_{k(j,M)}; b_1)$ is \textbf{true}.
+            \item If $j$ is odd, choose the indices so that $\Gamma_{\Phi,U}(a_{k(j,1)}, \dots, a_{k(j,M)}; b_1)$ is \textbf{false}.
+        \end{itemize}
+        Let $a_j^* \coloneq (a_{k(j,1)}, \dots, a_{k(j,M)}) \in X^M$. We have constructed a new sequence of $M$-tuples $a_0^*, \dots, a_{2N-1}^*$ such that $\Gamma_{\Phi,U}(a_j^*; b_1)$ holds if and only if $j$ is even.
+
+        Since the original sequence $(a_k)_{k \in \{1,\dots,K\}}$ is $\mathcal{A}$-indiscernible, and each $a_j^*$ is formed by taking elements from $(a_k)$ with strictly increasing indices, the resulting sequence of tuples $(a_j^*)_{0 \le j < 2N}$ is $\mathcal{A}_U$-indiscernible. But we have just constructed it to have an alternating property with respect to $\Gamma_{\Phi,U}$. By Lemma~\ref{lem:indiscernible-seq-2}, this implies that the relation $\Gamma_{\Phi,U}$ must be independent with $D(\Gamma_{\Phi,U}) > N$.
+
+        This contradicts our initial hypothesis that $D(\Gamma_{\Phi,U}) \leq N$. Thus, our assumption was false, and the claim must hold.
+    \end{subproof}
+
+    We now use the claim to derive the final contradiction. Let $\{U_1, \dots, U_s\}$ be an enumeration of all $s=2^M$ subsets of $\{1, \dots, M\}$.
+
+    Let $I_0 \coloneq \{1, \dots, K\}$. The length of $I_0$ is $Q_0 = K = (2N)^{2^M} \cdot 2M$.
+
+    \textbf{Step 1:} Apply the claim to the interval $I_0$ and the set $U_1$. Let $P_1 = Q_0 / (2N) = (2N)^{s-1} \cdot 2M$. The claim guarantees the existence of a subinterval $I_1 \subseteq I_0$ of length $P_1$ such that $(a_k)_{k \in I_1}$ is $\Gamma_{\Phi,U_1}(\overline{x}; b_1)$-indiscernible.
+
+    \textbf{Step 2:} Apply the claim to the interval $I_1$ (with length $Q_1 = P_1$) and the set $U_2$. Let $P_2 = Q_1 / (2N) = (2N)^{s-2} \cdot 2M$. The claim gives a subinterval $I_2 \subseteq I_1$ of length $P_2$ where $(a_k)_{k \in I_2}$ is $\Gamma_{\Phi,U_2}(\overline{x}; b_1)$-indiscernible. Since $I_2 \subseteq I_1$, the sequence $(a_k)_{k \in I_2}$ remains $\Gamma_{\Phi,U_1}(\overline{x}; b_1)$-indiscernible.
+
+    We repeat this process $s = 2^M$ times. At the final step $s$, we obtain an interval $I_s \subseteq I_{s-1} \subseteq \dots \subseteq I_0$. The length of this interval is
+    \[
+        |I_s| = \frac{K}{(2N)^s} = \frac{(2N)^{2^M} \cdot 2M}{(2N)^{2^M}} = 2M.
+    \]
+    By construction, the sequence $(a_k)_{k \in I_s}$ is $\Gamma_{\Phi,U_i}(\overline{x}; b_1)$-indiscernible for all $i \in \{1, \dots, s\}$. In other words, we have found a subsequence of $(a_k)_{k \in [K]}$ of length $2M$ that is simultaneously $\Gamma_{\Phi,U}(\overline{x}; b_1)$-indiscernible for all $U \subseteq \{1, \dots, M\}$.
+
+    This is the exact condition that we showed was impossible before the claim, as it contradicts the hypothesis $D(\Phi^*) \leq M$.
+
+    Our initial assumption that $\Phi$ is independent has led to a contradiction. Therefore, $\Phi$ must be dependent.
+
+
+\end{proof}
+
+\begin{remark}
+    It is worth noting the structure of this proof. The argument establishes the dependence of a relation $\Phi \subseteq X \times (Y_1 \times Y_2)$ by relying solely on the assumed dependence of the auxiliary relations $\Phi^* \subseteq (X \times Y_1) \times Y_2$ and $\Gamma_{\Phi,U} \subseteq X^M \times Y_1$. These relations are constructed directly from $\Phi$ and live in simpler spaces, forming the basis of the inductive step from dimension $q$ to $q+1$. Moreover, the definitions of these auxiliary relations do not introduce new quantifiers over the domain $X$. This property is vital for ???
+
+\end{remark}
+
+\begin{proof}[Proof of~\ref{thm:main-theorem-ch-2}]
+
+    The proof will be an induction on $q$ and application of~\ref{thm:main-theorem-2}. Note that, the base case of indiction, i.e $q=1$ it the assumption of this theorem. So we will assume the statement of the this theorem holds for some $q > 0$ and derive that it also holds for $q+1$.
+
+    Let $\Phi \subseteq R^{p} \times R^{q+1}$ be definable for all $p>0$. Write
+    \[
+        X \coloneq R^p, \quad Y_1 \coloneq R^q, \quad Y_2 \coloneq R.
+    \]
+    Then $Y \coloneq Y_1 \times Y_2$ and $\Phi \subseteq X \times Y$. By the definability of $\Phi$, we can deduce that
+    \[
+        \Phi^{*} \subseteq (X \times Y_1) \times Y_2 = R^{p+q} \times R
+    \]
+    is also definable. Applying the hypothesis of this theorem to $\Phi^{*} \subseteq R^{p+q} \times R$, we deduce that $\Phi^{*}$ is dependent, say $D(\Phi^{*}) \leq M$ for some $M \in \mathbb{N}$. Then
+    \[
+        \Gamma_{\Phi, U} \subseteq (X^M \times Y_1) = R^{pM} \times R^q
+    \]
+    is also definable and we can apply the inductive hypothesis for $q > 0$, to deduce that $D(\Gamma_{\Phi, U}) \leq N$ for some $N \in \mathbb{N}$ and for all $U \subseteq [M]$. Then, we can apply the theorem~\ref{thm:main-theorem-ch-2} to deduce that $\Phi$ is dependent as required.
+\end{proof}
+

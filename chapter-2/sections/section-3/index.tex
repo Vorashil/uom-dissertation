@@ -1,0 +1,17 @@
+\section{NIP property of O-minimal structures}
+
+This section is dedicated to proving one of the most significant results in model theory: that all o-minimal structures possess the NIP (Not Independence Property), which is equivalent to establishing that every definable relation is dependent. Our approach is constructive, building from a foundational base case to the general theorem. The argument is structured in three key stages.
+
+\begin{enumerate}
+    \item We begin by establishing the crucial base case for our induction. In the first subsection, we will prove that any definable relation in a space of the form $R^m \times R$ is dependent. This is achieved by leveraging the core properties of o-minimality, namely the Cell Decomposition Theorem and the well-behaved structure of definable sets in one dimension.
+
+    \item Next, to build intuition, we will focus on the canonical example of an o-minimal structure: the field of real numbers with its semialgebraic sets. We will prove that all semialgebraic relations are dependent by connecting the problem to the finite dimensionality of vector spaces of polynomials—a classic result from VC-theory. This provides a concrete illustration of dependence in a familiar setting.
+
+    \item Finally, we will synthesize these results to prove the main theorem of this section. Armed with the base case from the first step, we will apply our main theorem on the propagation of dependence from the previous section (Theorem~\ref{thm:main-theorem-ch-2}). This theorem provides the powerful combinatorial engine to inductively generalize the result from relations in $R^p \times R$ to arbitrary dimensions $R^p \times R^q$, thereby completing the proof and establishing the NIP property for all o-minimal structures.
+\end{enumerate}
+
+Beyond its intrinsic importance in model theory, this result provides the essential groundwork for the subsequent chapter on learnability. The NIP property is a key combinatorial condition that tames the complexity of definable sets, making them amenable to the frameworks of statistical learning theory. The conclusion that o-minimal structures have NIP will be directly leveraged to show that concept classes defined within them are PAC (Probably Approximately Correct) learnable, bridging the gap between abstract model theory and concrete machine learning guarantees.
+
+\input{chapter-2/sections/section-3/subsections/subsection-1/dimension-1}
+\input{chapter-2/sections/section-3/subsections/subsection-2/dependence-in-semialgebraic-sets}
+\input{chapter-2/sections/section-3/subsections/subsection-3/dimension-q}

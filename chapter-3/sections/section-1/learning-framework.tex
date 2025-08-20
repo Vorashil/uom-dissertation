@@ -1,0 +1,248 @@
+\section{Learning Framework}
+
+In statistical learning theory, a \emph{learning problem (LP)} formalises the task of inferring rules from data.
+The framework specifies a set of possible inputs, outputs, probability distributions, and hypotheses.
+At its core, the aim is to design a \emph{learning function} that selects a hypothesis, based on data,
+which generalises well to unseen examples.
+
+Formally, a learning problem is given by a tuple
+\[
+    (\mathcal{X}, \Sigma_{\mathcal{Z}}, \mathcal{D}, \mathcal{H}),
+\]
+where the components are defined as follows.
+
+\begin{itemize}
+    \item $\mathcal{X}$ is a non-empty set, called the \emph{instance space}. Elements of $\mathcal{X}$ represent the objects or inputs under consideration.
+
+    \item $\Sigma_{\mathcal{Z}}$ is a $\sigma$-algebra on the \emph{sample space} $\mathcal{Z}$. The sample space is defined as
+    \[
+        \mathcal{Z} = \mathcal{X} \times \{0,1\},
+    \]
+    where $\{0,1\}$ denotes the set of labels.
+    We require that $\mathcal{P}_{\mathrm{fin}}(\mathcal{Z}) \subseteq \Sigma_{\mathcal{Z}}$, meaning that every finite subset of $\mathcal{Z}$ is measurable.
+
+    \item $\mathcal{D}$ is a subset of the set $\mathcal{D}^*$, which contains all \emph{probability distributions} defined on the measurable space $(\mathcal{Z}, \Sigma_{\mathcal{Z}})$.
+
+    \item $\mathcal{H}$ is a non-empty set, called the \emph{hypothesis space}, consisting of candidate functions that map inputs to labels:
+    \[
+        \mathcal{H} \subseteq \{0,1\}^\mathcal{X} = \{h : \mathcal{X} \to \{0,1\}\}.
+    \]
+    An element $h \in \mathcal{H}$ is called a \emph{hypothesis}.
+    The \emph{graph} of $h$ is defined by
+    \[
+        \Gamma(h) = \{(x,y) \in \mathcal{Z} \mid h(x) = y\} \subseteq \mathcal{Z}.
+    \]
+\end{itemize}
+
+\medskip
+
+Learning in this framework is based on processing finitely many samples
+\[
+    (x_1,y_1),\dots,(x_m,y_m) \in \mathcal{Z},
+\]
+which are assumed to be drawn independently at random according to some distribution $\mathbb{D} \in \mathcal{D}$.
+Equivalently, the whole sample may be viewed as an element of $\mathcal{Z}^m$, distributed according to the product measure $\mathbb{D}^m$ on the measurable space $(\mathcal{Z}^m,\Sigma_{\mathcal{Z}}^m)$.
+
+To ensure that such finite samples are measurable, it is natural to require that singletons $\{z\}$ are measurable for every $z \in \mathcal{Z}$.
+Indeed, measurability of singletons implies that every finite set of sample points is measurable, since finite unions of measurable sets remain measurable.
+This condition is automatically satisfied, for example, when $\mathcal{Z}$ is a Hausdorff space equipped with its Borel $\sigma$-algebra.
+
+\begin{remark}
+    In this chapter, we assume that for every hypothesis $h \in \mathcal{H}$, its graph is measurable, i.e.
+    \[
+        \Gamma(h) \in \Sigma_{\mathcal{Z}}.
+    \]
+    This ensures compatibility of the hypothesis space with the measurable structure of the learning problem.
+\end{remark}
+
+\begin{remark}[Agnostic vs. deterministic learning models]
+    In our framework, probability distributions $\mathbb{D}$ are defined on the sample space $\mathcal{Z} = \mathcal{X}\times\{0,1\}$.
+    This means that, for a fixed instance $x \in \mathcal{X}$, we have $(x,0)$ and $(x,1)$ as separate sample points, and it's possible that they both have non-zero probability simultanously according to some distribution defined on $(\mathcal{Z}, \Sigma_{\mathcal{Z}})$.
+    In other words, the label of $x$ is itself random and not determined by a fixed target function.
+    This setting is known as the \emph{agnostic} or \emph{model-free} paradigm, cf.~\cite[§3.2.1]{ShalevShwartzBenDavid2014}, \cite[§3.3]{AnthonyBartlett2009}.
+    It allows us to capture noisy labels and corrupted data, reflecting the fact that real-world classification tasks may not admit a perfect underlying rule.
+
+    By contrast, in the \emph{deterministic model} (cf.~\cite{BlumerEhrenfeuchtHausslerWarmuth1989}), the distribution $\mathbb{P}$ is only placed on the instance space $\mathcal{X}$ itself.
+    The labels are then determined by a fixed but unknown target function $t \in \{0,1\}^\mathcal{X}$.
+    Thus the data are of the form $(x_i,t(x_i))$, where the $x_i$ are drawn according to some probability distribution defined on $\sigma$-algebra on $\mathcal{X}$.
+
+    The distinction between these two paradigms lies in whether label uncertainty is treated as intrinsic (agnostic case) or entirely due to the randomness of instance selection (deterministic case).
+\end{remark}
+
+\subsection{Learning Function}
+
+The goal of a learning problem is to select, based on a finite sample, a hypothesis $h \in \mathcal{H}$ that generalises well to unseen data.
+This selection mechanism is formalised by a \emph{learning function}, also called a \emph{learning algorithm} (see e.g.~\cite[Def.~2.1]{Vapnik1998}, \cite[Def.~2.2]{AnthonyBartlett2009}).
+
+\begin{definition}[Learning function]
+    A \emph{learning function} for a hypothesis space $\mathcal{H}$ is a map
+    \[
+        \mathcal{A} : \bigcup_{m \in \mathbb{N}} \mathcal{Z}^m \to \mathcal{H},
+    \]
+    which assigns to each finite sample $z = ((x_1,y_1),\dots,(x_m,y_m)) \in \mathcal{Z}^m$ a hypothesis $\mathcal{A}(z) \in \mathcal{H}$.
+\end{definition}
+
+\medskip
+
+\noindent
+Intuitively, the learning function processes the observed data and returns a candidate hypothesis that should explain the observed labels and hopefully predict new ones correctly.
+
+\begin{example}
+    \label{ex:learning-function}
+    Let $\mathcal{X}=\{a,b,c\}$ be a finite instance space, so the sample space is $\mathcal{Z}=\mathcal{X}\times\{0,1\}$.
+    The hypothesis space $\mathcal{H}$ consists of all functions $h:\mathcal{X}\to\{0,1\}$, of which there are $2^{|\mathcal{X}|}=8$ in total.
+    For illustration, we display a few of them in the table below:
+
+    \[
+        \begin{array}{c|ccc}
+            h & a & b & c \\
+            \hline
+            h_0 & 0 & 0 & 0 \\
+            h_1 & 1 & 1 & 1 \\
+            h_{ab} & 0 & 0 & 1 \\
+            h_{bc} & 1 & 0 & 0 \\
+        \end{array}
+    \]
+
+    Suppose we observe a finite sample
+    \[
+        \overline{z} = \bigl((a,0),(b,0),(c,1)\bigr) \in \mathcal{Z}^3,
+    \]
+    which is drawn according to some distribution $\mathbb{D}\in\mathcal{D}$.
+    A learning function $\mathcal{A}$ then selects a hypothesis from $\mathcal{H}$ that is consistent with this sample.
+    In this case, $\mathcal{A}(\overline{z})=h_{ab}$ would be a natural choice, since $h_{ab}$ agrees with the observed labels on $a$, $b$, and $c$.
+
+\end{example}
+
+This example~\ref{ex:learning-function} illustrates the general mechanism of learning: a learning function $\mathcal{A}$ takes a finite sample and outputs a hypothesis $h\in\mathcal{H}$. What distinguishes the PAC viewpoint is a quantitative requirement: for given $\varepsilon,\delta\in(0,1)$, if the sample size $m$ is large enough, then with probability at least $1-\delta$ (over the random draw of the sample) the hypothesis $\mathcal{A}(\overline{z})$ misclassifies new points with probability at most $\varepsilon$. Here
+$\varepsilon$ is the \emph{accuracy parameter} (“approximately”),
+while $\delta$ is the \emph{confidence parameter} (“probably”).~\cite[Sec 3.1, p.43]{UnderstandinMachineLearning}
+A fully formal definition of PAC learning will be given in~\ref{sec:pac-learning} and will be central to the rest of the dissertation.
+
+\subsection{Error of a Hypothesis}
+
+The performance of a hypothesis is evaluated by how well it predicts labels of unseen data drawn from the distribution.
+This is formalised through the notion of \emph{error}.
+We distinguish between the \emph{true error}, which depends on the underlying distribution, and the \emph{sample error}, which is based only on the observed data.
+
+\begin{definition}[True error]
+    Let $\mathbb{D} \in \mathcal{D}$ be a distribution on $(\mathcal{Z},\Sigma_{\mathcal{Z}})$
+    and let $h \in \mathcal{H}$ be a hypothesis.
+    The \emph{true error} of $h$ with respect to $\mathbb{D}$ is defined as
+    \[
+        \operatorname{er}_{\mathbb{D}}(h) \coloneqq \mathbb{D}(\{(x,y)\in\mathcal{Z} \mid h(x)\neq y\}) = \mathbb{D}(\mathcal{Z}\setminus\Gamma(h)).
+    \]
+\end{definition}
+
+\noindent
+Thus, $\operatorname{er}_{\mathbb{D}}(h)$ is the probability of misclassification under the distribution $\mathbb{D}$.
+It quantifies the long-run frequency with which $h$ makes mistakes if we were to draw infinitely many samples.
+
+\begin{definition}[Sample error]
+    Let $z = (z_1,\dots,z_m)\in\mathcal{Z}^m$ be a finite sample and $h\in\mathcal{H}$.
+    The \emph{sample error} (also called \emph{empirical error}) of $h$ on $z$ is defined as
+    \[
+        \hat{\operatorname{er}}_{z}(h) := \frac{1}{m}\sum_{i=1}^m \ell(h,z_i),
+    \]
+    where the \emph{loss function} $\ell:\mathcal{H}\times \mathcal{Z}\to\{0,1\}$ is given by
+    \[
+        \ell(h,(x,y)) =
+        \begin{cases}
+            1 & \text{if } h(x)\neq y, \\
+            0 & \text{otherwise}.
+        \end{cases}
+    \]
+\end{definition}
+
+Following lemma, shows that the sample error of a hypothesis $h \in \mathcal{H}$ is measurable function, assuming $\Gamma(h) \in \Sigma_{\mathcal{Z}}$.
+
+\begin{lemma}[Measurability of the Sample Error Map]
+    \label{lem:sample-error-measurable}
+    Let $h \in \mathcal{H}$ be a hypothesis with a measurable graph $\Gamma(h)$. The sample error map,
+    \[
+        z \mapsto \hat{\operatorname{er}}_{z}(h),
+    \]
+    is a $\Sigma_{\mathcal{Z}}^m$-measurable function from $\mathcal{Z}^m$ to $[0,1]$.
+\end{lemma}
+
+\begin{proof}
+
+    The sample error map $z \mapsto \frac{1}{m}\sum_{i=1}^m \ell(h,z_i)$ is a linear combination of the functions $f_i(z) = \ell(h,z_i)$. Each function $f_i$ is the composition $\ell(h, \cdot) \circ \pi_i$ of the loss function with the $i$-th coordinate projection map $\pi_i: \mathcal{Z}^m \to \mathcal{Z}$.
+
+    The loss function $\ell(h, \cdot)$ is measurable because it is the indicator of the measurable set $\mathcal{Z}\setminus\Gamma(h)$. The projection map $\pi_i$ is measurable by the definition of the product $\sigma$-algebra $\Sigma_{\mathcal{Z}}^m$. The composition of measurable functions is measurable, and so is a finite sum of such functions~\ref{subsec:measurable-functions}. Therefore, the sample error map is measurable~\cite[Prop 2.4]{FollandRealAnalysis}.
+    \qedhere
+\end{proof}
+
+The sample error $\hat{\operatorname{er}}_z(h)$ measures how often $h$ disagrees with the observed labels in the dataset $z$.
+Unlike the true error, it is always computable from the available data. The natural question is how the sample error relates to the true error.  The next lemma shows that, in expectation, the sample error coincides exactly with the true error, therefore justifying its role as a good approximation of true error.
+
+\begin{lemma}[Sample error as an approximation of true error]
+    \label{lem:sample-error-unbiased}
+    Let $h \in \mathcal{H}$ be a hypothesis with a measurable graph $\Gamma(h)$. For a sample $z = (z_1, \dots, z_m)$ drawn according to the product distribution $\mathbb{D}^m$, the expected value of the sample error equals the true error:
+    \[
+        \mathbb{E}_{z\sim\mathbb{D}^m}\bigl[\hat{\operatorname{er}}_{z}(h)\bigr] = \operatorname{er}_{\mathbb{D}}(h).
+    \]
+\end{lemma}
+
+\begin{proof}
+
+    By linearity of expectation and the definition of sample error, we have
+    \[
+        \mathbb{E}_{z\sim\mathbb{D}^m}\bigl[\hat{\operatorname{er}}_{z}(h)\bigr] = \frac{1}{m}\sum_{i=1}^m \mathbb{E}_{z_i\sim\mathbb{D}}\bigl[\ell(h,z_i)\bigr].
+    \]
+    For any $i \in \{1, \dots, m\}$, this expectation is taken over the single-variable distribution $\mathbb{D}$:
+    \[
+        \mathbb{E}_{z_i\sim\mathbb{D}}\bigl[\ell(h,\cdot)\bigr] = \mathbb{E}_{z_i\sim\mathbb{D}}\bigl[\mathds{1}_{\mathcal{Z}\setminus\Gamma(h)}\bigr] = \mathbb{D}(\mathcal{Z}\setminus\Gamma(h))=\operatorname{er}_{\mathbb{D}}(h).
+    \]
+    Substituting this into the sum completes the proof:
+    \[
+        \mathbb{E}_{z\sim\mathbb{D}^m}\bigl[\hat{\operatorname{er}}_{z}(h)\bigr] = \frac{1}{m}\sum_{i=1}^m \operatorname{er}_{\mathbb{D}}(h) = \operatorname{er}_{\mathbb{D}}(h).
+    \]
+    \qedhere
+\end{proof}
+
+\begin{definition}[Optimal error]
+    The \emph{optimal true error} achievable by the hypothesis space $\mathcal{H}$ under $\mathbb{D}$ is
+    \[
+        \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) := \inf_{h\in\mathcal{H}} \operatorname{er}_{\mathbb{D}}(h).
+    \]
+    Similarly, given a finite sample $z \in \mathcal{Z}^m$, the \emph{optimal sample error} is
+    \[
+        \operatorname{opt}_{z}(\mathcal{H}) := \min_{h\in\mathcal{H}} \hat{\operatorname{er}}_{z}(h).
+    \]
+\end{definition}
+
+\medskip
+
+The true error is the performance of a hypothesis on the underlying distribution, but it is typically inaccessible.
+The sample error, by contrast, is observable but may deviate from the true error due to randomness in sampling.
+The optimal errors describe the best performance achievable by any hypothesis in $\mathcal{H}$, either with respect to $\mathbb{D}$ (idealised) or with respect to the observed dataset (computable).
+
+\begin{example}
+    Reconsider the instance space $\mathcal{X}=\{a,b,c\}$ and the hypothesis space $\mathcal{H}$ from Example~\ref{ex:learning-function}.
+    Suppose the distribution $\mathbb{D}$ assigns probabilities
+    \[
+        \mathbb{D}((a,0))=0.3,\quad \mathbb{D}((b,0))=0.4,\quad \mathbb{D}((c,1))=0.3.
+    \]
+    For the hypothesis $h_{ab}$ with $h_{ab}(a)=0$, $h_{ab}(b)=0$, $h_{ab}(c)=1$, the true error is
+    \[
+        \operatorname{er}_{\mathbb{D}}(h_{ab}) = 0,
+    \]
+    since $h_{ab}$ matches all labels perfectly.
+    On the other hand, for the constant hypothesis $h_0$ with $h_0(x)=0$ for all $x$, we compute
+    \[
+        \operatorname{er}_{\mathbb{D}}(h_0) = \mathbb{D}((c,1)) = 0.3.
+    \]
+
+    If we observe a finite sample $z=((a,0),(b,0),(c,0))$, then
+    \[
+        \hat{\operatorname{er}}_z(h_{ab}) = \tfrac{1}{3}, \quad
+        \hat{\operatorname{er}}_z(h_{0}) = \tfrac{1}{3}.
+    \]
+    This illustrates how sample error can differ from true error, depending on which sample is drawn.
+\end{example}
+
+
+
+
+

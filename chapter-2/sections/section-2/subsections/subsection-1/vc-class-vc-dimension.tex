@@ -1,0 +1,38 @@
+\subsection{VC-Classes and VC-Dimension}
+
+\begin{definition}[VC-Class and VC-Dimension]\label{def:vc-class-dimension}
+    A collection $\mathcal{C} \subseteq \mathcal{P}(X)$ is called a \emph{Vapnik-Chervonenkis class} (or \emph{VC-class}) if there exists some $d \in \mathbb{N}$ such that $\mathcal{C}$ does not shatter any set of size $d$. The \emph{VC-dimension} of $\mathcal{C}$, denoted $V(\mathcal{C})$, is defined as:
+    \[
+        V(\mathcal{C}) \coloneq \min \{|F| : F \subseteq X \text{ is finite and is not shattered by } \mathcal{C}\}.
+    \]
+    If $\mathcal{C}$ is a VC-class, then $V(\mathcal{C})$ is the size of the largest finite set shattered by $\mathcal{C}$. If $\mathcal{C}$ is not a VC-class (i.e., it shatters finite sets of arbitrarily large size), we set $V(\mathcal{C}) = \infty$.
+\end{definition}
+
+Thus, a collection $\mathcal{C}$ is a VC-class if and only if its VC-dimension is finite. The dichotomy theorem states that $V(\mathcal{C}) < \infty$ if and only if $f_{\mathcal{C}}:\mathbb{N} \to \mathbb{N}$ has polynomial growth, while $V(\mathcal{C}) = \infty$ if and only if $f_{\mathcal{C}}(n) = 2^n$ for all $n$.
+
+\begin{example}[Intervals]
+    Let $X = \mathbb{R}$ and let $\mathcal{C}$ be the collection of all closed intervals $[a, b]$.
+    \begin{itemize}
+        \item $\mathcal{C}$ shatters the set $F_1 = \{5\}$. The trace is $\{\emptyset, \{5\}\}$ (using intervals like $[0,1]$ and $[4,6]$).
+        \item $\mathcal{C}$ shatters the set $F_2 = \{5, 10\}$. To get all four subsets:
+        \begin{itemize}
+            \item $\emptyset$: use $[0,1]$
+            \item $\{5\}$: use $[4,6]$
+            \item $\{10\}$: use $[9,11]$
+            \item $\{5, 10\}$: use $[4,11]$
+        \end{itemize}
+        \item $\mathcal{C}$ does \emph{not} shatter $F_3 = \{5, 10, 15\}$. It is impossible to find an interval that contains $\{5, 15\}$ but not $\{10\}$.
+    \end{itemize}
+    The largest set shattered has size 2, so $V(\mathcal{C}) = 2$.
+\end{example}
+
+\begin{example}[An Infinite VC-Dimension Class]
+    \label{ex:vc-infinite-dimension}
+    Let $X = \{p \in \mathbb{N} \mid n \textrm{ is prime}\}$ be the given set. Consider the collection of subsets
+    \[
+        \mathcal{C} = \{C_n : n \in \mathbb{N}\} \textrm{ where } C_n = \{p \in X : p \text{ divides } n\}
+    \]
+    We claim $V(\mathcal{C}) = \infty$. To prove this, we must show that $\mathcal{C}$ can shatter any finite set of primes $F = \{p_1, p_2, \dots, p_d\}$.
+
+    Let $E = \{q_1, \dots, q_k\}$ be an arbitrary subset of $F$. We need to find an integer $n$ such that $C_n \cap F = E$. The choice is straightforward: let $n = q_1 \cdot q_2 \cdot \dots \cdot q_k$. By construction, every prime in $E$ divides $n$. Furthermore, no prime in $F \setminus E$ can divide $n$, by the fundamental theorem of arithmetic. Thus, $C_n \cap F = E$. Since we can do this for any subset $E \subseteq F$, $\mathcal{C}$ shatters $F$. As $F$ was an arbitrary finite set of primes, $\mathcal{C}$ shatters sets of all sizes, and $V(\mathcal{C}) = \infty$.
+\end{example}

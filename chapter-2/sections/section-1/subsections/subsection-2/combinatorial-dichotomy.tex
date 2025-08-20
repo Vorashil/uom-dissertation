@@ -1,0 +1,118 @@
+\subsection{Proof of the combinatorial dichotomy}
+
+In this subsection we will prove the theorem~\ref{thm:vc-dichotomy}. We need following lemma to establish the desired result.
+
+\begin{lemma}
+    \label{lem:combinatorial-lemma}
+    Let $F$ be a finite set with $|F|=n$ and $\mathcal{D} \subseteq \mathcal{P}(F)$ such that
+    \begin{equation}
+        \label{eq:assumption-combinatorial-lemma}
+        |\mathcal{D}| > \sum_{i=0}^{d-1}\binom{n}{i}
+    \end{equation}
+    where $0 \leq d \leq n$. Then $F$ has a subset $E$ such that $|E|=d$ and $\mathcal{D}$ shatters $E$.
+\end{lemma}
+
+\begin{remark}
+
+    To see why the the inequality is strict, consider the collection $\mathcal{D}^*$ consisting of all subsets of $F$ of size strictly less than $d$. The cardinality of this collection is exactly the sum on the right-hand side:
+    \[
+        |\mathcal{D}^*| = \sum_{i=0}^{d-1}\binom{n}{i}.
+    \]
+    This collection $\mathcal{D}^*$ fails to satisfy the lemma's conclusion. For any subset $E \subseteq F$ of size $d$, the trace $\mathcal{D}^* \cap E$ cannot equal $\mathcal{P}(E)$. This is because the set $E$ itself, which is an element of $\mathcal{P}(E)$, has size $d$. However, every set in $\mathcal{D}^*$ has size less than $d$, so no intersection with $E$ can possibly recover $E$ itself. This demonstrates that the strict inequality in the lemma's hypothesis is essential.
+
+    The significance of this bound extends beyond its role as a sharp threshold. Let us denote the sum of binomial coefficients as a function of $n$:
+    \begin{equation}
+        \label{eq:def-pascal-identity}
+        p_d(n) \coloneq \sum_{i=0}^{d-1}\binom{n}{i}.
+    \end{equation}
+    The function $p_d(n)$ itself exhibits a remarkable regularity, which can be understood in two key ways.
+
+    Firstly, for a fixed integer $d$, the expression $p_d(n)$ is a \textit{polynomial in $n$} with rational coefficients of degree $d-1$. This is because each term $\binom{n}{i} = \frac{n(n-1)\dots(n-i+1)}{i!}$ is a polynomial in $n$ of degree $i$. The degree of the sum is therefore determined by the highest-degree term, which is $\binom{n}{d-1}$. This algebraic property allows us to analyze the bound using tools from algebra, even extending its definition from integer inputs $n$ to real numbers $x$.
+
+    Secondly, this polynomial satisfies a \textit{recursive relationship} that mirrors the famous Pascal's identity. By summing the identity $\binom{n}{k} = \binom{n-1}{k} + \binom{n-1}{k-1}$ over $k$, one can derive the following \texit{Pascal triangle equality} for the polynomials:
+    \begin{equation}
+        \label{eq:pascal-identity}
+        p_d(n) = p_d(n-1) + p_{d-1}(n-1).
+    \end{equation}
+
+    This identity reveals an orderly, systematic way in which the bound grows, connecting its value for a set of size $n$ to its values for a smaller set. We will use this in the proof of the lemma~\ref{lem:combinatorial-lemma}.
+
+\end{remark}
+
+\begin{proof}[Proof of~\ref{lem:combinatorial-lemma}]
+
+    We will prove the lemma by induction on $n$. If $d=0$, the only subset of $F$ is the empty set, and the trace $\mathcal{D} \cap F$ is trivially $\{\emptyset\}$, which is equal to $\mathcal{P}(\emptyset)$. Thus, the lemma holds. On the other hand, $d = n$, then $\mathcal{D}$ must contain all subsets of $F$, which is $\mathcal{P}(F)$. The trace $\mathcal{D} \cap F$ is then equal to $\mathcal{P}(F)$, satisfying the lemma.
+
+    Assume $0 < d < n$. We pick an arbitrary point $x \in F$ and write
+    \[
+        F' \coloneq F \setminus \{x\} \textrm{ and } \mathcal{D}' \coloneq \{D \cap F' \mid D \in \mathcal{D}\}
+    \]
+    Let $\phi: \mathcal{D} \to \mathcal{D}'$ be the surjective function that maps each set in $\mathcal{D}$ to its intersection with $F'$, that is $\phi(D) = D \cap F'$. Note that for each $D \in \mathcal{D}$, there are two possibilities:
+    \[
+        D \cap F' = D \text{ if } x \notin D  \textrm{  or  }  D \cap F' = (D \setminus \{x\}) \text{ if } x \in D.
+    \]
+    So, for a given $D' \in \mathcal{D'}$, we have
+    \[
+        |\phi^{-1}(D')| = \begin{cases}
+                              1 & \text{if } D' \cup \{x\} \notin \mathcal{D} \textrm{ or } D' \notin \mathcal{D} \\
+                              2 & \text{if } D' \cup \{x\} \in \mathcal{D} \textrm{ and } D' \in \mathcal{D}
+        \end{cases}
+    \]
+    Hence, we can partition $\mathcal{D}'$ into two parts: $\mathcal{D}' = \mathcal{D}_1 \cup \mathcal{D}_2$, where $\mathcal{D}_1$ contains the sets of $\mathcal{D}'$ that has only one preimage under $\phi$ and $\mathcal{D}_2$ contains the sets that have two preimages.
+    Recall,~\ref{eq:def-pascal-identity}. There are two cases to consider:
+    \begin{enumerate}[label=(\roman*)]
+        \item $|\mathcal{D}'| > p_d(n-1)$. Then by the induction assumption applied to $F'$ and $\mathcal{D}'$, there is a subset $E \subseteq F$ of size $d$ with $\mathcal{D}' \cap E = \mathcal{P}(E)$. Since $\mathcal{D} \cap E = \mathcal{D}' \cap E$ by definition of $\mathcal{D}'$, we have $\mathcal{D} \cap E = \mathcal{P}(E)$, which satisfies the lemma.
+        \item $|\mathcal{D}'| \leq p_d(n-1)$. Then, we have,
+        \[
+            \begin{aligned}
+                |\mathcal{D}| &= |\mathcal{D}_1| + 2|\mathcal{D}_2| \\
+                &= |\mathcal{D}'| + |\mathcal{D}_2| \textrm{ (since $\mathcal{D}'$ is disjoint union of $\mathcal{D}_1$ and $\mathcal{D}_2$)} \\
+                &> p_d(n) \textrm{ (by the lemma's assumption~\ref{eq:assumption-combinatorial-lemma})} \\
+                &= p_d(n-1) + p_{d-1}(n-1) \textrm{ (by the Pascal Identity~\ref{eq:pascal-identity})} \\
+            \end{aligned}
+        \]
+        So it follows that $|\mathcal{D}_2| > p_{d-1}(n-1)$. By the induction assumption applied to $F'$ and $\mathcal{D}_2$, there is a subset $E \subseteq F'$ of size $d-1$ with $\mathcal{D}_2 \cap E = \mathcal{P}(E)$. To derive $\mathcal{D} \cap (E \cup \{x\}) = \mathcal{P}(E \cup \{x\})$, let $E' \coloneq E \cup \{x\}$, which has size $d$. Take any subset $A \subseteq E'$.
+        If $x \notin A$, then $A \subseteq E$. Since $\mathcal{D}_2$ shatters $E$, there is some $S \in \mathcal{D}_2$ such that $S \cap E = A$. By definition of $\mathcal{D}_2$, $S \in \mathcal{D}$, and since $x \notin S$, we have $S \cap E' = A$.
+
+        If $x \in A$, let $A_0 = A \setminus \{x\}$. Since $A_0 \subseteq E$, there is some $S_0 \in \mathcal{D}_2$ such that $S_0 \cap E = A_0$. By definition of $\mathcal{D}_2$, the set $S_0 \cup \{x\}$ is in $\mathcal{D}$, and its trace on $E'$ is $(S_0 \cup \{x\}) \cap E' = (S_0 \cap E) \cup \{x\} = A_0 \cup \{x\} = A$.
+
+        Since all subsets of $E'$ can be formed, $\mathcal{D} \cap E' = \mathcal{P}(E')$, which completes the proof.
+    \end{enumerate}
+\end{proof}
+
+\begin{example}
+    Let $F$ be a set of size $n=4$ and let $d=3$. The bound from the lemma is:
+    \[
+        p_3(4) = \binom{4}{0} + \binom{4}{1} + \binom{4}{2} = 1 + 4 + 6 = 11.
+    \]
+    The lemma asserts that any collection $\mathcal{D}$ of more than 11 subsets of $F$ must shatter some 3-element subset. The sharpness is confirmed by the collection of all subsets of size less than 3, which has exactly 11 elements and fails to shatter any 3-element set. We can also verify the recursive identity:
+    \begin{itemize}
+        \item $p_3(3) = \binom{3}{0} + \binom{3}{1} + \binom{3}{2} = 1 + 3 + 3 = 7$.
+        \item $p_2(3) = \binom{3}{0} + \binom{3}{1} = 1 + 3 = 4$.
+        \item Indeed, $p_3(4) = 11 = 7 + 4 = p_3(3) + p_2(3)$.
+    \end{itemize}
+\end{example}
+
+We know prove the theorem~\ref{thm:vc-dichotomy} using the lemma~\ref{lem:combinatorial-lemma}.
+
+\begin{proof}[Proof of Theorem~\ref{thm:vc-dichotomy}]
+
+    The cases are clearly mutually exclusive: if $f_{\mathcal{C}}(n) = 2^n$ for all $n$, its exponential growth cannot be bounded by any polynomial $n^d$ for all sufficiently large $n$. The core of the proof is to show that if case (i) does not hold, then case (ii) must hold.
+
+    Suppose, there exists an integer $d \ge 1$ such that $f_{\mathcal{C}}(d) < 2^d$. Without loss of generality, we can assume $d$ is the smallest integer for which this holds. By definition, this means that for all $k < d$, $f_{\mathcal{C}}(n) = 2^k$.
+
+    Fix $n \geq d$ and let $F$ be a finite subset of $X$ with $|F| = n$. Then $p_d(n)$ is a polynomial in $n$ of degree $d-1$. If $|\mathcal{C} \cap F| > p_d(n)$, then by the lemma~\ref{lem:combinatorial-lemma}, there exists a subset $E \subseteq F$ of size $d$ such that $\mathcal{C} \cap E = \mathcal{P}(E)$. This means that $\mathcal{C}$ shatters the set $E$, which contradicts our assumption that $f_{\mathcal{C}}(d) < 2^d$. Hence, we must have $|\mathcal{C} \cap F| \leq p_d(n)$ for all $n \geq d$. Since $F$ was arbitrary, this implies that
+    \[
+        f_{\mathcal{C}}(n) \leq p_d(n) \leq n^d
+    \]
+    for all sufficiently large $n$. This establishes case (ii) of the theorem.
+
+
+\end{proof}
+
+Following corollary is equivalent to the theorem~\ref{thm:vc-dichotomy} and is often used in practice.
+
+\begin{corollary}
+    \label{cor:vc-dichotomy}
+    Suppose $f_{\mathcal{C}}(d) < 2^d$ for some integer $d \ge 1$. Then $f_{\mathcal{C}} \leq p_d(n)$ for all $n \in \mathbb{N}$.
+\end{corollary}

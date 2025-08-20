@@ -1,0 +1,88 @@
+\section{The Components of the Counterexample}
+
+Our construction requires three parts: a simple hypothesis space, a finite VC dimension, and a carefully chosen "pathological" probability distribution.
+
+\subsection{The Hypothesis Space and its VC Dimension}
+
+\begin{definition}[Hypothesis Space]
+    Let the instance space be $\mathcal{X} = [0, 1]$. We define the hypothesis space $\mathcal{H}$ as the set of "left-ray" classifiers:
+    \[ \mathcal{H} = \{h_w : [0, 1] \to \{0, 1\} \mid w \in [0, 1]\} \]
+    where each hypothesis $h_w$ is an indicator function $h_w(x) = \mathds{1}_{x<w}$. This space is definable in the o-minimal structure $(\R, +, \cdot, <)$.
+\end{definition}
+
+\begin{proposition}
+    The VC dimension of $\Hspace$ is 1.
+\end{proposition}
+
+\begin{proof}
+
+    First, $\Hspace$ can shatter any set of size 1. For a point $p \in [0, 1]$, we can label it `1` by choosing $w > p$ and label it `0` by choosing $w \le p$. Thus, VC-dim($\Hspace$) $\ge 1$. Second, $\Hspace$ cannot shatter any set of two points $\{p_1, p_2\}$ with $p_1 < p_2$. The labeling $(h(p_1), h(p_2)) = (0, 1)$ is impossible, as $h_w(p_2)=1$ requires $w > p_2$, which implies $w > p_1$, forcing $h_w(p_1)=1$. Thus, VC-dim($\Hspace$) $< 2$. Combining these, the VC dimension is exactly 1.
+\end{proof}
+
+\subsection{A Pathological Probability Distribution}
+
+The failure of learnability stems not from $\Hspace$, but from the distribution of data. We construct it using a non-Lebesgue-measurable set.
+
+\begin{construction}[The Vitali Distribution]
+    \
+    \begin{enumerate}
+        \item \textbf{The Vitali Set:} Let $V \subset [0, 1]$ be a Vitali set, formed by selecting one representative from each equivalence class of the relation $x \sim y \iff x-y \in \Q$. A canonical property of $V$ is that it is \textbf{non-Lebesgue-measurable}. We denote the Lebesgue measure by $\mu$.
+
+        \item \textbf{The Distribution $\dist^*$:} We define a single distribution $\dist^*$ over the sample space $\Zspace = [0, 1] \times \{0, 1\}$ as follows:
+        \begin{itemize}
+            \item The feature $x$ is drawn from the uniform distribution on $[0, 1]$, i.e., $x \sim U[0, 1]$.
+            \item The label $y$ is determined by the true regression function $\eta(x) = P(y=1|x) = \ind_V(x)$.
+        \end{itemize}
+        The set of distributions for our problem is $\Dset = \{\dist^*\}$.
+    \end{enumerate}
+\end{construction}
+
+\section{The Breakdown: Non-Measurable True Error}
+
+The core of the problem lies in the interaction between the simple hypotheses and the complex distribution. This interaction is captured by the true error function, which we show to be ill-defined from a measure-theoretic standpoint.
+
+\begin{theorem}
+    The true error function $f(w) = \ertrue^*(h_w)$ is a non-measurable function of the parameter $w$.
+\end{theorem}
+\begin{proof}
+    The true error (risk) of a hypothesis $h_w$ is its expected 0-1 loss.
+    \begin{align*}
+        f(w) = \ertrue^*(h_w) &= E_{(x,y)\sim\dist^*}[\ind_{h_w(x) \neq y}] \\
+        &= \int_0^1 P(y \neq h_w(x) \mid X=x) \, d\mu(x) \\
+        &= \int_0^1 \left( \ind_V(x)\ind_{x \ge w} + (1-\ind_V(x))\ind_{x < w} \right) \, d\mu(x) \\
+        &= \mu(V \cap [w, 1]) + \mu(V^c \cap [0, w))
+    \end{align*}
+    A foundational result in measure theory states that if $V$ is a Vitali set, the function $g(w) = \mu(V \cap [0, w))$ is a non-measurable function of $w$. Since our risk function $f(w)$ is built from $g(w)$ and related terms, it is also a non-measurable function of $w$.
+\end{proof}
+
+\section{Formal Violation of the ``Well-Behaved'' Condition}
+
+We now show that our construction formally violates the definition of a well-behaved hypothesis space, as given in the reference paper.
+
+\begin{definition}[Well-Behaved Hypothesis Space]
+    A hypothesis space $\Hspace$ is called \textbf{well-behaved} (with respect to $\Dset$) if graph-measurability holds and there exists $m_\Hspace \in \N$ such that for any $m \ge m_\Hspace$ and any $\dist \in \Dset$:
+    \begin{enumerate}
+        \item The symmetrization map $V(\mathbf{z}, \mathbf{z}') := \sup_{h\in\Hspace} |\eremp(h) - \hat{\er}_{\mathbf{z}'}(h)|$ is measurable.
+        \item The uniform deviation map $U(\mathbf{z}) := \sup_{h\in\Hspace} |\ertrue(h) - \eremp(h)|$ is measurable.
+    \end{enumerate}
+\end{definition}
+
+\begin{corollary}
+    The hypothesis space $\Hspace$ of left-rays is not well-behaved with respect to the distribution set $\Dset = \{\dist^*\}$.
+\end{corollary}
+\begin{proof}
+    We check the conditions from the definition.
+    \begin{itemize}
+        \item \textbf{Graph Measurability:} The graph of any $h_w$ is a union of two rectangles, which are Borel sets and hence measurable. This condition holds.
+        \item \textbf{The Map V:} The symmetrization map $V$ only involves empirical quantities. The empirical error $\eremp(h_w)$ is a simple step function of $w$. The supremum over $w$ of the difference of two such functions is well-defined and measurable. This condition holds.
+        \item \textbf{The Map U:} This condition is where the failure occurs. The uniform deviation map is:
+        \[ U(\mathbf{z}) = \sup_{h \in \Hspace} |\ertrue^*(h) - \eremp(h)| = \sup_{w \in [0, 1]} |\ertrue^*(h_w) - \eremp(h_w)| \]
+        For any fixed sample $\mathbf{z}$, the empirical error term $\eremp(h_w)$ is a measurable (step) function of $w$. However, as proven in Theorem 1, the true error term $\ertrue^*(h_w)$ is a \textbf{non-measurable function} of $w$. The absolute difference of a non-measurable function and a measurable function is itself non-measurable.
+
+        The function $U(\mathbf{z})$ is the supremum of a non-measurable function of $w$. The value of this supremum is therefore dependent on a pathologically defined quantity. The resulting map $\mathbf{z} \mapsto U(\mathbf{z})$ cannot be guaranteed to be measurable and, in fact, is not.
+    \end{itemize}
+    Since the uniform deviation map $U$ is not measurable, $\Hspace$ fails to meet the definition of a well-behaved space.
+\end{proof}
+
+\section{Conclusion}
+We have constructed a scenario where a hypothesis space $\Hspace$ has a finite VC dimension (VC-dim=1) but is not PAC learnable. The failure arises because the chosen probability distribution $\dist^*$ makes the true error function non-measurable. This non-measurability causes the uniform deviation map $U$ to be non-measurable, formally violating the "well-behaved" condition required by the Fundamental Theorem of Statistical Learning. This example highlights that learnability is not just a property of the complexity of a hypothesis space (measured by VC dimension), but also of its measure-theoretic interaction with the underlying data distributions.

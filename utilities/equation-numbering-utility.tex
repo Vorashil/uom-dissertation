@@ -1,0 +1,53 @@
+\usepackage{amsthm} % Theorem environments
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+\newcounter{resCounter}[section]
+
+% -- How each result is labeled: "section.counter"
+\renewcommand{\theresCounter}{\thesection.\arabic{resCounter}}
+
+% -- Define a custom theorem style without newline for Remarks & Observations
+\newtheoremstyle{nonbreakthm}%
+{10pt}    % Space above
+{10pt}    % Space below
+{\normalfont} % Body font
+{}        % Indent amount
+{}  % Theorem head font (bold)
+{:}        % Punctuation after theorem head
+{ }        % Space after theorem head (no newline, just a space)
+{\textbf{\thmname{#1} \thmnumber{#2}}\thmnote{ (#3)}} % Heading spec
+
+% -- Define a custom theorem style for theorems, lemmas, propositions (with newline)
+\newtheoremstyle{mythmstyle}%
+{10pt}    % Space above
+{10pt}    % Space below
+{\normalfont} % Body font (upright, not italic)
+{}        % Indent amount
+{}  % Theorem head font (bold)
+{:}        % Punctuation after theorem head
+{\newline} % Space after theorem head (forces the body onto a new line)
+{\textbf{\thmname{#1} \thmnumber{#2}}\thmnote{ (#3)}} % Heading spec
+
+% -- Activate styles accordingly
+\theoremstyle{mythmstyle}
+\newtheorem{definition}[resCounter]{Definition}
+\newtheorem{lemma}[resCounter]{Lemma}
+\newtheorem{proposition}[resCounter]{Proposition}
+\newtheorem{theorem}[resCounter]{Theorem}
+\newtheorem{corollary}[resCounter]{Corollary}
+\newtheorem{notenl}[resCounter]{Note}
+\newtheorem{remarknl}[resCounter]{Remark}
+\newtheorem{exercise}[resCounter]{Exercise}
+
+\theoremstyle{nonbreakthm}
+\newtheorem{note}[resCounter]{Note}
+\newtheorem{observation}[resCounter]{Observation}
+\newtheorem{example}[resCounter]{Example}
+\newtheorem{question}[resCounter]{Question}
+\newtheorem{remark}[resCounter]{Remark}

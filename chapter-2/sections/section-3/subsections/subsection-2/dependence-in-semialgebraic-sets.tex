@@ -1,0 +1,135 @@
+\subsection{Dependence in semialgebraic sets}
+
+Our main aim in this chapter is to show that definable sets in o-minimal structures are dependent. We will start with a simple example, which is a special case of the main theorem of this section.
+
+\begin{proposition}{\label{prop:vector-space-dependent}}
+    Let $\mathcal{V}$ be an $m$-dimensional real vector space of real valued functions $X \to \mathbb{R}$, where $X$ is an infinite set. For each $f \in \mathcal{V}$, consider following:
+    \[
+        \text{pos}(f) \coloneq \{x \in X \mid f(x) > 0\}.
+    \]
+    Then, the collection $\text{pos}(\mathcal{V}) \coloneq \{\text{pos}(f) \mid f \in \mathcal{V}\} \subseteq \mathcal{P}(X)$ is VC-class with VC-index $m+1$.
+\end{proposition}
+
+Before proceeding to the proof, it is useful to recall some fundamental concepts from linear algebra. For a more detailed treatment, one can consult~\cite{axler1997} or~\cite{strang2016}. Let $V$ be a finite-dimensional real vector space. An \textbf{inner product} on $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ that is positive-definite, symmetric, and bilinear. The standard inner product on $\mathbb{R}^n$ for vectors $u=(u_1, \dots, u_n)$ and $v=(v_1, \dots, v_n)$ is the dot product: $\langle u, v \rangle = \sum_{i=1}^n u_i v_i$. Two vectors $u, v \in V$ are \textbf{orthogonal} if $\langle u, v \rangle = 0$. For any subspace $W \subseteq V$, its \textbf{orthogonal complement}, denoted $W^\perp$, is the set of all vectors in $V$ that are orthogonal to every vector in $W$. A crucial result states that $V$ can be decomposed as the direct sum $V = W \oplus W^\perp$, which implies $\dim(V) = \dim(W) + \dim(W^\perp)$. If $W$ is a \emph{proper} subspace of $V$ (i.e., $\dim(W) < \dim(V)$), then its orthogonal complement $W^\perp$ must be non-trivial and contain non-zero vectors.
+
+\begin{proof}
+
+    If $m = 0$, then $\mathcal{V}$ is trivial vector space and $\text{pos}(\mathcal{V}) =\{\emptyset\}$. Since, $V(\{\emptyset\}) = 1$ the statement holds trivially. So, assume $m \geq 1$. We will show $V(\text{pos}(\mathcal{V})) \leq m +1$ and $V(\text{pos}(\mathcal{V})) > m $ separately to establish the desired result.
+
+    To show $V(\text{pos}(\mathcal{V})) \leq m +1 $, let $A = \{a_1, \dots, a_{m+1}\} \subseteq X$ be a finite subset with $m+1$ elements. We will show that $\text{pos}(\mathcal{V})$ cannot shatter $A$. Consider the linear map
+    \[
+        \begin{aligned}
+            \chi: \mathcal{V} &\to \mathbb{R}^A \\
+            f &\mapsto f \mid_A,
+        \end{aligned}
+    \]
+    where $\mathbb{R}^A$ is a vector space of all real valued functions defined on the set $A$ and $f \mid_A$ is a restriction of the function $f \in \mathcal{V}$. It's straightforward to verify that $\chi$ is a linear map. Note that, each element of $g \in \mathbb{R}^A$ is completely determined by the $m+1$ values it takes on each element of $A$, so $g$ can be represented by the vector
+    \[
+        (g(a_1), \dots, g(a_{m+1})).
+    \]
+    Hence, $\mathbb{R}^A$ is isomorphic to $\mathbb{R}^{m+1}$ and $\dim(\mathbb{R}^A) = m+1$.
+
+    The image of $\chi$, denoted as $\mathcal{V}|_A \coloneqq \{f|_A : f \in \mathcal{V}\}$, is a vector subspace of $\mathbb{R}^A$ as it inherits vector space structure from $\mathcal{V}$. By the rank-nullity theorem [CITE], the dimension of the image $\mathcal{V}|_A$ cannot exceed the dimension of its domain $\mathcal{V}$. Therefore:
+    \begin{equation}
+        \label{eq:orthogonal-compliment}
+        \dim(\mathcal{V}|_A) \le \dim(\mathcal{V}) = m < m+1 = \dim(\mathbb{R}^A).
+    \end{equation}
+    It follows from~\ref{eq:orthogonal-compliment} that, $\mathcal{V}|_A$ is a proper subspace of $\mathbb{R}^A$. This means $\mathcal{V}|_A$ has a non-trivial orthogonal complement within $\mathbb{R}^A$, denoted as $(\mathcal{V}|_A)^\perp$. Hence, there exists a non-zero vector $w \in \mathbb{R}^A$ such that for any $f \in \mathcal{V}$, the orthogonality condition holds, ie
+    \[
+        \langle f|_A, w \rangle = \sum_{i=1}^{m+1} f(a_i) w(a_i) = 0.
+    \]
+    Let $A^+ = \{a \in A \mid w(a) > 0\}$. Since $w$ is non-zero, we can assume $A^+$ is non-empty (otherwise, we replace $w$ with $-w$). We claim $A^+$ cannot be cut out. Assume for contradiction there exists an $f_0 \in \mathcal{V}$ such that $\text{pos}(f_0) \cap A = A^+$. This implies $f_0(a) > 0$ for $a \in A^+$ and $f_0(a) \le 0$ for $a \in A \setminus A^+$.
+    However, the inner product
+    \[
+        \langle f_0|_A, w \rangle = \underbrace{\sum_{a \in A^+} f_0(a) w(a)}_{> 0} + \underbrace{\sum_{a \in A \setminus A^+} f_0(a) w(a)}_{\geq 0}
+    \]
+    is a sum of strictly positive terms and non-negative terms, so it must be strictly positive. This contradicts that the inner product must be zero. Thus, no set of size $m+1$ can be shattered, which means $V(\text{pos}(\mathcal{V})) \le m+1$.
+
+    To show $V(\text{pos}(\mathcal{V})) > m $, we need to find an $m$-element subset of $X$ that $\text{pos}(\mathcal{V})$ shatters. We will build this set inductively. Firstly, note that since $m \geq 1$, $\mathcal{V}$ contains non-zero function, call it $f_1: X \to \mathbb{R}$. Hence, there exists $b_1 \in X$ such that $f_1(b_1) \neq 0$. Write $\mathcal{V}_0 \coloneq \mathcal{V}$ and consider the linear evaluation function
+    \[
+        \begin{aligned}
+            \text{ev}_{b_1}: \mathcal{V}_0 &\to \mathbb{R}, \\
+            f &\mapsto f(b_1).
+        \end{aligned}
+    \]
+    Since, $\text{ev}_{b_1}(f_1) \neq 0$, the image of this function has dimension 1. Write $\mathcal{V}_1 \coloneq \{f \in \mathcal{V}_0 \mid f(b_1) = 0\}$. Then $\mathcal{V}_1$ is precisely the kernel of $\text{ev}_{b_1}$. Hence, by rank nullity theorem
+    \begin{equation}
+        \label{eq:lower-bound}
+        \dim(\mathcal{V}_0) = \dim(\mathcal{V}_1) + \dim(im(\text{ev}_{b_1})).
+    \end{equation}
+    It follows from~\ref{eq:lower-bound} that $\dim(\mathcal{V}_1) = m - 1$. For the inductive step, assume we have found points $\{b_1, \dots, b_{m-1}\}$ and a subspace $\mathcal{V}_{m-1} \coloneq \{f \in \mathcal{V} \mid f(b_1) = f(b_2) = \dots = f(b_{m-1}) = 0\}$ with $\dim(\mathcal{V}_{k-1}) = m - (m - 1) = 1$. Then, since $\dim(\mathcal{V}_{k-1}) = 1 > 0$, we can find $f_m \in \mathcal{V}_{k-1}$ such that there exists $b_m \in X$ such that $f_m(b_m) \neq 0$. Then, we construct $\mathcal{C}_m$ similarly and $\dim(\mathcal{C}_m) = 0$. Write $B \coloneq \{b_1, \dots, b_m\}$ for all the points we have found and define the linear map
+    \[
+        \begin{aligned}
+            \phi: \mathcal{V} &\to \mathbb{R}^B, \\
+            f &\mapsto f\mid_B.
+        \end{aligned}
+    \]
+    Then, the kernel of $\phi$ is trivial, since for any $f \in \mathcal{V}$, if $\phi(f) = f\mid_B = 0$, then $f$ is zero function in $\mathcal{V}$ by construction of $B$. Since, we $\dim(im(\phi)) = \dim(\mathbb{R}^B)$, it follows from the last two arguments that $\phi$ is an isomorphism. This completes proof, since for any subset $D \subset B$, we can find a sign function~\ref{eq:sign-function} $\mathds{1}_D: B \to \mathbb{R}$ such that
+    \[
+        \mathds{1}_D(b) =
+        \begin{cases}
+            1,  & b\in D,\\
+            -1, & b\notin D.
+        \end{cases}
+    \]
+    and then $\mathds{1}_D$ is necessarily a restriction of a unique function in $\mathcal{V}$.
+\end{proof}
+
+Below, we present an application of Proposition~\ref{prop:vector-space-dependent}.
+
+\begin{example}
+    Let $X = \mathbb{R}^N$ and consider the vector space $\mathcal{W}$ of real polynomial functions $P:\mathbb{R}^N \to \mathbb{R}$ with $\deg(P) \leq d$ for some $d \in \mathbb{N}$. This space is finite-dimensional, as it is spanned by the finite set of monomials of degree at most $d$. Therefore, by Proposition~\ref{prop:vector-space-dependent}, the collection of positivity sets $\{\text{pos}(P) : P \in \mathcal{W}\}$ is a dependent collection (a VC-class).
+\end{example}
+
+This result for polynomials forms the base case for proving the following important lemma, which corresponds to a special case of the main theorem of this chapter about o-minimal structures. Later, we will present the theorem generalizes this result from the semialgebraic setting of $(\mathbb{R}, +, \cdot, <)$ to any o-minimal structure.
+
+\begin{lemma}[Semialgebraic relations are dependent]
+    \label{lem:semialgebraic-dependent}
+    Every semialgebraic relation $\Phi \subset \mathbb{R}^M \times \mathbb{R}^N$ is dependent.
+\end{lemma}
+
+\begin{proof}
+
+    Let $\Phi \subseteq \mathbb{R}^M \times \mathbb{R}^N$ be a semialgebraic relation. By the definition of a semialgebraic set, $\Phi$ is a finite Boolean combination of atomic sets, which are the solution sets of single polynomial inequalities. That is, $\Phi$ can be constructed from a finite number of "atomic" relations of the form
+    \[
+        \Psi_P = \{(x, y) \in \mathbb{R}^M \times \mathbb{R}^N \mid P(x, y) > 0\},
+    \]
+    where $P$ is a polynomial in the variables $(x, y) \in \mathbb{R}^M \times \mathbb{R}^N$. The Boolean operations correspond to taking unions, intersections, and complements of these atomic relations.
+
+    The proof proceeds in two main steps. First, we show that every such atomic relation $\Psi_P$ is dependent. Second, we use the lemmas proven in the previous subsubsection, which state that the property of being dependent is closed under Boolean operations, to conclude that $\Phi$ must be dependent.
+
+    To show atomic relations are dependent, let $P(x, y)$ be a polynomial in $M+N$ variables with real coefficients, and let $d$ be its total degree. Consider the atomic relation $\Psi_P \subseteq \mathbb{R}^M \times \mathbb{R}^N$ defined by the inequality $P(x, y) > 0$.
+
+    To show that $\Psi_P$ is dependent, we will use the duality established previously and analyze the collection of its fibers. Let $X = \mathbb{R}^M$ and $Y = \mathbb{R}^N$. We consider the collection of fibers indexed by $x \in X$:
+    \[
+        (\Psi_P)_X \coloneqq \{(\Psi_P)_x \mid x \in \mathbb{R}^M\} \subseteq \mathcal{P}(\mathbb{R}^N),
+    \]
+    where each fiber is given by $(\Psi_P)_x = \{y \in \mathbb{R}^N \mid P(x, y) > 0\}$. The relation $\Psi_P$ is dependent if and only if this collection of fibers is a VC-class (i.e., has finite VC-dimension).
+
+    For each fixed $x \in \mathbb{R}^M$, the function $P_x: \mathbb{R}^N \to \mathbb{R}$, defined as $y \mapsto P(x, y)$, is a polynomial in the $N$ variables of $y\coloneq  (y_1, \dots, y_N)$. We can write $P_x(y)$ as a sum over multi-indices $\beta \coloneq(\beta_1, \dots, \beta_N) \in \mathbb{Z}_{\geq}^N$:
+    \[
+        P_x(y) = P(x, y) = \sum_{|\beta| \le d} C_\beta(x) y^\beta,
+    \]
+    where each coefficient $C_\beta(x)$ is itself a polynomial in the $M$ variables of $x$. Here, we use shorthand notation $y^{\beta} = y_1^{\beta_1}\cdot\dots\cdot y_N^{\beta_N}$ and $|\beta| = \beta_1 + \dots + \beta_N$.
+    Hence, for any fixed $x$, the function $P_x(y)$ is a polynomial in $y$ of degree at most $d$.
+
+    Let $\mathcal{W}$ be the real vector space of all polynomial functions from $\mathbb{R}^N$ to $\mathbb{R}$ of degree at most $d$. This vector space is finite-dimensional with basis $B$ given as
+    \[
+        B \coloneq \{ y_1^{\beta_1} \cdot \ \dots \ \cdot y_N^{\beta_N} \mid   \beta_1 + \dots + \beta_N \leq d \text{ and } \beta_i \in \mathbb{Z}_{\geq} \}.
+    \]
+    Write $m \coloneq |B| = \dim(\mathcal{W})$, which is given by the number of monomials in $N$ variables of degree up to $d$, i.e., $m = \binom{N+d}{d}$.
+
+    For every $x \in \mathbb{R}^M$, the function $P_x(y)$ is an element of this vector space $\mathcal{W}$. The fiber $(\Psi_P)_x$ is precisely the positivity set of the function $P_x(y)$, that is, $(\Psi_P)_x = \text{pos}(P_x)$. Therefore, the entire collection of fibers $(\Psi_P)_X$ is a subcollection of the set of all possible positivity sets derived from functions in $\mathcal{W}$:
+    \[
+        (\Psi_P)_X = \{\text{pos}(P_x) \mid x \in \mathbb{R}^M\} \subseteq \{\text{pos}(Q) \mid Q \in \mathcal{W}\} = \text{pos}(\mathcal{W}).
+    \]
+    By Proposition~\ref{prop:vector-space-dependent}, the collection $\text{pos}(\mathcal{W})$ is a VC-class with VC-dimension at most $m+1$. Since the growth function of a subcollection cannot exceed that of the larger collection, $(\Psi_P)_X$ must also be a VC-class, and hence is dependent. By the VC-Dependence Duality, this implies that the relation $\Psi_P$ is dependent.
+
+    An atomic relation could also be defined by a polynomial equality, $P(x, y) = 0$. Such a relation can be expressed as the negation of a union of two strict inequalities:
+    \[
+        \{(x,y) \mid P(x,y) = 0\} = \mathbb{R}^{M+N} \setminus \left( \{(x,y) \mid P(x,y) > 0\} \cup \{(x,y) \mid -P(x,y) > 0\} \right).
+    \]
+    Since we have shown that relations defined by strict inequalities are dependent, and we know from the Lemma~\ref{lem:dependent-union-intersection} that the class of dependent relations is closed under union and negation, it follows that relations defined by polynomial equalities are also dependent.
+
+    To show any semialgebraic relation $\Phi$ is dependent recall that, by definition, a finite Boolean combination of atomic relations of the forms just discussed. Since we have established that all such atomic relations are dependent, a repeated application of the Lemma~\ref{lem:dependent-union-intersection} stating that the union and intersection of two dependent relations are dependent (and that the negation of a dependent relation is dependent) allows us to conclude that the entire semialgebraic relation $\Phi$ is dependent. This completes the proof.
+\end{proof}

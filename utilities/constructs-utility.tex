@@ -1,0 +1,7 @@
+\usepackage{chngcntr}
+\counterwithout{equation}{section} % Stop equation counter from resetting with section
+\renewcommand{\theequation}{E.\arabic{equation}} % Change display to E.number
+
+
+\let\oldemph\emph
+\renewcommand{\emph}[1]{\textbf{\textit{#1}}}
