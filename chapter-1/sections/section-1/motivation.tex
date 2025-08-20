@@ -1,5 +1,27 @@
 \section{Motivation}
 
+The fundamental question in statistical learning theory is to understand when a hypothesis class can be learned from finite samples. Vapnik and Chervonenkis introduced the notion of VC-dimension to characterise this learnability, showing that finite VC-dimension is necessary and sufficient for uniform convergence of empirical risk to true risk~\cite[Chap.~3]{DevroyeGyorfiLugosi1996}. This combinatorial concept has become central to learning theory, appearing in sample complexity bounds and generalisation guarantees~\cite[Chap.~2]{UnderstandinMachineLearning}.
+
+Remarkably, the notion of VC-dimension is closely connected to concepts from model theory. Shelah~\cite{Shelah1972} and independently Sauer~\cite{Sauer1972} proved that a family of sets either shatters sets of all sizes (has infinite VC-dimension) or its growth function is polynomial—this is the fundamental dichotomy theorem. In model-theoretic terms, finite VC-dimension corresponds exactly to the non-independence property (NIP), a key notion in stability theory~\cite[Chap.~7]{TentZiegler2012}. This connection suggests that the rich tools of model theory might provide new insights into learning problems.
+
+O-minimal structures offer a particularly fruitful setting for studying this connection. These are structures where every definable set has a finite decomposition into simple pieces—a property that generalises the order-minimality of the real field~\cite[Chap.~1]{vandenDries1998}. Van den Dries showed that families definable in o-minimal structures have finite VC-dimension, with bounds depending on the complexity of the defining formulas~\cite[Chap.~5]{vandenDries1998}. This includes important geometric classes such as semi-algebraic sets (polynomial inequalities) and sets definable in the real exponential field~\cite{DriesMiller1994}.
+
+\subsection{Main Questions and Contributions}
+
+The main goal of this dissertation is to establish that o-minimal structures have the non-independence property (NIP), which translates directly into finite VC-dimension for definable families. This connection provides a bridge between model theory and statistical learning theory, showing that hypothesis classes definable in o-minimal structures are PAC learnable.
+
+The key technical contribution is proving that all o-minimal structures have NIP. Our approach proceeds in several stages. First, in Chapter~\ref{ch:nip-property}, Section~\ref{sec:combinatorial-preliminaries}, we introduce the combinatorial foundations including shattering and growth functions, culminating in the fundamental dichotomy theorem (Theorem~\ref{thm:vc-dichotomy}). This theorem shows that a family of sets either has exponential growth (shatters sets of all sizes) or polynomial growth.
+
+In Section~\ref{sec:nip-property}, we develop the connection between VC-dimension and the dependence property. We show that a parametrised family has finite VC-dimension if and only if it is dependent (Section~2.2.2). The duality between shattering and boolean algebras of sets provides the key insight here. We then prove a crucial propagation result (Theorem~\ref{thm:main-theorem-ch-2} in Section~2.2.5): if a relation is dependent when restricted to lower dimensions, then it remains dependent in higher dimensions.
+
+Section~2.3 contains the main technical achievement. We first establish the base case by proving that any definable relation in $\mathbb{R}^m \times \mathbb{R}$ is dependent, using the cell decomposition theorem from o-minimal theory (Section~2.3.1). As a concrete illustration, we show that semialgebraic relations are dependent by connecting to the finite dimensionality of polynomial spaces (Section~2.3.2). Finally, we complete the proof by applying our propagation theorem to extend the result to arbitrary dimensions $\mathbb{R}^p \times \mathbb{R}^q$ (Section~2.3.3).
+
+Chapter~3 connects these model-theoretic results to learning theory. Following the framework of Krapp and Wirth~\cite{KrappWirth2021}, we present the formal learning framework (Section~3.1) and show how NIP translates into PAC learnability (Section~3.2). The measurability conditions required for the fundamental theorem of statistical learning are carefully addressed.
+
+Chapter~4 explores a subtle issue: while o-minimal structures guarantee finite VC-dimension, this alone does not ensure learnability without additional measurability conditions. We construct a counterexample using a Vitali set that demonstrates how pathological probability distributions can prevent learning even with finite VC-dimension. This highlights the importance of the "well-behaved" condition in the fundamental theorem of statistical learning.
+
+The dissertation thus provides a complete path from model-theoretic structure (o-minimality) through combinatorial properties (NIP, finite VC-dimension) to learning-theoretic guarantees (PAC learnability), while carefully noting the measure-theoretic subtleties involved.
+
 \subsection{Notations}\label{subsec:notations}
 
 We denote the set of positive natural numbers by $\mathbb{N}$ and use $\mathbb{N}_0 =\mathbb{N} \cup \{0\}$. Given $m \in \mathbb{N}$, we use

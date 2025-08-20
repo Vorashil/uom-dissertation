@@ -174,9 +174,9 @@ Following lemma, shows that the sample error of a hypothesis $h \in \mathcal{H}$
 \end{proof}
 
 The sample error $\hat{\operatorname{er}}_z(h)$ measures how often $h$ disagrees with the observed labels in the dataset $z$.
-Unlike the true error, it is always computable from the available data. The natural question is how the sample error relates to the true error.  The next lemma shows that, in expectation, the sample error coincides exactly with the true error, therefore justifying its role as a good approximation of true error.
+Unlike the true error, it is always computable from the available data. The natural question is how the sample error relates to the true error. The next lemma establishes a basic relationship: the sample error is an unbiased estimator of the true error.
 
-\begin{lemma}[Sample error as an approximation of true error]
+\begin{lemma}[Sample error is an unbiased estimator]
     \label{lem:sample-error-unbiased}
     Let $h \in \mathcal{H}$ be a hypothesis with a measurable graph $\Gamma(h)$. For a sample $z = (z_1, \dots, z_m)$ drawn according to the product distribution $\mathbb{D}^m$, the expected value of the sample error equals the true error:
     \[
@@ -200,6 +200,18 @@ Unlike the true error, it is always computable from the available data. The natu
     \]
     \qedhere
 \end{proof}
+
+\begin{remarknl}[Why unbiasedness is not enough for learning]
+    \label{rem:unbiased-not-enough}
+    
+    While Lemma~\ref{lem:sample-error-unbiased} shows that the sample error is an unbiased estimator—meaning it is correct "on average"—this property alone is insufficient for learning. To understand why, consider the following critical points:
+    
+    First, the unbiasedness property holds for each hypothesis $h$ individually. When we fix a specific $h$ and draw many independent samples, the average of their sample errors converges to the true error by the weak law of large numbers~\cite[Chap.~9]{MeasureTheoryLeGall}. However, in learning, we do not fix $h$ in advance. Instead, a learning algorithm selects $h$ based on the observed data, typically by choosing the hypothesis with the smallest sample error.
+    
+    This data-dependent selection creates a fundamental problem: the hypothesis that looks best on the sample may have been "lucky" with that particular dataset. For instance, consider a hypothesis $h^*$ that happens to correctly classify all points in our sample purely by chance, yielding $\hat{\operatorname{er}}_z(h^*) = 0$. While the expected value $\mathbb{E}[\hat{\operatorname{er}}_z(h^*)]$ equals the true error $\operatorname{er}_{\mathbb{D}}(h^*)$, for this specific sample $z$, the gap $|\hat{\operatorname{er}}_z(h^*) - \operatorname{er}_{\mathbb{D}}(h^*)|$ could be large.
+    
+    The problem becomes more severe when we have many hypotheses. With a large hypothesis space $\mathcal{H}$, it becomes increasingly likely that at least one hypothesis will appear misleadingly good on any given sample. This is why we need a stronger property that controls the approximation error simultaneously for all hypotheses—this is precisely what uniform convergence provides, as we will see in Section~\ref{sec:pac-learning}.
+\end{remarknl}
 
 \begin{definition}[Optimal error]
     The \emph{optimal true error} achievable by the hypothesis space $\mathcal{H}$ under $\mathbb{D}$ is

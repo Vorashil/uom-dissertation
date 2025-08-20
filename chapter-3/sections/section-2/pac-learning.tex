@@ -19,26 +19,24 @@ A central difficulty in learning theory is that, for a fixed hypothesis $h$, the
     \]
 \end{definition}
 
-At this point we might be asking what is the extra guarantee provided by
-
-\begin{remark}[Expectation vs. uniform convergence]
-    Lemma~\ref{lem:sample-error-unbiased} shows that for any fixed hypothesis $h \in \mathcal{H}$, the sample error
-    $\hat{\operatorname{er}}_{z}(h)$ has expectation equal to the true error $\operatorname{er}_{\mathbb{D}}(h)$.
-    This means that, on average over many independent samples, the sample error coincides with the true error.
-    However, this statement does not guarantee that for a given finite sample $z$, the values
-    $\hat{\operatorname{er}}_{z}(h)$ and $\operatorname{er}_{\mathbb{D}}(h)$ will be close.
-    In fact, they may differ significantly for small sample sizes.
-
-    The \emph{uniform convergence property} is stronger. It states that, with high probability over the choice of a single
-    finite sample $z \sim \mathbb{D}^m$, the sample error is close to the true error for \emph{all} hypotheses in $\mathcal{H}$
-    at once:
+\begin{remarknl}[Understanding uniform convergence parameters]
+    \label{rem:pointwise-to-uniform}
+    
+    As discussed in Remark~\ref{rem:unbiased-not-enough}, the unbiasedness of sample error provides only a pointwise guarantee: for each fixed hypothesis $h$, the sample error converges to the true error as the sample size grows. The uniform convergence property is stronger—it requires that the approximation holds simultaneously for all $h \in \mathcal{H}$.
+    
+    The definition involves three key parameters:
+    \begin{itemize}
+        \item $\varepsilon > 0$ is the \emph{accuracy parameter}: it bounds how far any sample error can deviate from its true error. Smaller $\varepsilon$ means tighter approximation.
+        \item $\delta > 0$ is the \emph{confidence parameter}: with probability at least $1-\delta$, the uniform bound holds. Smaller $\delta$ means higher confidence.
+        \item $m_0(\varepsilon, \delta)$ is the \emph{sample complexity}: the minimum sample size needed to achieve the desired accuracy and confidence. Crucially, this sample size works uniformly for all distributions in $\mathcal{D}$.
+    \end{itemize}
+    
+    The property guarantees that for any sample of size $m \geq m_0$, with probability at least $1-\delta$ over the random draw of the sample, we have
     \[
         \sup_{h \in \mathcal{H}} \bigl|\hat{\operatorname{er}}_{z}(h) - \operatorname{er}_{\mathbb{D}}(h)\bigr| \leq \varepsilon.
     \]
-    This uniform control is what makes the sample error a reliable approximation of the true error in learning theory.
-
-    For detailed discussions, see \cite[Sec.~3.1]{ShalevShwartzBenDavid2014} and \cite[Chap.~2]{AnthonyBartlett2009}.
-\end{remark}
+    This uniform control is essential for learning: when an algorithm chooses the hypothesis with the smallest sample error, uniform convergence ensures this choice will also perform well on the underlying distribution, preventing overfitting due to random fluctuations in the sample.
+\end{remarknl}
 
 \noindent
 This property guarantees that, with high probability, the sample error uniformly approximates the true error across the entire hypothesis class. As we will see, uniform convergence is the critical ingredient in proving PAC learnability: if $\mathcal{H}$ has UCP, then every empirical risk minimiser over $\mathcal{H}$ will generalise, which directly implies PAC learnability.
