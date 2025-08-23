@@ -35,22 +35,7 @@ Given any set $X$ and its subset $E \subset X$, we denote the complement of $E$ 
     \end{itemize}
 \end{notenl}
 
-\begin{definition}[Product of $\sigma$-algebras \textnormal{\cite[Def. 1.4]{MeasureTheoryCohn}}]
-    Let $X_1, X_2$ be sets and $\mathcal{A}_1, \mathcal{A}_2$ be $\sigma$-algebras on $X_1, X_2$, respectively. The \emph{product $\sigma$-algebra} $\mathcal{A}_1 \otimes \mathcal{A}_2$ is defined as the smallest $\sigma$-algebra containing all sets of the form $A_1 \times A_2$, where $A_1 \in \mathcal{A}_1$ and $A_2 \in \mathcal{A}_2$. Formally,
-    \[
-        \mathcal{A}_1 \otimes \mathcal{A}_2 \coloneq \sigma\left(\{A_1 \times A_2 \mid A_1 \in \mathcal{A}_1, A_2 \in \mathcal{A}_2\}\right).
-    \]
-\end{definition}
-
-\subsection{Measurable space}
-
-Let $X$ be a set and $A \subseteq X$ be a subset. It's natural to ask "what would be the \texit{size} or \textit{measure} of the subset $A$ relative to $X$". However, it's also natural to follow up and ask "what would be the size of $X$". In essence, this relativity part of this question distinguish probability theory from more generic measure theory. It's because, in probabily theory we set the size of $X$ as $1$, in which case, we can compare the size of \textit{measurable} subset $A$ to the size of $X$. However, in general, measure theory we don't have any such assumption on $X$ other than the assumption that $X$ is itself measurable. Note that, in our original question we also make an assumption about \textit{measurability} of $A$, which will be formalised using $\sigma$-algebras.
-
-\begin{definition}[Measurable space]
-    A measurable space is a pair $(X, \mathcal{A})$, where $X$ is a set and $\mathcal{A}$ is a $\sigma$-algebra on $X$. The elements of $\mathcal{A}$ are called \emph{measurable sets}.
-\end{definition}
-
-Let $(X, \mathcal{A})$ be a measurable set. As mentioned earlier, it's possible to have a measurable space $(X, \mathcal{A})$ where not all subsets of $X$ are measurable. However, if we want to assume a collection of subsets, such as $\mathcal{F} \subseteq \mathcal{P}(X)$ is measurable (here, we abuse the terminology to use shorthand for "every set in $\mathcal{F}$ is measurable), we denote the smallest $\sigma$-algebra containing $\mathcal{F}$ by $\sigma(\mathcal{F}) $. This is the \emph{generated $\sigma$-algebra}, more formally $\sigma(\mathcal{F})$ is defined as
+By~\cite[Cor 1.1.3]{MeasureTheoryCohn}, for any collection $\mathcal{F} \subseteq \mathcal{P}(X)$, there exists the smallest $\sigma$-algebra containing $\mathcal{F}$, which is denoted by $\sigma(\mathcal{F})$. This is called the \emph{generated $\sigma$-algebra}, more formally $\sigma(\mathcal{F})$ is defined as
 
 \begin{equation}
     \sigma(\mathcal{F}) \coloneq \bigcap \mathcal{A}_\mathcal{F},\label{eq:generated-sigma-algebra-def}
@@ -68,6 +53,23 @@ where
         \item Intersection of any collection of $\sigma$-algebras is a $\sigma$-algebra~\cite[Prop 1.1.2]{MeasureTheoryCohn}, hence $\sigma(\mathcal{F})$ is a $\sigma$-algebra.
     \end{itemize}
 \end{remarknl}
+
+\begin{definition}[Product of $\sigma$-algebras \textnormal{\cite[Def. 1.4]{MeasureTheoryCohn}}]
+    Let $X_1, X_2$ be sets and $\mathcal{A}_1, \mathcal{A}_2$ be $\sigma$-algebras on $X_1, X_2$, respectively. The \emph{product $\sigma$-algebra} $\mathcal{A}_1 \otimes \mathcal{A}_2$ is defined as the smallest $\sigma$-algebra containing all sets of the form $A_1 \times A_2$, where $A_1 \in \mathcal{A}_1$ and $A_2 \in \mathcal{A}_2$. Formally,
+    \[
+        \mathcal{A}_1 \otimes \mathcal{A}_2 \coloneq \sigma\left(\{A_1 \times A_2 \mid A_1 \in \mathcal{A}_1, A_2 \in \mathcal{A}_2\}\right).
+    \]
+\end{definition}
+
+\subsection{Measurable space}
+
+Let $X$ be a set and $A \subseteq X$ be a subset. It's natural to ask "what would be the \texit{size} or \textit{measure} of the subset $A$ relative to $X$". However, it's also natural to follow up and ask "what would be the size of $X$". In essence, this relativity part of this question distinguish probability theory from more generic measure theory. It's because, in probabily theory we set the size of $X$ as $1$, in which case, we can compare the size of \textit{measurable} subset $A$ to the size of $X$. However, in general, measure theory we don't have any such assumption on $X$ other than the assumption that $X$ is itself measurable. Note that, in our original question we also make an assumption about \textit{measurability} of $A$, which will be formalised using $\sigma$-algebras.
+
+\begin{definition}[Measurable space]
+    A measurable space is a pair $(X, \mathcal{A})$, where $X$ is a set and $\mathcal{A}$ is a $\sigma$-algebra on $X$. The elements of $\mathcal{A}$ are called \emph{measurable sets}.
+\end{definition}
+
+Let $(X, \mathcal{A})$ be a measurable set. As mentioned earlier, it's possible to have a measurable space $(X, \mathcal{A})$ where not all subsets of $X$ are measurable.
 
 \subsection{Measure functions}\label{subsec:measure-functions}
 

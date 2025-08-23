@@ -41,3 +41,27 @@ A central difficulty in learning theory is that, for a fixed hypothesis $h$, the
 \noindent
 This property guarantees that, with high probability, the sample error uniformly approximates the true error across the entire hypothesis class. As we will see, uniform convergence is the critical ingredient in proving PAC learnability: if $\mathcal{H}$ has UCP, then every empirical risk minimiser over $\mathcal{H}$ will generalise, which directly implies PAC learnability.
 
+\subsection{PAC Learnability}
+
+Having established the uniform convergence property, we now formally define PAC (Probably Approximately Correct) learnability. This framework, introduced by Valiant~\cite{Valiant1984}, captures the notion that a learning algorithm should produce hypotheses that generalise well with high probability.
+
+\begin{definition}[PAC Learnability]
+    \label{def:pac-learnable}
+    A hypothesis space $\mathcal{H}$ is \emph{PAC learnable} with respect to a distribution family $\mathcal{D}$ if there exists a learning function $\mathcal{A}: \bigcup_{m \in \mathbb{N}} \mathcal{Z}^m \to \mathcal{H}$ and a function $m_{\mathcal{H}}: (0,1)^2 \to \mathbb{N}$ such that for every $\varepsilon, \delta \in (0,1)$, every $m \geq m_{\mathcal{H}}(\varepsilon, \delta)$, and every distribution $\mathbb{D} \in \mathcal{D}$, we have
+    \[
+        \mathbb{D}^m\!\left( \Bigl\{ z \in \mathcal{Z}^m \;\Big|\; \operatorname{er}_{\mathbb{D}}(\mathcal{A}(z)) \leq \inf_{h \in \mathcal{H}} \operatorname{er}_{\mathbb{D}}(h) + \varepsilon \Bigr\} \right) \geq 1-\delta.
+    \]
+\end{definition}
+
+\begin{remarknl}[Interpretation of PAC learnability]
+    
+    The definition captures three essential aspects of successful learning:
+    \begin{itemize}
+        \item \emph{Probably}: With probability at least $1-\delta$ over the random sample, the algorithm succeeds. The confidence parameter $\delta$ controls the failure probability.
+        \item \emph{Approximately}: The learned hypothesis has error within $\varepsilon$ of the best possible hypothesis in $\mathcal{H}$. The accuracy parameter $\varepsilon$ controls the approximation quality.
+        \item \emph{Correct}: The comparison is with the optimal achievable error $\inf_{h \in \mathcal{H}} \operatorname{er}_{\mathbb{D}}(h)$, not perfect classification. This allows for inherent noise in the data.
+    \end{itemize}
+    
+    The sample complexity function $m_{\mathcal{H}}(\varepsilon, \delta)$ determines how many samples are needed to achieve the desired accuracy and confidence. Importantly, this function depends only on $\mathcal{H}$, not on the specific distribution $\mathbb{D} \in \mathcal{D}$.
+\end{remarknl}
+

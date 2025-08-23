@@ -1,9 +1,7 @@
 \section{Learning Framework}
 
-In statistical learning theory, a \emph{learning problem (LP)} formalises the task of inferring rules from data.
-The framework specifies a set of possible inputs, outputs, probability distributions, and hypotheses.
-At its core, the aim is to design a \emph{learning function} that selects a hypothesis, based on data,
-which generalises well to unseen examples.
+In statistical learning theory, a \emph{learning problem (LP)} provides a formal framework for inferring predictive rules from data~\cite{StatisticalLearningTheory}. This dissertation focuses on the setting of binary classification, where such a rule is a \emph{hypothesis}—a function that assigns a binary label to each data point, or \emph{instance}. The learning framework is defined by four core components: an instance space containing all possible instances, a hypothesis space of candidate functions, a sample space of labeled instances, and a set of probability distributions that model the data-generating process. The ultimate objective is to design a \emph{learning function} that, given a sample of data, selects a hypothesis that generalises well to new, unseen examples.
+
 
 Formally, a learning problem is given by a tuple
 \[
@@ -43,87 +41,73 @@ Learning in this framework is based on processing finitely many samples
 which are assumed to be drawn independently at random according to some distribution $\mathbb{D} \in \mathcal{D}$.
 Equivalently, the whole sample may be viewed as an element of $\mathcal{Z}^m$, distributed according to the product measure $\mathbb{D}^m$ on the measurable space $(\mathcal{Z}^m,\Sigma_{\mathcal{Z}}^m)$.
 
-To ensure that such finite samples are measurable, it is natural to require that singletons $\{z\}$ are measurable for every $z \in \mathcal{Z}$.
-Indeed, measurability of singletons implies that every finite set of sample points is measurable, since finite unions of measurable sets remain measurable.
-This condition is automatically satisfied, for example, when $\mathcal{Z}$ is a Hausdorff space equipped with its Borel $\sigma$-algebra.
+To ensure that such finite samples are measurable, it is natural to require that singletons $\{z\}$ are measurable for every $z \in \mathcal{Z}$. Indeed, measurability of singletons implies that every finite set of sample points is measurable, since finite unions of measurable sets remain measurable. This condition is automatically satisfied, for example, when $\mathcal{Z}$ is a Hausdorff space equipped with its Borel $\sigma$-algebra.
 
 \begin{remark}
+    \label{rem:hyposthesis-is-measurable}
     In this chapter, we assume that for every hypothesis $h \in \mathcal{H}$, its graph is measurable, i.e.
     \[
         \Gamma(h) \in \Sigma_{\mathcal{Z}}.
     \]
-    This ensures compatibility of the hypothesis space with the measurable structure of the learning problem.
+    This assumption will help us to measure the probability of a hypothesis $h \in \mathcal{H}$ to misclassify instances in~\ref{subsec:evaluating-hypothesis}.
 \end{remark}
 
-\begin{remark}[Agnostic vs. deterministic learning models]
+\begin{remarknl}[Agnostic vs. deterministic learning models]
     In our framework, probability distributions $\mathbb{D}$ are defined on the sample space $\mathcal{Z} = \mathcal{X}\times\{0,1\}$.
     This means that, for a fixed instance $x \in \mathcal{X}$, we have $(x,0)$ and $(x,1)$ as separate sample points, and it's possible that they both have non-zero probability simultanously according to some distribution defined on $(\mathcal{Z}, \Sigma_{\mathcal{Z}})$.
     In other words, the label of $x$ is itself random and not determined by a fixed target function.
-    This setting is known as the \emph{agnostic} or \emph{model-free} paradigm, cf.~\cite[§3.2.1]{ShalevShwartzBenDavid2014}, \cite[§3.3]{AnthonyBartlett2009}.
+    This setting is known as the \emph{agnostic}~\cite[p.45, \S 3.2.1]{UnderstandinMachineLearning}.
     It allows us to capture noisy labels and corrupted data, reflecting the fact that real-world classification tasks may not admit a perfect underlying rule.
 
-    By contrast, in the \emph{deterministic model} (cf.~\cite{BlumerEhrenfeuchtHausslerWarmuth1989}), the distribution $\mathbb{P}$ is only placed on the instance space $\mathcal{X}$ itself.
+    By contrast, in the \emph{deterministic model}~\cite{LearnabilityDeterministic}, the distribution $\mathbb{P}$ is only placed on the instance space $\mathcal{X}$ itself.
     The labels are then determined by a fixed but unknown target function $t \in \{0,1\}^\mathcal{X}$.
     Thus the data are of the form $(x_i,t(x_i))$, where the $x_i$ are drawn according to some probability distribution defined on $\sigma$-algebra on $\mathcal{X}$.
 
     The distinction between these two paradigms lies in whether label uncertainty is treated as intrinsic (agnostic case) or entirely due to the randomness of instance selection (deterministic case).
-\end{remark}
+\end{remarknl}
 
-\subsection{Learning Function}
+\subsection{Evaluating a Learned Hypothesis}\label{subsec:evaluating-hypothesis}
 
-The goal of a learning problem is to select, based on a finite sample, a hypothesis $h \in \mathcal{H}$ that generalises well to unseen data.
-This selection mechanism is formalised by a \emph{learning function}, also called a \emph{learning algorithm} (see e.g.~\cite[Def.~2.1]{Vapnik1998}, \cite[Def.~2.2]{AnthonyBartlett2009}).
+We now make the discussion of learning more rigorous and to introduce the central notions needed for the formal study of Probably Approximately Correct (PAC) learning. PAC learning is not itself a learning function—it is a framework that specifies conditions under which any learning function succeeds. To arrive at this definition, we first need a precise way of evaluating the quality of hypotheses chosen by a learning function. In particular, we distinguish between the \emph{true error}, which measures performance with respect to the underlying distribution, and the \emph{sample error}, which measures performance on a finite dataset. These notions allow us to formalise the idea that a hypothesis may look good on the training data yet perform poorly on unseen examples. We also define the notion of \emph{optimal error}, which represents the best performance achievable within a given hypothesis space. Together, these definitions provide the language required to analyse concrete learning strategies. As an illustration, we will consider the sample error minimisation (SEM~\cite{KrappWirth2021}) framework (also known as empirical risk minimisation (ERM) in~\cite{UnderstandinMachineLearning}), where the learning function selects the hypothesis that minimises the sample error. While intuitive and computationally straightforward, this strategy highlights the gap between sample and true performance, motivating the need for stronger guarantees such as those provided by the PAC framework, which will be developed in the following sections.
 
-\begin{definition}[Learning function]
-    A \emph{learning function} for a hypothesis space $\mathcal{H}$ is a map
-    \[
-        \mathcal{A} : \bigcup_{m \in \mathbb{N}} \mathcal{Z}^m \to \mathcal{H},
-    \]
-    which assigns to each finite sample $z = ((x_1,y_1),\dots,(x_m,y_m)) \in \mathcal{Z}^m$ a hypothesis $\mathcal{A}(z) \in \mathcal{H}$.
-\end{definition}
 
-\medskip
+%\begin{example}
+%    \label{ex:learning-function}
+%    Let $\mathcal{X}=\{a,b,c\}$ be a finite instance space, so the sample space is $\mathcal{Z}=\mathcal{X}\times\{0,1\}$.
+%    The hypothesis space $\mathcal{H}$ consists of all functions $h:\mathcal{X}\to\{0,1\}$, of which there are $2^{|\mathcal{X}|}=8$ in total.
+%    For illustration, we display a few of them in the table below:
+%
+%    \[
+%        \begin{array}{c|ccc}
+%            h & a & b & c \\
+%            \hline
+%            h_0 & 0 & 0 & 0 \\
+%            h_1 & 1 & 1 & 1 \\
+%            h_{ab} & 0 & 0 & 1 \\
+%            h_{bc} & 1 & 0 & 0 \\
+%        \end{array}
+%    \]
+%
+%    Suppose we observe a finite sample
+%    \[
+%        \overline{z} = \bigl((a,0),(b,0),(c,1)\bigr) \in \mathcal{Z}^3,
+%    \]
+%    which is drawn according to some distribution $\mathbb{D}\in\mathcal{D}$.
+%    A learning function $\mathcal{A}$ then selects a hypothesis from $\mathcal{H}$ that is consistent with this sample.
+%    In this case, $\mathcal{A}(\overline{z})=h_{ab}$ would be a natural choice, since $h_{ab}$ agrees with the observed labels on $a$, $b$, and $c$.
+%
+%\end{example}
+%
+%This example~\ref{ex:learning-function} illustrates the general mechanism of learning: a learning function $\mathcal{A}$ takes a finite sample and outputs a hypothesis $h\in\mathcal{H}$.
 
-\noindent
-Intuitively, the learning function processes the observed data and returns a candidate hypothesis that should explain the observed labels and hopefully predict new ones correctly.
 
-\begin{example}
-    \label{ex:learning-function}
-    Let $\mathcal{X}=\{a,b,c\}$ be a finite instance space, so the sample space is $\mathcal{Z}=\mathcal{X}\times\{0,1\}$.
-    The hypothesis space $\mathcal{H}$ consists of all functions $h:\mathcal{X}\to\{0,1\}$, of which there are $2^{|\mathcal{X}|}=8$ in total.
-    For illustration, we display a few of them in the table below:
+%\subsection{Error of a Hypothesis}\label{subsec:error-of-hypothesis}
 
-    \[
-        \begin{array}{c|ccc}
-            h & a & b & c \\
-            \hline
-            h_0 & 0 & 0 & 0 \\
-            h_1 & 1 & 1 & 1 \\
-            h_{ab} & 0 & 0 & 1 \\
-            h_{bc} & 1 & 0 & 0 \\
-        \end{array}
-    \]
-
-    Suppose we observe a finite sample
-    \[
-        \overline{z} = \bigl((a,0),(b,0),(c,1)\bigr) \in \mathcal{Z}^3,
-    \]
-    which is drawn according to some distribution $\mathbb{D}\in\mathcal{D}$.
-    A learning function $\mathcal{A}$ then selects a hypothesis from $\mathcal{H}$ that is consistent with this sample.
-    In this case, $\mathcal{A}(\overline{z})=h_{ab}$ would be a natural choice, since $h_{ab}$ agrees with the observed labels on $a$, $b$, and $c$.
-
-\end{example}
-
-This example~\ref{ex:learning-function} illustrates the general mechanism of learning: a learning function $\mathcal{A}$ takes a finite sample and outputs a hypothesis $h\in\mathcal{H}$. What distinguishes the PAC viewpoint is a quantitative requirement: for given $\varepsilon,\delta\in(0,1)$, if the sample size $m$ is large enough, then with probability at least $1-\delta$ (over the random draw of the sample) the hypothesis $\mathcal{A}(\overline{z})$ misclassifies new points with probability at most $\varepsilon$. Here
-$\varepsilon$ is the \emph{accuracy parameter} (“approximately”),
-while $\delta$ is the \emph{confidence parameter} (“probably”).~\cite[Sec 3.1, p.43]{UnderstandinMachineLearning}
-A fully formal definition of PAC learning will be given in~\ref{sec:pac-learning} and will be central to the rest of the dissertation.
-
-\subsection{Error of a Hypothesis}
+\subsubsection{Performance of a hypothesis}
 
 The performance of a hypothesis is evaluated by how well it predicts labels of unseen data drawn from the distribution.
 This is formalised through the notion of \emph{error}.
-We distinguish between the \emph{true error}, which depends on the underlying distribution, and the \emph{sample error}, which is based only on the observed data.
+We distinguish between the \emph{true error}, which depends on the underlying distribution, and the \emph{sample error}, which is based only on the observed data. Recall that, by our assumption in the remark~\ref{rem:hyposthesis-is-measurable}, the graph of a hypothesis is measurable. This is required for the definition of true error to be well-defined.
 
 \begin{definition}[True error]
     Let $\mathbb{D} \in \mathcal{D}$ be a distribution on $(\mathcal{Z},\Sigma_{\mathcal{Z}})$
@@ -134,9 +118,13 @@ We distinguish between the \emph{true error}, which depends on the underlying di
     \]
 \end{definition}
 
-\noindent
-Thus, $\operatorname{er}_{\mathbb{D}}(h)$ is the probability of misclassification under the distribution $\mathbb{D}$.
-It quantifies the long-run frequency with which $h$ makes mistakes if we were to draw infinitely many samples.
+%\noindent
+%Thus, $\operatorname{er}_{\mathbb{D}}(h)$ is the probability of misclassification under the distribution $\mathbb{D}$.
+%It quantifies the long-run frequency with which $h$ makes mistakes if we were to draw infinitely many samples.
+
+\medskip
+
+The following definition, invokes the other assumption about singletons $\{z\}\in \mathcal{Z}$ being measurable.
 
 \begin{definition}[Sample error]
     Let $z = (z_1,\dots,z_m)\in\mathcal{Z}^m$ be a finite sample and $h\in\mathcal{H}$.
@@ -154,7 +142,7 @@ It quantifies the long-run frequency with which $h$ makes mistakes if we were to
     \]
 \end{definition}
 
-Following lemma, shows that the sample error of a hypothesis $h \in \mathcal{H}$ is measurable function, assuming $\Gamma(h) \in \Sigma_{\mathcal{Z}}$.
+The following lemma, shows that the sample error of a hypothesis $h \in \mathcal{H}$ is measurable function, assuming $\Gamma(h) \in \Sigma_{\mathcal{Z}}$.
 
 \begin{lemma}[Measurability of the Sample Error Map]
     \label{lem:sample-error-measurable}
@@ -173,8 +161,7 @@ Following lemma, shows that the sample error of a hypothesis $h \in \mathcal{H}$
     \qedhere
 \end{proof}
 
-The sample error $\hat{\operatorname{er}}_z(h)$ measures how often $h$ disagrees with the observed labels in the dataset $z$.
-Unlike the true error, it is always computable from the available data. The natural question is how the sample error relates to the true error. The next lemma establishes a basic relationship: the sample error is an unbiased estimator of the true error.
+The sample error $\hat{\operatorname{er}}_z(h)$ measures how often $h$ disagrees with the observed labels in the dataset $\overline{z} \in \mathcal{Z}$. Unlike the true error, it is always computable from the available data. The natural question is how the sample error relates to the true error. The next lemma establishes a basic relationship: the sample error is an unbiased estimator of the true error.
 
 \begin{lemma}[Sample error is an unbiased estimator]
     \label{lem:sample-error-unbiased}
@@ -230,29 +217,11 @@ The true error is the performance of a hypothesis on the underlying distribution
 The sample error, by contrast, is observable but may deviate from the true error due to randomness in sampling.
 The optimal errors describe the best performance achievable by any hypothesis in $\mathcal{H}$, either with respect to $\mathbb{D}$ (idealised) or with respect to the observed dataset (computable).
 
-\begin{example}
-    Reconsider the instance space $\mathcal{X}=\{a,b,c\}$ and the hypothesis space $\mathcal{H}$ from Example~\ref{ex:learning-function}.
-    Suppose the distribution $\mathbb{D}$ assigns probabilities
-    \[
-        \mathbb{D}((a,0))=0.3,\quad \mathbb{D}((b,0))=0.4,\quad \mathbb{D}((c,1))=0.3.
-    \]
-    For the hypothesis $h_{ab}$ with $h_{ab}(a)=0$, $h_{ab}(b)=0$, $h_{ab}(c)=1$, the true error is
-    \[
-        \operatorname{er}_{\mathbb{D}}(h_{ab}) = 0,
-    \]
-    since $h_{ab}$ matches all labels perfectly.
-    On the other hand, for the constant hypothesis $h_0$ with $h_0(x)=0$ for all $x$, we compute
-    \[
-        \operatorname{er}_{\mathbb{D}}(h_0) = \mathbb{D}((c,1)) = 0.3.
-    \]
+\medskip
 
-    If we observe a finite sample $z=((a,0),(b,0),(c,0))$, then
-    \[
-        \hat{\operatorname{er}}_z(h_{ab}) = \tfrac{1}{3}, \quad
-        \hat{\operatorname{er}}_z(h_{0}) = \tfrac{1}{3}.
-    \]
-    This illustrates how sample error can differ from true error, depending on which sample is drawn.
-\end{example}
+Formally, the learning function $\mathcal{A}: \cup_{n \in \mathbb{N}} \mathcal{Z}^n \to \mathcal{H}$ takes the finite sample $\overline{z} \in \mathcal{Z}^m$ and returns a candidate hypothesis $\mathcal{A}(\overline{z}) \in \mathcal{H}$ that should explain the observed labels and hopefully predict new ones correctly. What distinguishes the PAC viewpoint is a quantitative requirement: for given $\varepsilon,\delta\in(0,1)$, if the sample size $m$ is large enough, then with probability at least $1-\delta$ (over the random draw of the sample) the hypothesis $\mathcal{A}(\overline{z})$ misclassifies new points with probability at most $\varepsilon$. Here$\varepsilon$ is the \emph{accuracy parameter} (“approximately”),
+while $\delta$ is the \emph{confidence parameter} (“probably”).~\cite[Sec 3.1, p.43]{UnderstandinMachineLearning}
+A fully formal definition of PAC learning will be given in~\ref{sec:pac-learning} and will be central to the rest of the dissertation.
 
 
 
