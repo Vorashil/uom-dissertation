@@ -68,7 +68,9 @@ To ensure that such finite samples are measurable, it is natural to require that
 
 \subsection{Evaluating a Learned Hypothesis}\label{subsec:evaluating-hypothesis}
 
-We now make the discussion of learning more rigorous and to introduce the central notions needed for the formal study of Probably Approximately Correct (PAC) learning. PAC learning is not itself a learning function—it is a framework that specifies conditions under which any learning function succeeds. To arrive at this definition, we first need a precise way of evaluating the quality of hypotheses chosen by a learning function. In particular, we distinguish between the \emph{true error}, which measures performance with respect to the underlying distribution, and the \emph{sample error}, which measures performance on a finite dataset. These notions allow us to formalise the idea that a hypothesis may look good on the training data yet perform poorly on unseen examples. We also define the notion of \emph{optimal error}, which represents the best performance achievable within a given hypothesis space. Together, these definitions provide the language required to analyse concrete learning strategies. As an illustration, we will consider the sample error minimisation (SEM~\cite{KrappWirth2021}) framework (also known as empirical risk minimisation (ERM) in~\cite{UnderstandinMachineLearning}), where the learning function selects the hypothesis that minimises the sample error. While intuitive and computationally straightforward, this strategy highlights the gap between sample and true performance, motivating the need for stronger guarantees such as those provided by the PAC framework, which will be developed in the following sections.
+We now make the discussion of learning more rigorous and to introduce the central notions needed for the formal study of Probably Approximately Correct (PAC) learning. PAC learning is not itself a learning function—it is a framework that specifies conditions under which any learning function succeeds. To arrive at this definition, we first need to understand its components, namely \textit{probably correct} and \textit{approximately correct}. These components are defined precisely by using notions that allows us to evaluate the quality of ahypotheses chosen by a learning function.
+
+%In particular, we distinguish between the \emph{true error}, which measures performance with respect to the underlying distribution, and the \emph{sample error}, which measures performance on a finite dataset. These notions allow us to formalise the idea that a hypothesis may look good on the training data yet perform poorly on unseen examples. We also define the notion of \emph{optimal error}, which represents the best performance achievable within a given hypothesis space. Together, these definitions provide the language required to analyse concrete learning strategies. As an illustration, we will consider the sample error minimisation (SEM~\cite{KrappWirth2021}) framework (also known as empirical risk minimisation (ERM) in~\cite{UnderstandinMachineLearning}), where the learning function selects the hypothesis that minimises the sample error. While intuitive and computationally straightforward, this strategy highlights the gap between sample and true performance, motivating the need for stronger guarantees such as those provided by the PAC framework, which will be developed in the following sections.
 
 
 %\begin{example}
@@ -103,11 +105,11 @@ We now make the discussion of learning more rigorous and to introduce the centra
 
 %\subsection{Error of a Hypothesis}\label{subsec:error-of-hypothesis}
 
-\subsubsection{Performance of a hypothesis}
+%\subsubsection{Performance of a hypothesis}
 
 The performance of a hypothesis is evaluated by how well it predicts labels of unseen data drawn from the distribution.
 This is formalised through the notion of \emph{error}.
-We distinguish between the \emph{true error}, which depends on the underlying distribution, and the \emph{sample error}, which is based only on the observed data. Recall that, by our assumption in the remark~\ref{rem:hyposthesis-is-measurable}, the graph of a hypothesis is measurable. This is required for the definition of true error to be well-defined.
+We distinguish between the \emph{true error}, which depends on the underlying distribution, and the \emph{sample error}, which is based only on the observed data. Only the latter is available to the learner the underlying distribution according to which the sample data points are drawn is not known. Recall that, by our assumption in the remark~\ref{rem:hyposthesis-is-measurable}, the graph of a hypothesis is measurable. This is required for the definition of true error to be well-defined.
 
 \begin{definition}[True error]
     Let $\mathbb{D} \in \mathcal{D}$ be a distribution on $(\mathcal{Z},\Sigma_{\mathcal{Z}})$
@@ -148,20 +150,23 @@ The following lemma, shows that the sample error of a hypothesis $h \in \mathcal
     \label{lem:sample-error-measurable}
     Let $h \in \mathcal{H}$ be a hypothesis with a measurable graph $\Gamma(h)$. The sample error map,
     \[
-        z \mapsto \hat{\operatorname{er}}_{z}(h),
+        \begin{aligned}
+            \hat{\operatorname{er}}_{\square}(h): \mathcal{Z}^m &\to [0, 1]\\
+            \overline{z} &\mapsto \frac{1}{m}\sum_{i=1}^m \ell(h,z_i)
+        \end{aligned}
     \]
     is a $\Sigma_{\mathcal{Z}}^m$-measurable function from $\mathcal{Z}^m$ to $[0,1]$.
 \end{lemma}
 
 \begin{proof}
 
-    The sample error map $z \mapsto \frac{1}{m}\sum_{i=1}^m \ell(h,z_i)$ is a linear combination of the functions $f_i(z) = \ell(h,z_i)$. Each function $f_i$ is the composition $\ell(h, \cdot) \circ \pi_i$ of the loss function with the $i$-th coordinate projection map $\pi_i: \mathcal{Z}^m \to \mathcal{Z}$.
+    Write $\overline{z} \coloneqq (z_1, \dots, z_m)$. The sample error map $z \mapsto \frac{1}{m}\sum_{i=1}^m \ell(h,z_i)$ is a linear combination of the functions $f_i(z) = \ell(h,z_i)$. Each function $f_i$ is the composition $\ell(h, \cdot) \circ \pi_i$ of the loss function with the $i$-th coordinate projection map $\pi_i: \mathcal{Z}^m \to \mathcal{Z}$.
 
-    The loss function $\ell(h, \cdot)$ is measurable because it is the indicator of the measurable set $\mathcal{Z}\setminus\Gamma(h)$. The projection map $\pi_i$ is measurable by the definition of the product $\sigma$-algebra $\Sigma_{\mathcal{Z}}^m$. The composition of measurable functions is measurable, and so is a finite sum of such functions~\ref{subsec:measurable-functions}. Therefore, the sample error map is measurable~\cite[Prop 2.4]{FollandRealAnalysis}.
+    By~\ref{ex:measurable-functions}~$(1)$ loss function $\ell(h, \cdot)$ is measurable because it is the indicator of the measurable set $\mathcal{Z}\setminus\Gamma(h)$ and the projection map $\pi_i$ is measurable by ~\ref{ex:measurable-functions}~$(2)$. The composition of measurable functions is measurable, and so is a finite sum of such functions, by~\ref{rem:measurable-functions}~$(1)$ and~\ref{rem:measurable-functions}~$(2)$ respectively. Therefore, the sample error map is measurable.
     \qedhere
 \end{proof}
 
-The sample error $\hat{\operatorname{er}}_z(h)$ measures how often $h$ disagrees with the observed labels in the dataset $\overline{z} \in \mathcal{Z}$. Unlike the true error, it is always computable from the available data. The natural question is how the sample error relates to the true error. The next lemma establishes a basic relationship: the sample error is an unbiased estimator of the true error.
+The sample error $\hat{\operatorname{er}}_z(h)$ records how often a hypothesis $h$ disagrees with the observed labels in a dataset $z \in \mathcal{Z}^m$. Unlike the true error, it is always computable from the available data, but sample error is still useful estimator of the true error. In statistical terms, one would say that $\hat{\operatorname{er}}_z(h)$ plays the role of an \emph{estimator} for the true error $\operatorname{er}_{\mathbb{D}}(h)$, and it is \emph{unbiased} in the sense that its expectation coincides with the quantity being estimated. We do not develop the general framework of parameters and estimators here, but interested readers can consult~\cite[\S 8.4]{ProbabilityAndStatisticsDeGroot}. Note that this property follows directly from our measurability assumptions (in particular, that finite subsets of $\mathcal{Z}$ and the graphs of hypotheses are measurable). With this in place, the following lemma makes the statement precise.
 
 \begin{lemma}[Sample error is an unbiased estimator]
     \label{lem:sample-error-unbiased}
@@ -188,40 +193,42 @@ The sample error $\hat{\operatorname{er}}_z(h)$ measures how often $h$ disagrees
     \qedhere
 \end{proof}
 
-\begin{remarknl}[Why unbiasedness is not enough for learning]
-    \label{rem:unbiased-not-enough}
-    
-    While Lemma~\ref{lem:sample-error-unbiased} shows that the sample error is an unbiased estimator—meaning it is correct "on average"—this property alone is insufficient for learning. To understand why, consider the following critical points:
-    
-    First, the unbiasedness property holds for each hypothesis $h$ individually. When we fix a specific $h$ and draw many independent samples, the average of their sample errors converges to the true error by the weak law of large numbers~\cite[Chap.~9]{MeasureTheoryLeGall}. However, in learning, we do not fix $h$ in advance. Instead, a learning algorithm selects $h$ based on the observed data, typically by choosing the hypothesis with the smallest sample error.
-    
-    This data-dependent selection creates a fundamental problem: the hypothesis that looks best on the sample may have been "lucky" with that particular dataset. For instance, consider a hypothesis $h^*$ that happens to correctly classify all points in our sample purely by chance, yielding $\hat{\operatorname{er}}_z(h^*) = 0$. While the expected value $\mathbb{E}[\hat{\operatorname{er}}_z(h^*)]$ equals the true error $\operatorname{er}_{\mathbb{D}}(h^*)$, for this specific sample $z$, the gap $|\hat{\operatorname{er}}_z(h^*) - \operatorname{er}_{\mathbb{D}}(h^*)|$ could be large.
-    
-    The problem becomes more severe when we have many hypotheses. With a large hypothesis space $\mathcal{H}$, it becomes increasingly likely that at least one hypothesis will appear misleadingly good on any given sample. This is why we need a stronger property that controls the approximation error simultaneously for all hypotheses—this is precisely what uniform convergence provides, as we will see in Section~\ref{sec:pac-learning}.
-\end{remarknl}
+%\begin{remarknl}[Why unbiasedness is not enough for learning]
+%    \label{rem:unbiased-not-enough}
+%
+%    While Lemma~\ref{lem:sample-error-unbiased} shows that the sample error is an unbiased estimator—meaning it is correct "on average"—this property alone is insufficient for learning. To understand why, consider the following critical points:
+%
+%    First, the unbiasedness property holds for each hypothesis $h$ individually. When we fix a specific $h$ and draw many independent samples, the average of their sample errors converges to the true error by the weak law of large numbers~\cite[Chap.~9]{MeasureTheoryLeGall}. However, in learning, we do not fix $h$ in advance. Instead, a learning algorithm selects $h$ based on the observed data, typically by choosing the hypothesis with the smallest sample error.
+%
+%    This data-dependent selection creates a fundamental problem: the hypothesis that looks best on the sample may have been "lucky" with that particular dataset. For instance, consider a hypothesis $h^*$ that happens to correctly classify all points in our sample purely by chance, yielding $\hat{\operatorname{er}}_z(h^*) = 0$. While the expected value $\mathbb{E}[\hat{\operatorname{er}}_z(h^*)]$ equals the true error $\operatorname{er}_{\mathbb{D}}(h^*)$, for this specific sample $z$, the gap $|\hat{\operatorname{er}}_z(h^*) - \operatorname{er}_{\mathbb{D}}(h^*)|$ could be large.
+%
+%    The problem becomes more severe when we have many hypotheses. With a large hypothesis space $\mathcal{H}$, it becomes increasingly likely that at least one hypothesis will appear misleadingly good on any given sample. This is why we need a stronger property that controls the approximation error simultaneously for all hypotheses—this is precisely what uniform convergence provides, as we will see in Section~\ref{sec:pac-learning}.
+%\end{remarknl}
 
 \begin{definition}[Optimal error]
+    \label{def:optimal-error}
     The \emph{optimal true error} achievable by the hypothesis space $\mathcal{H}$ under $\mathbb{D}$ is
     \[
-        \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) := \inf_{h\in\mathcal{H}} \operatorname{er}_{\mathbb{D}}(h).
+        \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) \coloneqq \inf_{h\in\mathcal{H}} \operatorname{er}_{\mathbb{D}}(h).
     \]
     Similarly, given a finite sample $z \in \mathcal{Z}^m$, the \emph{optimal sample error} is
     \[
-        \operatorname{opt}_{z}(\mathcal{H}) := \min_{h\in\mathcal{H}} \hat{\operatorname{er}}_{z}(h).
+        \operatorname{opt}_{z}(\mathcal{H}) \coloneqq \min_{h\in\mathcal{H}} \hat{\operatorname{er}}_{z}(h).
     \]
 \end{definition}
 
-\medskip
+Note that in the definition~\ref{def:optimal-error}, the optimal true error is defined using infimum while optimal sample error is defined using $\min$. This is because, the set of values $\operatorname{er}_{\mathbb{D}}(h)$ ranges over may be infinite, while $\hat{\operatorname{er}}_{z}(h)$ can only take finitely many values. Moreover, $\operatorname{opt}_{\mathbb{D}}(\mathcal{H})$ is also referred as \textit{approximation error} in some literature (\cite[\S 2.1]{AnthonyBartlett1999}), since it describes the "best" function in $\mathcal{H}$ that can predict the unseen data drawn according to $\mathbb{D}$.
 
-The true error is the performance of a hypothesis on the underlying distribution, but it is typically inaccessible.
-The sample error, by contrast, is observable but may deviate from the true error due to randomness in sampling.
-The optimal errors describe the best performance achievable by any hypothesis in $\mathcal{H}$, either with respect to $\mathbb{D}$ (idealised) or with respect to the observed dataset (computable).
 
 \medskip
 
-Formally, the learning function $\mathcal{A}: \cup_{n \in \mathbb{N}} \mathcal{Z}^n \to \mathcal{H}$ takes the finite sample $\overline{z} \in \mathcal{Z}^m$ and returns a candidate hypothesis $\mathcal{A}(\overline{z}) \in \mathcal{H}$ that should explain the observed labels and hopefully predict new ones correctly. What distinguishes the PAC viewpoint is a quantitative requirement: for given $\varepsilon,\delta\in(0,1)$, if the sample size $m$ is large enough, then with probability at least $1-\delta$ (over the random draw of the sample) the hypothesis $\mathcal{A}(\overline{z})$ misclassifies new points with probability at most $\varepsilon$. Here$\varepsilon$ is the \emph{accuracy parameter} (“approximately”),
-while $\delta$ is the \emph{confidence parameter} (“probably”).~\cite[Sec 3.1, p.43]{UnderstandinMachineLearning}
-A fully formal definition of PAC learning will be given in~\ref{sec:pac-learning} and will be central to the rest of the dissertation.
+Formally, the learning function $\mathcal{A}: \cup_{n \in \mathbb{N}} \mathcal{Z}^n \to \mathcal{H}$ takes the finite sample $\overline{z} \in \mathcal{Z}^m$ and returns a candidate hypothesis $\mathcal{A}(\overline{z}) \in \mathcal{H}$ that should explain the observed labels and hopefully predict new ones correctly. Since the sample $\overline{z}$ can be 'unrepresentative', no learning function can in general guarantee zero error~\cite[\S 2.1, p.16]{AnthonyBartlett1999}. Even the best hypothesis in $\mathcal{H}$ may misclassify some instances, as captured by $\operatorname{opt}_{\mathbb{D}}(\mathcal{H})$. Accordingly, we adopt the PAC requirement in an informal but precise way: for any $\varepsilon,\delta\in(0,1)$ there exists a sample-size threshold $m_0$ such that for all $m\ge m_0$, with probability at least $1-\delta$ over $\mathbb{D}^m$, the returned hypothesis $\mathcal{A}(\overline{z})$, where $\overline{z} \in \mathcal{Z}$, satisfies
+\[
+    \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) \le \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) + \varepsilon.
+\]
+Thus, with enough data we can make the excess above the approximation error arbitrarily small, with high probability~\cite[Sec.~3.1, p.~43]{UnderstandinMachineLearning}.
+
+%Formally, the learning function $\mathcal{A}: \cup_{n \in \mathbb{N}} \mathcal{Z}^n \to \mathcal{H}$ takes the finite sample $\overline{z} \in \mathcal{Z}^m$ and returns a candidate hypothesis $\mathcal{A}(\overline{z}) \in \mathcal{H}$ that should explain the observed labels and hopefully predict new ones correctly. What distinguishes the PAC viewpoint is a quantitative requirement: for given $\varepsilon,\delta\in(0,1)$, if the sample size $m$ is large enough, then with probability at least $1-\delta$ (over the random draw of the sample) the hypothesis $\mathcal{A}(\overline{z})$ misclassifies new points with probability at most $\varepsilon$. Here $\varepsilon$ is the \emph{accuracy parameter} (“approximately”), while $\delta$ is the \emph{confidence parameter} (“probably”).~\cite[Sec 3.1, p.43]{UnderstandinMachineLearning}. A fully formal definition of PAC learning will be given in~\ref{sec:pac-learning} and will be central to the rest of the dissertation.
 
 
 
