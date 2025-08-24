@@ -1,67 +1,74 @@
-\section{PAC Learning}\label{sec:pac-learning}
+\section{PAC Learnability and the Fundamental Theorem}
 
-In this section, we develop the Probably Approximately Correct (PAC) learning framework, which formalises the idea that a learning algorithm should output hypotheses that generalise well beyond the observed data. We begin by introducing the \emph{uniform convergence property}, a key concept ensuring that empirical error approximates true error uniformly across all hypotheses. We then discuss how the \emph{VC dimension} characterises the complexity of a hypothesis space and plays a decisive role in determining when uniform convergence holds. Finally, we connect these ideas through the Fundamental Theorem of Statistical Learning, which provides a precise equivalence between finite VC dimension and PAC learnability.
+In this section, we formalise the notion of learnability through the \emph{Probably Approximately Correct (PAC)} framework. This model, first introduced by Valiant~\cite{Valiant1984} and later extended to the agnostic setting, provides a rigorous definition for what it means for a learning algorithm to succeed. We will then state the Fundamental Theorem of Statistical Learning, which provides a remarkable equivalence between PAC learnability and the combinatorial property of having a finite VC dimension.
 
-\subsection{Uniform Convergence Property}
+\subsection{Probably Approximately Correct (PAC) Learning}
 
-A central difficulty in learning theory is that, for a fixed hypothesis $h$, the sample error $\hat{\operatorname{er}}_{z}(h)$ is only a random approximation of the true error $\operatorname{er}_{\mathbb{D}}(h)$. For PAC learning, it is not enough that this approximation holds for a single hypothesis; instead, we require that it holds \emph{uniformly} over the entire hypothesis space $\mathcal{H}$. This ensures that a learning algorithm, which selects its output hypothesis based on the data, is guaranteed to find a hypothesis whose empirical performance is close to its true performance. In short, uniform convergence is the key property that bridges finite-sample performance with generalisation guarantees.
-
-\begin{definition}[Uniform Convergence Property, cf.~{\cite[Def.~2.4]{ShalevShwartzBenDavid2014}}]
-    Suppose there exists $m_{\mathcal{H}} \in \mathbb{N}$ such that the map
-    \[
-        U = U(\mathcal{H}, m, \mathbb{D}) : \mathcal{Z}^m \to [0,1], \qquad
-        z \mapsto \sup_{h \in \mathcal{H}} \bigl| \operatorname{er}_{\mathbb{D}}(h) - \hat{\operatorname{er}}_{z}(h) \bigr|
-    \]
-    is $\Sigma_{\mathcal{Z}}^m$-measurable for any $m \geq m_{\mathcal{H}}$ and any $\mathbb{D} \in \mathcal{D}$. Then $\mathcal{H}$ is said to have the \emph{uniform convergence property (UCP)} with respect to $\mathcal{D}$ if for every $\varepsilon, \delta \in (0,1)$ there exists $m_0 = m_0(\varepsilon,\delta) \geq m_{\mathcal{H}}$ such that for all $m \geq m_0$ and all $\mathbb{D} \in \mathcal{D}$,
-    \[
-        \mathbb{D}^m\!\left( \Bigl\{ z \in \mathcal{Z}^m \;\Big|\;
-                          \sup_{h \in \mathcal{H}} \bigl| \operatorname{er}_{\mathbb{D}}(h) - \hat{\operatorname{er}}_{z}(h) \bigr| \leq \varepsilon \Bigr\} \right) \geq 1-\delta.
-    \]
-\end{definition}
-
-\begin{remarknl}[Understanding uniform convergence parameters]
-    \label{rem:pointwise-to-uniform}
-    
-    As discussed in Remark~\ref{rem:unbiased-not-enough}, the unbiasedness of sample error provides only a pointwise guarantee: for each fixed hypothesis $h$, the sample error converges to the true error as the sample size grows. The uniform convergence property is stronger—it requires that the approximation holds simultaneously for all $h \in \mathcal{H}$.
-    
-    The definition involves three key parameters:
-    \begin{itemize}
-        \item $\varepsilon > 0$ is the \emph{accuracy parameter}: it bounds how far any sample error can deviate from its true error. Smaller $\varepsilon$ means tighter approximation.
-        \item $\delta > 0$ is the \emph{confidence parameter}: with probability at least $1-\delta$, the uniform bound holds. Smaller $\delta$ means higher confidence.
-        \item $m_0(\varepsilon, \delta)$ is the \emph{sample complexity}: the minimum sample size needed to achieve the desired accuracy and confidence. Crucially, this sample size works uniformly for all distributions in $\mathcal{D}$.
-    \end{itemize}
-    
-    The property guarantees that for any sample of size $m \geq m_0$, with probability at least $1-\delta$ over the random draw of the sample, we have
-    \[
-        \sup_{h \in \mathcal{H}} \bigl|\hat{\operatorname{er}}_{z}(h) - \operatorname{er}_{\mathbb{D}}(h)\bigr| \leq \varepsilon.
-    \]
-    This uniform control is essential for learning: when an algorithm chooses the hypothesis with the smallest sample error, uniform convergence ensures this choice will also perform well on the underlying distribution, preventing overfitting due to random fluctuations in the sample.
-\end{remarknl}
-
-\noindent
-This property guarantees that, with high probability, the sample error uniformly approximates the true error across the entire hypothesis class. As we will see, uniform convergence is the critical ingredient in proving PAC learnability: if $\mathcal{H}$ has UCP, then every empirical risk minimiser over $\mathcal{H}$ will generalise, which directly implies PAC learnability.
-
-\subsection{PAC Learnability}
-
-Having established the uniform convergence property, we now formally define PAC (Probably Approximately Correct) learnability. This framework, introduced by Valiant~\cite{Valiant1984}, captures the notion that a learning algorithm should produce hypotheses that generalise well with high probability.
+We begin with the formal definition of PAC learnability, which captures the requirements for a learning function to generalise well from a finite sample.
 
 \begin{definition}[PAC Learnability]
-    \label{def:pac-learnable}
-    A hypothesis space $\mathcal{H}$ is \emph{PAC learnable} with respect to a distribution family $\mathcal{D}$ if there exists a learning function $\mathcal{A}: \bigcup_{m \in \mathbb{N}} \mathcal{Z}^m \to \mathcal{H}$ and a function $m_{\mathcal{H}}: (0,1)^2 \to \mathbb{N}$ such that for every $\varepsilon, \delta \in (0,1)$, every $m \geq m_{\mathcal{H}}(\varepsilon, \delta)$, and every distribution $\mathbb{D} \in \mathcal{D}$, we have
-    \[
-        \mathbb{D}^m\!\left( \Bigl\{ z \in \mathcal{Z}^m \;\Big|\; \operatorname{er}_{\mathbb{D}}(\mathcal{A}(z)) \leq \inf_{h \in \mathcal{H}} \operatorname{er}_{\mathbb{D}}(h) + \varepsilon \Bigr\} \right) \geq 1-\delta.
-    \]
+    \label{def:pac-learnability}
+    A learning function $\mathcal{A}$ for $\mathcal{H}$ is called \emph{probably approximately correct (PAC)} (with respect to $\mathcal{D}$) if it satisfies the following condition:
+    \begin{quote}
+        For any $\varepsilon, \delta \in (0,1)$ there exists $m_0 = m_0(\varepsilon, \delta) \in \mathbb{N}$ such that for any $m \ge m_0$ and any $\mathbb{D} \in \mathcal{D}$ there exists a set $C = C(\varepsilon, \delta, m, \mathbb{D}) \in \Sigma_{\mathcal{Z}}^m$ such that
+        \[
+            C \subseteq \left\{ \overline{z} \in \mathcal{Z}^m \mid \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) \le \varepsilon \right\}
+        \]
+        and $\mathbb{D}^m(C) \ge 1 - \delta$.
+    \end{quote}
+    The hypothesis space $\mathcal{H}$ is called \emph{PAC learnable} (with respect to $\mathcal{D}$) if there exists a learning function for $\mathcal{H}$ that is PAC with respect to $\mathcal{D}$.
 \end{definition}
 
-\begin{remarknl}[Interpretation of PAC learnability]
-    
-    The definition captures three essential aspects of successful learning:
-    \begin{itemize}
-        \item \emph{Probably}: With probability at least $1-\delta$ over the random sample, the algorithm succeeds. The confidence parameter $\delta$ controls the failure probability.
-        \item \emph{Approximately}: The learned hypothesis has error within $\varepsilon$ of the best possible hypothesis in $\mathcal{H}$. The accuracy parameter $\varepsilon$ controls the approximation quality.
-        \item \emph{Correct}: The comparison is with the optimal achievable error $\inf_{h \in \mathcal{H}} \operatorname{er}_{\mathbb{D}}(h)$, not perfect classification. This allows for inherent noise in the data.
-    \end{itemize}
-    
-    The sample complexity function $m_{\mathcal{H}}(\varepsilon, \delta)$ determines how many samples are needed to achieve the desired accuracy and confidence. Importantly, this function depends only on $\mathcal{H}$, not on the specific distribution $\mathbb{D} \in \mathcal{D}$.
-\end{remarknl}
+In essence, PAC learnability guarantees that a learning algorithm can, with high probability ($1-\delta$), find a hypothesis whose performance is close (within $\varepsilon$) to the best possible performance within the hypothesis class, provided it is given a sufficiently large sample. The term $\operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H})$ is the \emph{excess error}, which measures how much worse our learned hypothesis is compared to the optimal one in $\mathcal{H}$. The definition is robust as it must hold for any data distribution $\mathbb{D} \in \mathcal{D}$.
 
+\subsection{The Fundamental Theorem of Statistical Learning}
+
+Having defined what it means for a hypothesis space to be learnable, we now turn to the central result that characterizes it. The Fundamental Theorem of Statistical Learning establishes a deep connection between the statistical property of PAC learnability and the combinatorial property of finite VC dimension. The theorem asserts that, under certain regularity conditions, a hypothesis space is PAC learnable if and only if its VC dimension is finite.
+
+Our focus will be on proving one direction of this equivalence: that PAC learnability implies a finite VC dimension. For the converse—that a finite VC dimension guarantees PAC learnability—we will provide a high-level sketch of the argument, which relies on the \emph{uniform convergence property}, and refer the interested reader to foundational texts like~\cite{AnthonyBartlett1999} or~\cite{UnderstandinMachineLearning} for a complete proof.
+
+Before stating the theorem, we must introduce two key concepts: a specific class of distributions needed for the proof and a technical condition on the hypothesis space.
+
+\begin{definition}[Discrete Uniform Distribution]
+    Let $(\Omega, \Sigma)$ be a measurable space. A probability measure $\mathbb{P}: \Sigma \to [0,1]$ is a \emph{discrete uniform distribution} if it is of the form
+    \[
+        \mathbb{P} = \frac{1}{\ell} \sum_{j=1}^{\ell} \delta_{\omega_j},
+    \]
+    where $\ell \in \mathbb{N}$ and $\omega_1, \dots, \omega_\ell \in \Omega$ are distinct points. Here, $\delta_{\omega_j}$ denotes the Dirac measure concentrated at $\omega_j$.
+\end{definition}
+
+This definition formalises the notion of a uniform distribution on a finite set of points, as introduced in Example~\ref{ex:classical-distributions}, using the language of Dirac measures. The significance of this type of distribution lies in its role as a "test case" for learnability. The proof of the Fundamental Theorem, particularly the direction we will demonstrate, relies on constructing specific probability distributions to challenge a learning algorithm. Discrete uniform distributions are ideal for this purpose because they allow us to focus all the probability mass on a carefully chosen finite set of points. If a hypothesis space can be learned, it must be able to handle these simple yet potentially adversarial scenarios. Therefore, the statement of the theorem will require that the set of distributions $\mathcal{D}$ is rich enough to contain all such discrete uniform distributions.
+
+Next, we introduce a set of technical measurability conditions on the hypothesis space, which we bundle under the term "well-behaved". These conditions are essential for the rigorous development of the theory, ensuring that the key quantities involved in the proofs are mathematically well-defined.
+
+\begin{definition}[Well-Behaved Hypothesis Space]
+    \label{def:well-behaved}
+    A hypothesis space $\emptyset \neq \mathcal{H} \subseteq \{0,1\}^\mathcal{X}$ is called \emph{well-behaved} (with respect to $\mathcal{D}$) if it satisfies the following conditions:
+    \begin{enumerate}
+        \item For every hypothesis $h \in \mathcal{H}$, its graph $\Gamma(h)$ is measurable.
+        \item There exists an integer $m_{\mathcal{H}} \in \mathbb{N}$ such that for all $m \ge m_{\mathcal{H}}$:
+        \begin{itemize}
+            \item The map $V = V(\mathcal{H}, m): \mathcal{Z}^{2m} \to [0,1]$, defined by
+            \[
+                (\overline{z}, \overline{z}') \mapsto \sup_{h \in \mathcal{H}} |\hat{\operatorname{er}}_{\overline{z}}(h) - \hat{\operatorname{er}}_{\overline{z}'}(h)|,
+            \]
+            is $\Sigma_{\mathcal{Z}}^{2m}$-measurable.
+            \item The map $U = U(\mathcal{H}, m, \mathbb{D}): \mathcal{Z}^m \to [0,1]$, defined by
+            \[
+                \overline{z} \mapsto \sup_{h \in \mathcal{H}} |\operatorname{er}_{\mathbb{D}}(h) - \hat{\operatorname{er}}_{\overline{z}}(h)|,
+            \]
+            is $\Sigma_{\mathcal{Z}}^m$-measurable for any $\mathbb{D} \in \mathcal{D}$.
+        \end{itemize}
+    \end{enumerate}
+\end{definition}
+
+The well-behavedness condition is a technical prerequisite for the Fundamental Theorem. The measurability of the map $U$, which captures the worst-case deviation between true and sample error, is essential for proving generalization bounds. The measurability of the map $V$ is crucial for a standard proof technique known as \emph{symmetrization}, which is used to show that a finite VC dimension implies PAC learnability (the direction we do not prove here). While technical, these conditions are satisfied by most hypothesis spaces encountered in practice.
+
+We are now ready to state the main theorem of this chapter, which brings together all the concepts we have introduced.
+
+\begin{theorem}[Fundamental Theorem of Statistical Learning]
+    \label{thm:fundamental-theorem}
+    Let $\mathcal{X}$ be a non-empty set, let $\Sigma_{\mathcal{Z}}$ be a $\sigma$-algebra on $\mathcal{Z} = \mathcal{X} \times \{0,1\}$ with $\mathcal{P}_{\mathrm{fin}}(\mathcal{Z}) \subseteq \Sigma_{\mathcal{Z}}$ and let $\mathcal{D}$ be a set of distributions on $(\mathcal{Z},\Sigma_{\mathcal{Z}})$ containing all discrete uniform distributions. Further, let $\emptyset \neq \mathcal{H} \subseteq \{0,1\}^\mathcal{X}$ be a hypothesis space that is well-behaved with respect to $\mathcal{D}$. Then $\mathcal{H}$ is PAC learnable with respect to $\mathcal{D}$ if and only if $\operatorname{vc}(\mathcal{H}) < \infty$.
+\end{theorem}
+
+This theorem provides a complete characterization of learnability in the PAC model. It tells us that the ability to learn from data is equivalent to a purely combinatorial property of the hypothesis space: having a finite VC dimension. In the next section, we will prove the "only if" direction of this theorem.

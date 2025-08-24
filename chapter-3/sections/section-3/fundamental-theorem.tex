@@ -1,0 +1,84 @@
+\section{Proof of the Fundamental Theorem of Statistical Learning}
+
+In this section, we provide the proof for the "only if" direction of the Fundamental Theorem of Statistical Learning (\ref{thm:fundamental-theorem}). We will then briefly outline the argument for the converse, which relies on the Uniform Convergence Property.
+
+\subsection{PAC Learnability Implies Finite VC Dimension}
+
+We will prove the following statement, which is one half of the Fundamental Theorem.
+
+\begin{theorem}
+    Let the learning framework $(\mathcal{X}, \Sigma_{\mathcal{Z}}, \mathcal{D}, \mathcal{H})$ be given as in Theorem~\ref{thm:fundamental-theorem}. If $\mathcal{H}$ is PAC learnable, then $\operatorname{vc}(\mathcal{H}) < \infty$.
+\end{theorem}
+
+\begin{proof}
+
+    The proof proceeds by contrapositive. We assume that $\mathcal{H}$ has an infinite VC dimension and show that it cannot be PAC learnable. To show that $\mathcal{H}$ is not PAC learnable, we must negate its definition. That is, we must show that there exist fixed accuracy and confidence parameters, $\varepsilon > 0$ and $\delta > 0$, such that for any sample size $m \in \mathbb{N}$, there exists a distribution $\mathbb{D} \in \mathcal{D}$ for which any learning algorithm $\mathcal{A}$ fails to meet the PAC guarantee. Specifically, the probability of the algorithm returning a hypothesis with an excess error greater than $\varepsilon$ will be at least $\delta$.
+
+    Let us fix the PAC parameters $\varepsilon = 1/8$ and $\delta = 1/7$. Let $\mathcal{A}$ be an arbitrary learning function and $m \in \mathbb{N}$ be any sample size. Our goal is to find a distribution $\mathbb{D} \in \mathcal{D}$ such that the hypothesis $\mathcal{A}(\overline{z})$ returned by the algorithm on a sample $\overline{z} \sim \mathbb{D}^m$ fails the PAC condition, i.e.,
+    \[
+        \mathbb{D}^m\left(\left\{ \overline{z} \in \mathcal{Z}^m \mid \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) > \frac{1}{8} \right\}\right) \ge \frac{1}{7}.
+    \]
+    This will demonstrate that no sample size $m_0$ can satisfy the PAC definition for these fixed $\varepsilon$ and $\delta$, proving that $\mathcal{H}$ is not PAC learnable.
+
+    First, we use the assumption of an infinite VC dimension to construct a specific learning problem that is designed to be difficult for any algorithm. Since $\operatorname{vc}(\mathcal{H}) = \infty$, there exists a set of any finite size that can be shattered by $\mathcal{H}$. We choose a set $S = \{x_1, \dots, x_{2m}\} \subseteq \mathcal{X}$ of size $2m$ that is shattered by $\mathcal{H}$.
+
+    Let $\mathcal{F} = \{0,1\}^S$ be the set of all $T \coloneq 2^{2m}$ possible binary functions on $S$. We index each function in $\mathcal{F}$ as
+    \[
+        \{0,1\}^S = \{f_1, \dots, f_T\}.
+    \]
+    By the definition of shattering, for each function $f_i \in \mathcal{F}$, there exists a hypothesis $h_i \in \mathcal{H}$ such that its restriction to $S$ is exactly $f_i$, i.e., $h_i|_S = f_i$.
+
+    Next, we use this shattered set to define a family of probability distributions. Let $\mathcal{Z}_S = S \times \{0,1\}$ be the finite sample space restricted to the shattered set $S$. For each $1 \leq i \leq T$, we define a distribution $\mathbb{D}_i$ on the measurable space $(\mathcal{Z}_S, \mathcal{P}(\mathcal{Z}_S))$. This distribution's probability mass function is given by:
+    \[
+        \mathbb{D}_i(\{z\}) =
+        \begin{cases}
+            \frac{1}{2m} & \text{if } z \in \Gamma(f_i), \\
+            0 & \text{otherwise},
+        \end{cases}
+    \]
+    where $\Gamma(f_i) = \{(x, f_i(x)) \mid x \in S\}$ is the graph of the function $f$ over the set $S$. In other words, $\mathbb{D}_i$ is the discrete uniform distribution on the $2m$ points that constitute the graph of $f_i$. Note that, by definition, $\operatorname{er}_{\mathbb{D}_i}(f_i) = 0$ for all $i \in \{1, \dots, T\}$.
+
+    The PAC condition for our chosen $\varepsilon=1/8$ and a distribution $\mathbb{D}_i$ simplifies to requiring that $\operatorname{er}_{\mathbb{D}_i}(\mathcal{A}(\overline{z})) \le 1/8$. Our strategy is to show that no single algorithm $\mathcal{A}$ can perform well simultaneously for all these distributions. We will show that there is at least one function $f \in \mathcal{F}$ for which the algorithm's expected error is high. The core of the argument is that a sample of size $m$ is insufficient to distinguish between the $2^{2m}$ possible underlying functions, as it is likely to reveal the labels of at most $m$ of the $2m$ points in $S$.
+
+    The following lemma formalises this idea. It states that there must be at least one distribution $\mathbb{D}_j$ for which the learning algorithm $\mathcal{A}$ has a high expected error, where $j \in \{1, \dots, T\}$.
+
+    \begin{lemma}
+        \label{lem:no-free-lunch}
+        Let $\mathcal{A}_S(\overline{z}) = \mathcal{A}(\overline{z})|_S$ be the restriction of the learned hypothesis to the set $S$. Then the following inequality holds:
+        \[
+            \max_{1 \leq i \leq T} \Bigl( \mathbb{E}_{\overline{z} \sim \mathbb{D}_i^m} \left[ \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z})) \right]\Bigr) \ge \frac{1}{4}.
+        \]
+    \end{lemma}
+
+    \begin{subproof}[Proof of Lemma~\ref{lem:no-free-lunch}]
+
+        Note that, $\operatorname{er}_{\mathbb{D}_i}(\mathcal{A}(\square)): \mathcal{Z}_S^m\to [0,1]$ is positive and the bounded random variable. Hence, by the definition of well-definedness of expected value~\cite[Def 8.3]{MeasureTheoryLeGall},
+        \[
+            \mathbb{E}_{\overline{z} \sim \mathbb{D}_i^m}(\operatorname{er}_{\mathbb{D}_i}(\mathcal{A}(\square)))
+        \]
+        is well-defined.
+
+        Moreover, the maximum of a set of values is always greater than or equal to their average. Therefore, we can find lower-bound for the maximum expected error by the average expected error taken over all $1 \leq i \leq T$:
+        \[
+            \max_{1 \leq i \leq T} \Bigl( \mathbb{E}_{\overline{z} \sim \mathbb{D}_i^m} \left[ \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z})) \right]\Bigr) \ge \frac{1}{T} \sum_{i = 1}^{T} \mathbb{E}_{\overline{z} \sim \mathbb{D}_i^m} \left[ \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z})) \right].
+        \]
+        We first analyze the average on the right-hand side. A sample $\overline{z}$ drawn from $\mathbb{D}_i^m$ consists of $m$ pairs $(x,y)$ where each $x$ is drawn uniformly from $S$ and $y=f_i(x)$. Let $S^m$ denote the set of all possible sequences of $m$ instances drawn from $S$ and $|S^m| = (2m)^m$. Note that, we draw these $m$ instances from $S$ with replacements, hence some $m$-tuples in $S^m$ contain duplicate instances. This observation will be used later in the proof.
+
+        For any sequence of instances $\overline{x} = (x_{j_1}, \dots, x_{j_m}) \in S^m$, denote the corresponding labeled sample under $f_i\in \mathcal{F}$ by
+        \[
+            \overline{z}_{\overline{x}}^{i} \coloneq ((x_{j_1}, f_i(x_{j_1})), \dots, (x_{j_m}, f_i(x_{j_m}))).
+        \]
+        The probability of drawing this specific sample is $\mathbb{D}_i^m(\{\overline{z}_{\overline{x}}^{i}\}) = (1/2m)^m$. Therefore,
+        \[
+            \mathbb{E}_{\overline{z} \sim \mathbb{D}_i^m} \left[ \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z})) \right] = \sum_{\overline{x} \in S^m} \frac{1}{(2m)^m} \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z}_{\overline{x}}^{i})))
+        \]
+        for all $i \in \{1, \dots, T\}$.
+
+        We can now rewrite the expectation as a sum over all possible instance sequences $\overline{x} \in S^m$ and then swap the order of summation:
+        \begin{align*}
+            \frac{1}{T} \sum_{i=1}^{T} \mathbb{E}_{\overline{z} \sim \mathbb{D}_i^m} \left[ \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z})) \right] &= \frac{1}{T}  \sum_{i=1}^{T} \left( \sum_{\overline{x} \in S^m} \frac{1}{(2m)^m} \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z}_{\overline{x}}^{i}))) \right) \\
+            &= \frac{1}{(2m)^m} \sum_{\overline{x} \in S^m} \left( \frac{1}{T} \sum_{i=1}^{T} \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z}_{\overline{x}}^{i})) \right). \\
+            &\geq \min_{\overline{x} \in S^m} \frac{1}{T}  \sum_{i=1}^{T} \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z}_{\overline{x}}^{i}))
+        \end{align*}
+
+        Fix $\overline{x}'=(x_1',\dots, x_m') \in S^m$.
