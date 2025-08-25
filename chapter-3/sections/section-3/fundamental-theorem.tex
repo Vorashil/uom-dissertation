@@ -207,3 +207,122 @@ We will prove the following statement, which is one half of the Fundamental Theo
 
     We have shown that for any sample size $m$, there exists a distribution $\mathbb{D} \in \mathcal{D}$ for which the PAC condition fails. This completes the proof by contrapositive.
 \end{proof}
+
+\subsection{Finite VC Dimension Implies PAC Learnability}
+
+We now turn to the converse of the theorem proven in the previous section. Our goal is to show that if a hypothesis space $\mathcal{H}$ has a finite VC dimension, it is PAC learnable. Instead of a direct proof, we will establish a chain of implications that connects several key concepts. To state these equivalences precisely, we must first formally define the necessary concepts.
+
+We begin by introducing the Uniform Convergence Property. This is a powerful statistical guarantee ensuring that, with high probability, the sample error provides a uniformly close approximation of the true error across all hypotheses in the class. As we will see, this property is the key to proving learnability.
+
+\begin{definition}[Uniform Convergence Property]
+    \label{def:ucp}
+    Suppose that the map $U = U(\mathcal{H}, m, \mathbb{D}): \mathcal{Z}^m \to [0, 1]$, defined by
+    \[
+        \overline{z} \mapsto \sup_{h \in \mathcal{H}} |\operatorname{er}_{\mathbb{D}}(h) - \hat{\operatorname{er}}_{\overline{z}}(h)|,
+    \]
+    is $\Sigma_{\mathcal{Z}}^m$-measurable for any $m \ge m_{\mathcal{H}}$ and any $\mathbb{D} \in \mathcal{D}$. Then the hypothesis space $\mathcal{H}$ is said to have the \emph{uniform convergence property (UCP)} if for any $\varepsilon, \delta \in (0,1)$ there exists $m_0 = m_0(\varepsilon, \delta) \ge m_{\mathcal{H}}$ such that for any $m \ge m_0$ and any $\mathbb{D} \in \mathcal{D}$, the following inequality holds:
+    \[
+        \mathbb{D}^m \left( \left\{ \overline{z} \in \mathcal{Z}^m \mid \sup_{h \in \mathcal{H}} |\operatorname{er}_{\mathbb{D}}(h) - \hat{\operatorname{er}}_{\overline{z}}(h)| \le \varepsilon \right\} \right) \ge 1 - \delta.
+    \]
+\end{definition}
+
+The UCP is the key to ensuring that what we learn from a finite sample (the sample error) is a reliable proxy for how well our hypothesis will perform on new data (the true error), uniformly for all hypotheses.
+
+Next, we define the specific type of learning algorithm that will allow us to bridge the gap between UCP and PAC learnability. A natural and widely studied learning principle is \emph{Sample Error Minimization (SEM)}, which simply selects a hypothesis that best fits the training data. We consider a slightly weaker, more general condition.
+
+\begin{definition}[Nearly Minimizing the Sample Error]
+    \label{def:nmse}
+    A learning function $\mathcal{A}$ for $\mathcal{H}$ is \emph{nearly minimizing the sample error (NMSE)} if for any $\varepsilon \in (0,1)$ there exists $m_0 = m_0(\varepsilon) \in \mathbb{N}$ such that for any $m \ge m_0$ and any $\overline{z} \in \mathcal{Z}^m$ the following inequality holds:
+    \[
+        \hat{\operatorname{er}}_{\overline{z}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\overline{z}}(\mathcal{H}) \le \varepsilon.
+    \]
+\end{definition}
+
+With these definitions in place, we can now state the full set of equivalences that constitute the Fundamental Theorem of Statistical Learning.
+
+\begin{theorem}
+    \label{thm:ftsl-equivalences}
+    Let the learning framework $(\mathcal{X}, \Sigma_{\mathcal{Z}}, \mathcal{D}, \mathcal{H})$ be given as in Theorem~\ref{thm:fundamental-theorem}. The following conditions are equivalent:
+    \begin{enumerate}
+        \item $\mathcal{H}$ has finite VC dimension.
+        \item $\mathcal{H}$ has the uniform convergence property with respect to $\mathcal{D}$.
+        \item Any learning function for $\mathcal{H}$ that is nearly minimizing the sample error (NMSE) is PAC with respect to $\mathcal{D}$.
+        \item $\mathcal{H}$ is PAC learnable with respect to $\mathcal{D}$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{remark}
+    In the previous section, we proved the implication $(4) \implies (1)$. In this section, we will complete the proof of the theorem by establishing the implications $(2) \implies (3)$ and $(3) \implies (4)$. The implication $(1) \implies (2)$ is a cornerstone result of statistical learning theory, showing that a finite combinatorial dimension is sufficient to guarantee uniform statistical convergence. Its proof relies on techniques which are beyond the scope of this dissertation. We will therefore refer to~\cite[\S 3]{KrappWirth2021} for its proof.
+\end{remark}
+
+\subsubsection{UCP Implies PAC Learnability for NMSE Algorithms}
+
+We now prove the implication $(2) \implies (3)$ from Theorem~\ref{thm:ftsl-equivalences}. The core idea is that if the sample error is a uniformly good approximation of the true error (the UCP), then an algorithm that finds a hypothesis with a nearly minimal sample error (NMSE) must also be finding a hypothesis with a nearly minimal true error.
+
+\begin{theorem}
+    Let the learning framework be as defined in Theorem~\ref{thm:fundamental-theorem}. If the hypothesis space $\mathcal{H}$ has the uniform convergence property, then any learning function for $\mathcal{H}$ that is NMSE is PAC.
+\end{theorem}
+
+\begin{proof}
+
+    Let $\mathcal{A}$ be an NMSE learning function for $\mathcal{H}$, and assume that $\mathcal{H}$ has the UCP. Let $\varepsilon, \delta \in (0,1)$ be given. Our goal is to find a sample size $m_0$ such that for all $m \ge m_0$, the PAC condition holds.
+
+    Since $\mathcal{H}$ is well-behaved, there exists an $m_{\mathcal{H}}$ such that the map $U$ is measurable for $m \ge m_{\mathcal{H}}$. Because $\mathcal{H}$ has the UCP and $\mathcal{A}$ is NMSE, we can choose accuracy parameters for each property. Let's use $\varepsilon/4$.
+    \begin{itemize}
+        \item From the UCP definition, there exists a sample size $m_0^{\text{UCP}}(\varepsilon/4, \delta)$.
+        \item From the NMSE definition, there exists a sample size $m_0^{\text{NMSE}}(\varepsilon/4)$.
+    \end{itemize}
+    We define our overall sample size threshold as $m_0 \coloneqq \max\{m_{\mathcal{H}}, m_0^{\text{UCP}}(\varepsilon/4, \delta), m_0^{\text{NMSE}}(\varepsilon/4)\}$.
+
+    Now, let $m \ge m_0$ and let $\mathbb{D} \in \mathcal{D}$ be any distribution. By the UCP guarantee, we know there is a set
+    \[
+        C \coloneqq \left\{ \overline{z} \in \mathcal{Z}^m \mid \sup_{h \in \mathcal{H}} |\operatorname{er}_{\mathbb{D}}(h) - \hat{\operatorname{er}}_{\overline{z}}(h)| \le \frac{\varepsilon}{4} \right\}
+    \]
+    such that $C \in \Sigma_{\mathcal{Z}}^m$ and $\mathbb{D}^m(C) \ge 1-\delta$. This set $C$ will be the one we use to satisfy the PAC definition.
+
+    It remains to show that for any sample $\overline{z} \in C$, the excess error is bounded by $\varepsilon$. Let $\overline{z} \in C$. The condition for being in $C$ implies that for all $h \in \mathcal{H}$:
+    \begin{equation} \label{eq:ucp-bound-for-all-h}
+    |\operatorname{er}_{\mathbb{D}}(h) - \hat{\operatorname{er}}_{\overline{z}}(h)| \le \frac{\varepsilon}{4}.
+    \end{equation}
+    Furthermore, by the definition of the infimum, for any $\varepsilon' > 0$, there exists a hypothesis that is nearly optimal. Let us choose $\varepsilon' = \varepsilon/4$. Then there exists a hypothesis $h_\varepsilon \in \mathcal{H}$ such that
+    \[
+        \operatorname{er}_{\mathbb{D}}(h_\varepsilon) \le \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) + \frac{\varepsilon}{4}.
+    \]
+    Now we construct a chain of inequalities for the error of the hypothesis $\mathcal{A}(\overline{z})$ returned by the algorithm on the sample $\overline{z}$:
+    \begin{align*}
+        \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) &\le \hat{\operatorname{er}}_{\overline{z}}(\mathcal{A}(\overline{z})) + \frac{\varepsilon}{4} && \text{(by \eqref{eq:ucp-bound-for-all-h} applied to } h = \mathcal{A}(\overline{z})\text{)} \\
+        &\le \left( \operatorname{opt}_{\overline{z}}(\mathcal{H}) + \frac{\varepsilon}{4} \right) + \frac{\varepsilon}{4} && \text{(since } \mathcal{A} \text{ is NMSE and } m \ge m_0\text{)} \\
+        &= \min_{h \in \mathcal{H}} \hat{\operatorname{er}}_{\overline{z}}(h) + \frac{\varepsilon}{2} \\
+        &\le \hat{\operatorname{er}}_{\overline{z}}(h_\varepsilon) + \frac{\varepsilon}{2} && \text{(by definition of minimum)} \\
+        &\le \left( \operatorname{er}_{\mathbb{D}}(h_\varepsilon) + \frac{\varepsilon}{4} \right) + \frac{\varepsilon}{2} && \text{(by \eqref{eq:ucp-bound-for-all-h} applied to } h = h_\varepsilon\text{)} \\
+        &\le \left( \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) + \frac{\varepsilon}{4} \right) + \frac{3\varepsilon}{4} && \text{(by choice of } h_\varepsilon\text{)} \\
+        &= \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) + \varepsilon.
+    \end{align*}
+    We have shown that for any $\overline{z} \in C$, it holds that $\operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) \le \varepsilon$. Since $C \subseteq \{ \overline{z} \mid \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) \le \varepsilon \}$, $C \in \Sigma_{\mathcal{Z}}^m$, and $\mathbb{D}^m(C) \ge 1-\delta$, the learning function $\mathcal{A}$ is PAC.
+\end{proof}
+
+\subsubsection{Existence of an NMSE Algorithm}
+
+Finally, we prove the implication $(3) \implies (4)$ from Theorem~\ref{thm:ftsl-equivalences}. The statement (3) asserts that if a learning function is NMSE, then it is PAC. To show that the hypothesis space $\mathcal{H}$ is PAC learnable (4), we only need to demonstrate that at least one such NMSE learning function is guaranteed to exist for any hypothesis space.
+
+\begin{proposition}
+    Let $\mathcal{X}$ be a non-empty set and let $\emptyset \neq \mathcal{H} \subseteq \{0,1\}^\mathcal{X}$ be a hypothesis space. Then there exists a learning function for $\mathcal{H}$ that minimizes the sample error (SEM) and is therefore NMSE.
+\end{proposition}
+
+\begin{proof}
+    Let $m \in \mathbb{N}$ and let $\overline{z} \in \mathcal{Z}^m$ be an arbitrary sample. The sample error $\hat{\operatorname{er}}_{\overline{z}}(h)$ can only take values in the finite set $\{0, 1/m, 2/m, \dots, 1\}$. Therefore, the set of all possible sample errors for a given $\overline{z}$, $\{\hat{\operatorname{er}}_{\overline{z}}(h) \mid h \in \mathcal{H}\}$, is a finite subset of these values.
+
+    This means that the infimum of the sample error is always achieved by at least one hypothesis. That is,
+    \[
+        \operatorname{opt}_{\overline{z}}(\mathcal{H}) = \inf_{h \in \mathcal{H}} \hat{\operatorname{er}}_{\overline{z}}(h) = \min_{h \in \mathcal{H}} \hat{\operatorname{er}}_{\overline{z}}(h).
+    \]
+    For each sample $\overline{z}$, we can therefore choose a hypothesis $h_{\overline{z}} \in \mathcal{H}$ such that $\hat{\operatorname{er}}_{\overline{z}}(h_{\overline{z}}) = \operatorname{opt}_{\overline{z}}(\mathcal{H})$.
+
+    We define a learning function $\mathcal{A}$ by setting $\mathcal{A}(\overline{z}) = h_{\overline{z}}$. This algorithm is known as \emph{Sample Error Minimization (SEM)}. We now show that it is NMSE. For any $\varepsilon \in (0,1)$, we have:
+    \[
+        \hat{\operatorname{er}}_{\overline{z}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\overline{z}}(\mathcal{H}) = \operatorname{opt}_{\overline{z}}(\mathcal{H}) - \operatorname{opt}_{\overline{z}}(\mathcal{H}) = 0 \le \varepsilon.
+    \]
+    This inequality holds for any sample size $m \ge 1$. Therefore, the function $\mathcal{A}$ is NMSE.
+\end{proof}
+
+Since we have shown that an NMSE learning function always exists, and by the premise of implication (3) this function is PAC, it follows that there exists a PAC learning function for $\mathcal{H}$. This means $\mathcal{H}$ is PAC learnable, completing the proof of $(3) \implies (4)$ and thus the proof of the Fundamental Theorem of Statistical Learning.
