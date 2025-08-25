@@ -150,4 +150,60 @@ We will prove the following statement, which is one half of the Fundamental Theo
         &= \mathbb{D}_j(\mathcal{Z}_S \setminus \Gamma(h|_S)) = \operatorname{er}_{\mathbb{D}_j}(h|_S). \label{eq:error-equivalence}
     \end{align}
     Thus, $\operatorname{opt}_{\mathbb{D}}(\mathcal{H}) = 0$, as $\operatorname{er}_{\mathbb{D}}(h_j) = \operatorname{er}_{\mathbb{D}_j}(f_j) = 0$ by~\ref{lem:no-free-lunch} and~\ref{eq:fixed-j-after-lemma-1}.
+
+    The next lemma shows that the high expected error from Lemma~\ref{lem:no-free-lunch} carries over to the full hypothesis under the extended measure $\widehat{\mathbb{D}}$.
+
+    \begin{lemma}
+        \label{lem:full-error-bound-hat}
+        We have
+        \[
+            \mathbb{E}_{\overline{z} \sim \widehat{\mathbb{D}}^m} \left[ \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) \right] \ge \frac{1}{4}.
+        \]
+    \end{lemma}
+    \begin{subproof}[Proof of Lemma~\ref{lem:full-error-bound-hat}]
+
+        We show that the expectation under $\widehat{\mathbb{D}}^m$ is identical to the expectation under $\mathbb{D}_j^m$:
+        \[
+            \mathbb{E}_{\overline{z} \sim \widehat{\mathbb{D}}^m} \left[ \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) \right] = \mathbb{E}_{\overline{z} \sim \mathbb{D}_j^m} \left[ \operatorname{er}_{\mathbb{D}_j}(\mathcal{A}_S(\overline{z})) \right].
+        \]
+        The result then follows directly from the inequality established in~\eqref{eq:fixed-j-after-lemma-1}.
+
+        To prove the equality, we expand the left-hand side. The expectation is a sum over all samples $\overline{z} \in \mathcal{Z}^m$ with non-zero probability under $\widehat{\mathbb{D}}^m$. A sample $\overline{z}$ has non-zero probability only if all its components are in $\mathcal{Z}_S$. For such a sample, which corresponds to some instance sequence $\overline{x} \in S^m$ and the function $f_j$, we have $\widehat{\mathbb{D}}^m(\{\overline{z}_{\overline{x}}^j\}) = (1/2m)^m$.
+
+        Using this and the error equivalence from~\eqref{eq:error-equivalence}, we obtain:
+        \begin{align*}
+            \mathbb{E}_{\overline{z} \sim \widehat{\mathbb{D}}^m} \left[ \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) \right] &= \sum_{\overline{x} \in S^m} \widehat{\mathbb{D}}^m(\{\overline{z}_{\overline{x}}^j\}) \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z}_{\overline{x}}^j)) \\
+            &= \sum_{\overline{x} \in S^m} \frac{1}{(2m)^m} \operatorname{er}_{\mathbb{D}_j}(\mathcal{A}_S(\overline{z}_{\overline{x}}^j)) \\
+            &= \mathbb{E}_{\overline{z} \sim \mathbb{D}_j^m} \left[ \operatorname{er}_{\mathbb{D}_j}(\mathcal{A}_S(\overline{z})) \right].
+        \end{align*}
+        This completes the proof.
+    \end{subproof}
+    The final lemma uses this expected error bound to show that the probability of failure is high.
+
+    \begin{lemma}
+        \label{lem:pac-violation}
+        The distribution $\widehat{\mathbb{D}}$ satisfies the inequality
+        \[
+            \widehat{\mathbb{D}}^m\left(\left\{ \overline{z} \in \mathcal{Z}^m \mid \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) > \frac{1}{8} \right\}\right) \ge \frac{1}{7}.
+        \]
+    \end{lemma}
+    \begin{subproof}[Proof of Lemma~\ref{lem:pac-violation}]
+
+        We recall that $\operatorname{opt}_{\mathbb{D}}(\mathcal{H}) = 0$ and, by Lemma~\ref{lem:full-error-bound-hat}, we have that $\mathbb{E}_{\overline{z} \sim \widehat{\mathbb{D}}^m} [ \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) ] \ge 1/4$.
+
+        Let $X(\overline{z}) = \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z}))$ be the random variable for the error. Since $X$ is bounded in $[0,1]$, we can apply the one-sided Chebyshev inequality~\cite[Appendix B.1]{UnderstandinMachineLearning}. For a random variable $X \in [0,1]$ and any $a \in (0,1)$, this inequality states that $\mathbb{P}(X > a) \ge \frac{\mathbb{E}[X] - a}{1-a}$.
+
+        Applying this with $a=1/8$ yields:
+        \begin{align*}
+            \widehat{\mathbb{D}}^m\left(\left\{ \overline{z} \in \mathcal{Z}^m \mid \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) > \frac{1}{8} \right\}\right) &\ge \frac{\mathbb{E}_{\overline{z}\sim\widehat{\mathbb{D}}^m}[\operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z}))] - 1/8}{1 - 1/8} \\
+            &\ge \frac{1/4 - 1/8}{7/8} = \frac{1/8}{7/8} = \frac{1}{7}.
+        \end{align*}
+        Since $\operatorname{opt}_{\mathbb{D}}(\mathcal{H}) = 0$, this is precisely the inequality stated in the lemma.
+    \end{subproof}
+
+    The PAC definition requires that for our chosen $\varepsilon=1/8$ and $\delta=1/7$, there must exist a set $C' \in \Sigma_{\mathcal{Z}}^m$ such that $C' \subseteq \{ \overline{z} \mid \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) \le 1/8 \}$ and $\mathbb{D}^m(C') \ge 1 - 1/7$.
+
+    However, Lemma~\ref{lem:pac-violation} shows that the complement of the set containing $C'$ has a probability of at least $1/7$ under the measure $\widehat{\mathbb{D}}^m$. Since any such $C'$ must be in $\Sigma_{\mathcal{Z}}^m$, we have $\mathbb{D}^m(C') = \widehat{\mathbb{D}}^m(C')$. This would imply that $\widehat{\mathbb{D}}^m(C') \le 1 - 1/7$, which contradicts the PAC requirement that its probability be at least $1 - 1/7$. Therefore, no such set $C'$ can exist.
+
+    We have shown that for any sample size $m$, there exists a distribution $\mathbb{D} \in \mathcal{D}$ for which the PAC condition fails. This completes the proof by contrapositive.
 \end{proof}
