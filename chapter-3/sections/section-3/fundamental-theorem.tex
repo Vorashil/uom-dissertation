@@ -81,4 +81,31 @@ We will prove the following statement, which is one half of the Fundamental Theo
             &\geq \min_{\overline{x} \in S^m} \frac{1}{T}  \sum_{i=1}^{T} \operatorname{er}_{\mathbb{D}_i}(\mathcal{A}_S(\overline{z}_{\overline{x}}^{i}))
         \end{align*}
 
-        Fix $\overline{x}'=(x_1',\dots, x_m') \in S^m$.
+        Fix an arbitrary sequence of instances $\overline{x}'=(x_1',\dots, x_m') \in S^m$. Let
+        \[
+            \{v_1, \dots, v_p\} \coloneq S \setminus \{x_1', \dots, x_m'\}.
+        \]
+        Since, $\overline{x}'$ might contain some duplicates, $|S| = 2m \leq p \leq m$. Then for any $f \in \mathcal{F}$ and $i \in \{1, \dots, T\}$, the true error of $f$ with respect to $\mathbb{D}_i$ is given by the probability of $f(x) \neq f_i(x)$ for $x \in S$:
+        \[
+            \operatorname{er}_{\mathbb{D}_i}(f) = \mathbb{D}_i(\mathcal{Z}_S\setminus\Gamma(f)) = \frac{1}{2m}\sum_{x \in S}\mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(x, f(x)).
+        \]
+        Since, $\mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(x, f(x)) \geq 0$ for all $x \in S$ and $\{v_1, \dots, v_p\} \subseteq S$, we get
+        \[
+            \operatorname{er}_{\mathbb{D}_i}(f) \geq \frac{1}{2m}\sum_{r=1}^p \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(v_r, f(v_r)).
+        \]
+        By using, $\frac{1}{m} \geq \frac{1}{p}$,
+        \[
+            \operatorname{er}_{\mathbb{D}_i}(f) \geq \frac{1}{2p}\sum_{r=1}^p \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(v_r, f(v_r)).
+        \]
+        For the rest of the proof, we denote $h' \coloneq \mathcal{A}_S(\overline{z}_{\overline{x}'}^{i})$ for our fixed $\overline{x}'$ for notational clarity.
+        \[
+            \begin{aligned}
+                &\frac{1}{T}\sum_{i=1}^T\operatorname{er}_{\mathbb{D}_i}(h') \\
+                &\geq \frac{1}{T}\sum_{i=1}^T \Bigl(\frac{1}{2p}\sum_{r=1}^p \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(v_r, h'(v_r))\Bigr) \\
+                &= \frac{1}{2}\Biggl(\frac{1}{p}\sum_{r=1}^p \Bigl(\frac{1}{T}\sum_{i=1}^T \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(v_r, h'(v_r))\Bigr)\Biggr) \\
+                &\geq \frac{1}{2} \min_{1 \leq r \leq p}\Bigl(\frac{1}{T}\sum_{i=1}^T \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(v_r, h'(v_r))\Bigr),
+            \end{aligned}
+        \]
+        where the last inequality follows from the basic fact that minimum of finite set of numbers is bounded above by the average of those numbers.
+    \end{subproof}
+\end{proof}
