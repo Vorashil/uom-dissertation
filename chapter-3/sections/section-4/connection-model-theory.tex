@@ -1,0 +1,139 @@
+\section{PAC Learnability of Definable Sets in O-minimal Structures}
+
+In this section, we connect the model-theoretic properties developed in Chapter~\ref{ch:nip-property} with the learning theory framework established here. Our primary goal is to apply the Fundamental Theorem of Statistical Learning to hypothesis spaces that are definable over first-order structures, with a particular focus on o-minimal structures. These structures are naturally equipped with an order topology, allowing the measure-theoretic conditions of our learning framework to be satisfied by considering the associated Borel $\sigma$-algebra.
+
+We will show that for such structures, the non-independence property (NIP) provides a powerful tool to bound the VC-dimension of definable hypothesis spaces, which in turn guarantees PAC learnability. This will serve as the capstone result, demonstrating a deep and fruitful interaction between model theory and statistical learning. For a comprehensive introduction to the model-theoretic concepts used, we refer the reader to~\cite{Marker2002}.
+
+We begin by formally defining what we mean by a definable hypothesis space.
+
+\begin{definition}[Definable Hypothesis Space]
+    \label{def:definable-hypothesis-space}
+    Let $n, \ell \in \mathbb{N}$, let $\mathcal{L}$ be a language and let $\mathcal{M}$ be an $\mathcal{L}$-structure. Moreover, let $\mathcal{X} \subseteq \mathcal{M}^n$ be a non-empty set definable over $\mathcal{M}$, and let $\varphi(x_1, \dots, x_n; p_1, \dots, p_\ell)$ be an $\mathcal{L}$-formula. Then the hypothesis space $\mathcal{H}^\varphi \subseteq \{0,1\}^{\mathcal{M}^n}$ is given by
+    \[
+        \mathcal{H}^\varphi \coloneqq \{ \mathds{1}_{\varphi(\mathcal{M}; \underline{w})} \mid \underline{w} \in \mathcal{M}^\ell \},
+    \]
+    and the hypothesis space $\mathcal{H}_\mathcal{X}^\varphi \subseteq \{0,1\}^\mathcal{X}$ is given by
+    \[
+        \mathcal{H}_\mathcal{X}^\varphi \coloneqq \mathcal{H}^\varphi|_\mathcal{X} = \{ h|_\mathcal{X} \mid h \in \mathcal{H}^\varphi \}.
+    \]
+\end{definition}
+
+\subsection{Definable Sets, NIP, and VC-Dimension}
+
+The definition of a definable hypothesis space is powerful because it encompasses many models used in practice. A key example is neural networks.
+
+\begin{example}[Neural Networks as Definable Hypothesis Spaces]
+    Many common machine learning models, including artificial neural networks with fixed architectures, can be described by formulas in specific mathematical structures. For instance, consider the structure of the real exponential field, $\mathbb{R}_{\text{exp}} = (\mathbb{R}, +, \cdot, \exp, <)$. Common activation functions like the sigmoid function, $\sigma(x) = 1/(1+e^{-x})$, and the ReLU function, $\text{ReLU}(x) = \max\{0,x\}$, are definable in this structure. Consequently, a neural network with a fixed architecture can be represented by a single formula $\varphi(\underline{x}; \underline{p})$, where the inputs $\underline{x}$ are the features and the parameters $\underline{p}$ represent all the weights and biases of the network. The set of all functions computable by this network is precisely the definable hypothesis space $\mathcal{H}^\varphi$.
+\end{example}
+
+The connection between this model-theoretic setup and learnability is established by linking the Non-Independence Property (NIP) to the VC-dimension. In Chapter~\ref{ch:nip-property}, we established this link under the name of VC-Dependence Duality (Proposition~\ref{prop:vc-dependence-duality}). Recall that a formula $\varphi(\underline{x}; \underline{p})$ defines a family of sets $\{\varphi(\mathcal{M}; \underline{w}) \mid \underline{w} \in \mathcal{M}^\ell\}$. We say this family is dependent if it does not contain independent sequences of all finite lengths. This duality states that this family of sets is dependent if and only if the corresponding hypothesis space $\mathcal{H}^\varphi$ is a VC-class (i.e., has finite VC-dimension). This provides the crucial bridge between the two fields.
+
+A central result from Chapter~\ref{ch:nip-property} is that any o-minimal structure has the NIP property. Specifically, we proved that every definable relation in an o-minimal structure is dependent (Corollary~\ref{cor:o-minimal-is-nip}). Combining these facts gives the following powerful result.
+
+\begin{theorem}
+    \label{thm:o-minimal-finite-vc}
+    Let $\mathcal{M}$ be an o-minimal structure. Then any hypothesis space $\mathcal{H}_\mathcal{X}^\varphi$ definable over $\mathcal{M}$ has a finite VC-dimension.
+\end{theorem}
+
+\subsubsection{Bridging Model Theory and Statistical Learning}
+
+We can now see the complete picture. The Fundamental Theorem of Statistical Learning (Theorem~\ref{thm:fundamental-theorem}) provides a direct link between a statistical property (PAC learnability) and a combinatorial one (finite VC-dimension). On the other hand, the results from model theory, culminating in Theorem~\ref{thm:o-minimal-finite-vc}, provide a link between a logical property (definability in an o-minimal structure) and the same combinatorial property (finite VC-dimension).
+
+By chaining these results together, we can conclude that hypothesis spaces that are definable in o-minimal structures are PAC learnable, provided the necessary measure-theoretic conditions of the learning framework are met. This provides a remarkably high-level method for guaranteeing the learnability of complex models, such as neural networks, by analyzing the logical structure in which they are defined. In the remainder of this section, we will make this connection rigorous by carefully verifying the measurability requirements for this setting.
+
+\subsection{The Main Result}
+
+We are now ready to state the main result of this chapter, which formally connects PAC learnability to definability in o-minimal structures over the reals. To do so, we must first specify the measure-theoretic setting.
+
+For any $k \in \mathbb{N}$, the space $\mathbb{R}^k$ is equipped with its standard topology. The \emph{Borel $\sigma$-algebra} on $\mathbb{R}^k$, denoted $\mathcal{B}(\mathbb{R}^k)$, is the smallest $\sigma$-algebra containing all open sets. When our instance space $\mathcal{X}$ is a subset of $\mathbb{R}^n$, we equip it with the \emph{trace $\sigma$-algebra}:
+\[
+    \mathcal{B}(\mathcal{X}) \coloneqq \mathcal{B}(\mathbb{R}^n) \cap \mathcal{X} = \{ B \cap \mathcal{X} \mid B \in \mathcal{B}(\mathbb{R}^n) \}.
+\]
+A crucial link between the logical property of definability and the measure-theoretic property of being a Borel set is provided by the Cell Decomposition Theorem, a cornerstone of o-minimality mentioned in Chapter~\ref{ch:nip-property}.
+
+\begin{lemma}
+    \label{lem:definable-is-borel}
+    Let $\mathcal{R}$ be an o-minimal expansion of the real ordered field $\mathbb{R}_{\text{or}}$. If a set $A \subseteq \mathbb{R}^n$ is definable over $\mathcal{R}$, then $A$ is a Borel set, i.e., $A \in \mathcal{B}(\mathbb{R}^n)$.
+\end{lemma}
+\begin{proof}
+
+    By the Cell Decomposition Theorem, any definable set $A$ has a finite partition into cells. Each cell, being homeomorphic to an open hypercube, is a Borel set. Since the collection of Borel sets is closed under finite unions, the set $A$ must also be a Borel set.
+\end{proof}
+
+The theorem also requires the technical condition of completeness for the probability space. A probability space $(\Omega, \Sigma, \mathbb{P})$ is called \emph{complete} if its $\sigma$-algebra $\Sigma$ contains all subsets of any set $N \in \Sigma$ that has measure zero ($\mathbb{P}(N)=0$). This ensures that the measure theory is robust to null sets.
+
+With this, we can state the main theorem. We recall that $\mathbb{R}_{\text{or}} = (\mathbb{R}, +, \cdot, <)$ denotes the real ordered field.
+
+\begin{theorem}
+    \label{thm:main-pac-o-minimal}
+    Let $\mathcal{R}$ be an o-minimal expansion of the real ordered field $\mathbb{R}_{\text{or}}$. Let $\mathcal{X} \subseteq \mathbb{R}^n$ be a non-empty definable set, and let $\varphi(\underline{x}; \underline{p})$ be an $\mathcal{L}(\mathcal{R})$-formula defining the hypothesis space $\mathcal{H}_\mathcal{X}^\varphi$.
+
+    Let the learning framework be $(\mathcal{X}, \Sigma_{\mathcal{Z}}, \mathcal{D}, \mathcal{H}_\mathcal{X}^\varphi)$, where the sample space is $\mathcal{Z} = \mathcal{X} \times \{0,1\}$. Assume that the sigma-algebra $\Sigma_{\mathcal{Z}}$ contains the Borel $\sigma$-algebra on $\mathcal{Z}$ ($\mathcal{B}(\mathcal{Z}) \subseteq \Sigma_{\mathcal{Z}}$), and that for any $\mathbb{D} \in \mathcal{D}$ and any $m \in \mathbb{N}$, the product space $(\mathcal{Z}^m, \Sigma_{\mathcal{Z}}^m, \mathbb{D}^m)$ is a complete probability space.
+
+    Then the hypothesis space $\mathcal{H}_\mathcal{X}^\varphi$ is PAC learnable with respect to $\mathcal{D}$.
+\end{theorem}
+
+\begin{proof}
+
+    Since $\mathcal{R}$ is an o-minimal structure, it has the NIP property, which means every definable relation is dependent (Corollary~\ref{cor:o-minimal-is-nip}). By the VC-Dependence Duality (Proposition~\ref{prop:vc-dependence-duality}), this is equivalent to the statement that any definable hypothesis space has a finite VC-dimension. Therefore, we have $\operatorname{vc}(\mathcal{H}_\mathcal{X}^\varphi) < \infty$.
+
+    Our aim is to apply the Fundamental Theorem of Statistical Learning (Theorem~\ref{thm:fundamental-theorem}) to conclude that $\mathcal{H}_\mathcal{X}^\varphi$ is PAC learnable. To do so, we must verify that the hypothesis space is well-behaved with respect to $\mathcal{D}$.
+
+    First, we show that for any hypothesis $h_{\underline{w}} \in \mathcal{H}_\mathcal{X}^\varphi$ (corresponding to parameters $\underline{w} \in \mathbb{R}^\ell$), its graph $\Gamma(h_{\underline{w}})$ is a measurable set in $\Sigma_{\mathcal{Z}}$. The graph is the set of points $(\underline{x}, y) \in \mathcal{Z}$ satisfying the formula:
+    \[
+        (\varphi(\underline{x}; \underline{w}) \land y=1) \lor (\neg\varphi(\underline{x}; \underline{w}) \land y=0).
+    \]
+    This is a first-order formula in the language of $\mathcal{R}$, so the graph $\Gamma(h_{\underline{w}})$ is a definable set. By Lemma~\ref{lem:definable-is-borel}, every definable set is a Borel set. Since we assumed $\mathcal{B}(\mathcal{Z}) \subseteq \Sigma_{\mathcal{Z}}$, it follows that $\Gamma(h_{\underline{w}}) \in \Sigma_{\mathcal{Z}}$.
+
+    Second, we must verify that the maps $U$ and $V$ from Definition~\ref{def:well-behaved} are $\Sigma_{\mathcal{Z}}^m$-measurable and $\Sigma_{\mathcal{Z}}^{2m}$-measurable, respectively. To this end, we first show that the map
+    \[
+        f_U: \mathcal{Z}^m \times \mathbb{R}^\ell \to [0,1], \quad (\overline{z}, \underline{w}) \mapsto |\operatorname{er}_{\mathbb{D}}(h_{\underline{w}}) - \hat{\operatorname{er}}_{\overline{z}}(h_{\underline{w}})|
+    \]
+    is $(\Sigma_{\mathcal{Z}}^m \otimes \mathcal{B}(\mathbb{R}^\ell))$-measurable, and that the map
+    \[
+        f_V: \mathcal{Z}^{2m} \times \mathbb{R}^\ell \to \{k/m \mid k \in \{0, \dots, m\}\}, \quad (\overline{z}, \overline{z}', \underline{w}) \mapsto |\hat{\operatorname{er}}_{\overline{z}'}(h_{\underline{w}}) - \hat{\operatorname{er}}_{\overline{z}}(h_{\underline{w}})|
+    \]
+    is $(\Sigma_{\mathcal{Z}}^{2m} \otimes \mathcal{B}(\mathbb{R}^\ell))$-measurable. After establishing this joint measurability, we will use the completeness of the underlying probability spaces which allows us to deduce the measurability of a function defined as a supremum over an uncountable parameter space, since this is precisely how the maps $U$ and $V$ are constructed.
+
+    We begin by establishing the measurability of the two main components of the functions $f_U$ and $f_V$: the true error and the sample error, viewed as functions of the parameters $\underline{w}$.
+
+    \begin{enumerate}
+        \item \textbf{Measurability of the true error map.}
+        First, consider the set of all pairs $(\underline{z}, \underline{w})$ for which the hypothesis parametrised by $\underline{w}$ misclassifies the point $\underline{z}$:
+        \[
+            M \coloneqq \{(\underline{z}, \underline{w}) \in \mathcal{Z} \times \mathbb{R}^\ell \mid \underline{z} \notin \Gamma(h_{\underline{w}}) \}.
+        \]
+        Since $\mathcal{Z}$ and $\Gamma(h_{\underline{w}})$ are definable over $\mathcal{R}$ for any $\underline{w}$, the set $M$ is also definable over $\mathcal{R}$. By Lemma~\ref{lem:definable-is-borel}, it follows that $M$ is a Borel set, i.e., $M \in \mathcal{B}(\mathcal{Z} \times \mathbb{R}^\ell)$. As the Borel $\sigma$-algebra on a product space is the product of the Borel $\sigma$-algebras, we have $M \in \mathcal{B}(\mathcal{Z}) \otimes \mathcal{B}(\mathbb{R}^\ell)$.
+
+        By a standard result from measure theory (a consequence of Fubini's theorem, see e.g.,~\cite[Proposition 3.3.2]{Bogachev2007}), the function that maps a parameter $\underline{w}$ to the measure of the corresponding slice of $M$ is measurable. Therefore, the map
+        \[
+            \underline{w} \mapsto \mathbb{D}(\{\underline{z} \mid (\underline{z}, \underline{w}) \in M\}) = \operatorname{er}_{\mathbb{D}}(h_{\underline{w}})
+        \]
+        is $\mathcal{B}(\mathbb{R}^\ell)$-measurable.
+
+        \item \textbf{Joint measurability of the sample error map.}
+        Next, we consider the map $(\overline{z}, \underline{w}) \mapsto \hat{\operatorname{er}}_{\overline{z}}(h_{\underline{w}})$. To show it is measurable, we verify that the preimages of generating sets for the Borel $\sigma$-algebra on its codomain are measurable. For any $k \in \{1, \dots, m\}$, consider the set
+        \[
+            P_k \coloneqq \{(\overline{z}, \underline{w}) \in \mathcal{Z}^m \times \mathbb{R}^\ell \mid \hat{\operatorname{er}}_{\overline{z}}(h_{\underline{w}}) \ge k/m \}.
+        \]
+        This condition is equivalent to stating that at least $k$ of the sample points in $\overline{z} = (\underline{z}_1, \dots, \underline{z}_m)$ are misclassified by $h_{\underline{w}}$. This can be expressed by the following $\mathcal{L}(\mathcal{R})$-formula:
+        \[
+            \psi_k(\underline{z}_1, \dots, \underline{z}_m; \underline{w}) \coloneqq \bigvee_{I \subseteq \{1,\dots,m\}, |I| \ge k} \left( \bigwedge_{i \in I} (\underline{z}_i, \underline{w}) \in M \right).
+        \]
+        Since $M$ is a definable set, $\psi_k$ is a definable formula. Therefore, the set $P_k$ is definable over $\mathcal{R}$. By Lemma~\ref{lem:definable-is-borel}, $P_k$ is a Borel set, $P_k \in \mathcal{B}(\mathcal{Z}^m \times \mathbb{R}^\ell)$. Since the preimages of the generating sets are measurable, the map $(\overline{z}, \underline{w}) \mapsto \hat{\operatorname{er}}_{\overline{z}}(h_{\underline{w}})$ is $(\mathcal{B}(\mathcal{Z}^m) \otimes \mathcal{B}(\mathbb{R}^\ell))$-measurable. As we assume $\mathcal{B}(\mathcal{Z}^m) \subseteq \Sigma_{\mathcal{Z}}^m$, the map is also $(\Sigma_{\mathcal{Z}}^m \otimes \mathcal{B}(\mathbb{R}^\ell))$-measurable.
+    \end{enumerate}
+
+    The measurability of the map $\underline{w} \mapsto \operatorname{er}_{\mathbb{D}}(h_{\underline{w}})$ and the joint measurability of the map $(\overline{z}, \underline{w}) \mapsto \hat{\operatorname{er}}_{\overline{z}}(h_{\underline{w}})$ imply that the functions $f_U$ and $f_V$ are measurable with respect to their respective product $\sigma$-algebras. This is because they are formed by taking differences and absolute values of measurable functions, which are operations that preserve measurability.
+
+    Since we assume that the probability space $(\mathcal{Z}^k, \Sigma_{\mathcal{Z}}^k, \mathbb{D}^k)$ is complete for any $k \in \mathbb{N}$, we can apply a standard result from empirical process theory (see, e.g.,~\cite[p. 197]{PollardConvergenceOfStochasticProcesses}) to deduce that the supremum over the parameter space of a jointly measurable function is itself measurable. This allows us to conclude that the map
+    \[
+        U: \mathcal{Z}^m \to [0,1], \quad \overline{z} \mapsto \sup_{\underline{w} \in \mathbb{R}^\ell} f_U(\overline{z}, \underline{w})
+    \]
+    is $\Sigma_{\mathcal{Z}}^m$-measurable, and that the map
+    \[
+        V: \mathcal{Z}^{2m} \to \{k/m \mid k \in \{0, \dots, m\}\}, \quad (\overline{z}, \overline{z}') \mapsto \sup_{\underline{w} \in \mathbb{R}^\ell} f_V(\overline{z}, \overline{z}', \underline{w})
+    \]
+    is $\Sigma_{\mathcal{Z}}^{2m}$-measurable.
+
+    Hence, the hypothesis space $\mathcal{H}_\mathcal{X}^\varphi$ is well-behaved with respect to $\mathcal{D}$. Having established both that $\operatorname{vc}(\mathcal{H}_\mathcal{X}^\varphi) < \infty$ and that the space is well-behaved, applying the Fundamental Theorem of Statistical Learning (Theorem~\ref{thm:fundamental-theorem}) yields that $\mathcal{H}_\mathcal{X}^\varphi$ is PAC learnable with respect to $\mathcal{D}$.
+\end{proof}
