@@ -134,34 +134,20 @@ We will prove the following statement, which is one half of the Fundamental Theo
         This lower bound holds for any sequence $\overline{x}' \in S^m$, so the minimum over all such sequences is also at least $1/4$. This completes the proof of the lemma.
     \end{subproof}
 
-    With Lemma~\ref{lem:no-free-lunch} established, we know that there exists an index $j \in \{1, \dots, T\}$ such that
-    \[
+    With Lemma~\ref{lem:no-free-lunch} established, we can fix an index $j \in \{1, \dots, T\}$ such that
+    \begin{equation}
+        \label{eq:fixed-j-after-lemma-1}
         \mathbb{E}_{\overline{z} \sim \mathbb{D}_j^m} \left[ \operatorname{er}_{\mathbb{D}_j}(\mathcal{A}_S(\overline{z})) \right] \ge \frac{1}{4}.
-    \]
-    Let us fix this index $j$ and its corresponding distribution $\mathbb{D}_j$ for the remainder of the proof. Our goal is to show that this specific distribution, when properly extended to the full sample space $\mathcal{Z}$, provides the necessary counterexample to the PAC learnability of the hypothesis space.
-
-    We extend the distribution $\mathbb{D}_j$, which is defined on $\mathcal{Z}_S$, to a distribution $\mathbb{D}$ on the full measurable space $(\mathcal{Z}, \Sigma_{\mathcal{Z}})$ by setting
+    \end{equation}
+    We now extend this distribution $\mathbb{D}_j$ to a distribution $\widehat{\mathbb{D}}$ on the discrete $\sigma$-algebra $\mathcal{P}(\mathcal{Z})$ by setting
     \[
-        \mathbb{D}(C) \coloneqq \mathbb{D}_j(C \cap \mathcal{Z}_S) \quad \text{for any } C \in \Sigma_{\mathcal{Z}}.
+        \widehat{\mathbb{D}}(C) \coloneqq \mathbb{D}_j(C \cap \mathcal{Z}_S) \quad \text{for any } C \subseteq \mathcal{Z}.
     \]
-    Since $\mathbb{D}_j$ is a discrete uniform distribution on the finite set $\Gamma(f_j)$, the new distribution $\mathbb{D}$ is also a discrete uniform distribution (with the same support). Therefore, by our initial assumption, $\mathbb{D} \in \mathcal{D}$.
-
-    This extension preserves the error calculation. For any hypothesis $h \in \mathcal{H}$, its error under $\mathbb{D}$ is the same as the error of its restriction $h|_S$ under $\mathbb{D}_j$:
-    \begin{align*}
-        \operatorname{er}_{\mathbb{D}}(h) &= \mathbb{D}(\mathcal{Z} \setminus \Gamma(h)) \\
-        &= \mathbb{D}_j((\mathcal{Z} \setminus \Gamma(h)) \cap \mathcal{Z}_S) \\
-        &= \mathbb{D}_j(\mathcal{Z}_S \setminus (\Gamma(h) \cap \mathcal{Z}_S)) \\
-        &= \mathbb{D}_j(\mathcal{Z}_S \setminus \Gamma(h|_S)) = \operatorname{er}_{\mathbb{D}_j}(h|_S).
-    \end{align*}
-    In particular, this means $\operatorname{opt}_{\mathbb{D}}(\mathcal{H}) = 0$, since $\operatorname{er}_{\mathbb{D}}(h_j) = \operatorname{er}_{\mathbb{D}_j}(h_j|_S) = \operatorname{er}_{\mathbb{D}_j}(f_j) = 0$.
-
-    The final step is to show that the high expected error from the lemma carries over to the full hypothesis $\mathcal{A}(\overline{z})$ under the new distribution $\mathbb{D}$.
-
-    \begin{lemma}
-        \label{lem:full-error-bound}
-        Let $\mathbb{D}$ be the extended distribution defined above. Then
-        \[
-            \mathbb{E}_{\overline{z} \sim \mathbb{D}^m} \left[ \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) \right] \ge \frac{1}{4}.
-        \]
-    \end{lemma}
+    The distribution $\mathbb{D}$ is then defined as the restriction of $\widehat{\mathbb{D}}$ to the original $\sigma$-algebra $\Sigma_{\mathcal{Z}}$. Since $\mathbb{D}_j$ is a discrete uniform distribution, so is $\mathbb{D}$, and thus $\mathbb{D} \in \mathcal{D}$ by our initial assumption. This extension yields for any $h \in \mathcal{H}$ that
+    \begin{align}
+        \operatorname{er}_{\mathbb{D}}(h) &= \mathbb{D}(\mathcal{Z} \setminus \Gamma(h)) \nonumber \\
+        &= \mathbb{D}_j((\mathcal{Z} \setminus \Gamma(h)) \cap \mathcal{Z}_S) \nonumber \\
+        &= \mathbb{D}_j(\mathcal{Z}_S \setminus \Gamma(h|_S)) = \operatorname{er}_{\mathbb{D}_j}(h|_S). \label{eq:error-equivalence}
+    \end{align}
+    Thus, $\operatorname{opt}_{\mathbb{D}}(\mathcal{H}) = 0$, as $\operatorname{er}_{\mathbb{D}}(h_j) = \operatorname{er}_{\mathbb{D}_j}(f_j) = 0$ by~\ref{lem:no-free-lunch} and~\ref{eq:fixed-j-after-lemma-1}.
 \end{proof}

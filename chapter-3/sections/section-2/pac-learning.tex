@@ -19,6 +19,14 @@ We begin with the formal definition of PAC learnability, which captures the requ
     The hypothesis space $\mathcal{H}$ is called \emph{PAC learnable} (with respect to $\mathcal{D}$) if there exists a learning function for $\mathcal{H}$ that is PAC with respect to $\mathcal{D}$.
 \end{definition}
 
+\begin{remark}
+    Note that the set
+    \[
+        \left\{ \overline{z} \in \mathcal{Z}^m \mid \operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H}) \le \varepsilon \right\},
+    \]
+    is not guaranteed to be measurable with respect to the sigma-algebra $\Sigma_{\mathcal{Z}}^m$.
+\end{remark}
+
 In essence, PAC learnability guarantees that a learning algorithm can, with high probability ($1-\delta$), find a hypothesis whose performance is close (within $\varepsilon$) to the best possible performance within the hypothesis class, provided it is given a sufficiently large sample. The term $\operatorname{er}_{\mathbb{D}}(\mathcal{A}(\overline{z})) - \operatorname{opt}_{\mathbb{D}}(\mathcal{H})$ is the \emph{excess error}, which measures how much worse our learned hypothesis is compared to the optimal one in $\mathcal{H}$. The definition is robust as it must hold for any data distribution $\mathbb{D} \in \mathcal{D}$.
 
 \subsection{The Fundamental Theorem of Statistical Learning}
