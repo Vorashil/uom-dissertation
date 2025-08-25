@@ -107,5 +107,30 @@ We will prove the following statement, which is one half of the Fundamental Theo
             \end{aligned}
         \]
         where the last inequality follows from the basic fact that minimum of finite set of numbers is bounded above by the average of those numbers.
+        Now, we fix an arbitrary $r \in \{1, \dots, p\}$ and evaluate the term inside the minimum:
+        \[
+            \frac{1}{T}\sum_{i=1}^T \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(v_r, h'(v_r)).
+        \]
+        The key insight is that the hypothesis $h'$ depends on the sample $\overline{z}_{\overline{x}'}^{i}$, which in turn depends on the labels that $f_i$ assigns to the points in $\overline{x}'$. The point $v_r$ is not in the sequence $\overline{x}'$.
+
+        We can partition the set of all functions $\mathcal{F}=\{f_1, \dots, f_T\}$ into $T/2$ disjoint pairs. Let $(f_j, f_k)$ be such a pair, constructed so that they differ only at the point $v_r$:
+        \[
+            f_j(x) \neq f_k(x) \iff x = v_r.
+        \]
+        Since $f_j$ and $f_k$ agree on all points in $\overline{x}'$, the labeled samples they generate are identical, i.e., $\overline{z}_{\overline{x}'}^{j} = \overline{z}_{\overline{x}'}^{k}$. As the learning algorithm $\mathcal{A}$ is a deterministic function, it must produce the same hypothesis for both samples. Thus, the hypothesis we denoted $h'$ is the same for both $f_j$ and $f_k$.
+
+        This common hypothesis $h'$ makes a prediction $h'(v_r)$. Since $f_j(v_r) \neq f_k(v_r)$, $h'(v_r)$ must be different from exactly one of them. This means that for each pair, exactly one of the hypotheses is wrong at $v_r$:
+        \[
+            \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_j)}(v_r, h'(v_r)) + \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_k)}(v_r, h'(v_r)) = 1.
+        \]
+        Summing over all $T/2$ such pairs, the total sum of the indicators over all $T$ functions is exactly $T/2$. The average is therefore:
+        \[
+            \frac{1}{T}\sum_{i=1}^T \mathds{1}_{\mathcal{Z}_S\setminus\Gamma(f_i)}(v_r, h'(v_r)) = \frac{T/2}{T} = \frac{1}{2}.
+        \]
+        Since this holds for any $r$, the minimum over $r$ is also $1/2$. Substituting this back into our main inequality, we get:
+        \[
+            \frac{1}{T}\sum_{i=1}^T\operatorname{er}_{\mathbb{D}_i}(h') \geq \frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4}.
+        \]
+        This lower bound holds for any sequence $\overline{x}' \in S^m$, so the minimum over all such sequences is also at least $1/4$. This completes the proof of the lemma.
     \end{subproof}
 \end{proof}
