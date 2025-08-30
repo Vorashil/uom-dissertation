@@ -1,22 +1,19 @@
 \section{Measure Theory}\label{sec:measure-theory}
 
+Measure theory provides a rigorous framework for extending the notions of length, area, and volume to more abstract sets. Its central object is a \emph{measure}: a function that assigns a numerical value to subsets, interpreted as their ``size.'' In standard measure theory, a measure must be \textit{non-negative} and satisfy \textit{countable additivity}, meaning that the measure of a countable union of pairwise disjoint sets equals the sum of the measures of the individual sets. However, it is impossible to define a measure with these properties on all subsets of a given space~\cite[Sec.~1.1]{MeasureTheoryTao}. The usual resolution is to restrict attention to a distinguished collection of subsets, called \emph{measurable sets}, which form a \emph{$\sigma$-algebra}. This structure is crucial because it is closed under countable set operations, ensuring that measurable sets remain measurable under unions, intersections, and complements, and that the principle of countable additivity is well defined.
 
-
-Measure theory's central goal is to assign a numerical size (or "measure") to subsets of a set, generalizing familiar concepts like length, area, and volume. The measure must be non-negative and should satisfy certain properties such as additivity, which says the measure of a union of disjoint sets is the sum of their individual measures. However, some significant mathematical challenges prevent assigning a measure to every possible subset. A famous example for this is Vitali sets, whose construction relies on Axiom of choice~\cite{HerrlichAxiomOfChoice}. The solution to non-measurability of every set is to restrict the theory to a specific collection of "measurable sets" called a sigma-algebra (or σ-field). This collection is essential because its structure ensures that combinations of measurable sets are themselves measurable, allowing the additivity property to function consistently.
-
-
-In this section we will introduce some required concepts in measure theory to formalise the language of probability space. This new formalism will be very useful in the next chapters when we talk about learning theory. For that reason, we decided to add this section before a section in probability theory. Our presentation closely follows~\cite{MeasureTheoryCohn} and~\cite{MeasureTheoryLeGall}.
+This section introduces the foundational concepts from measure theory required to formalize the notion of a probability space. This formalism is essential for the rigorous treatment of learning theory in Chapter~\ref{ch:pac-learning}. Our presentation closely follows~\cite{MeasureTheoryCohn} and~\cite{MeasureTheoryLeGall}. Throughout this section, we let $X$ be an arbitrary set and its power set, the collection of all its subsets, is denoted by $\mathcal{P}(X)$.
 
 \subsection{$\sigma$-algebras}
 
-Given any set $X$ and a subset $E \subseteq X$, we denote the complement of $E$ in $X$ by $E^c \coloneq X \setminus E$. The power set of $X$, denoted $\mathcal{P}(X)$, is the collection of all subsets of $X$.
+We begin by defining the structure that characterizes the collection of measurable sets.
 
 \begin{definition}[$\sigma$-algebra \textnormal{\cite[Def.~1.1]{MeasureTheoryCohn}}]
     \label{def:sigma-algebra}
     A \emph{$\sigma$-algebra} on a set $X$ is a collection $\mathcal{A} \subseteq \mathcal{P}(X)$ such that:
     \begin{enumerate}[label=(\roman*)]
         \item $X \in \mathcal{A}$,
-        \item if $E \in \mathcal{A}$, then $E^c \in \mathcal{A}$,
+        \item if $E \in \mathcal{A}$, then $X \setminus E \in \mathcal{A}$,
         \item if $E_i \in \mathcal{A}$ for $i \in \mathbb{N}$, then
         \[
             \bigcup_{i=1}^\infty E_i \in \mathcal{A} \quad \text{and} \quad \bigcap_{i=1}^\infty E_i \in \mathcal{A}.
@@ -24,37 +21,26 @@ Given any set $X$ and a subset $E \subseteq X$, we denote the complement of $E$ 
     \end{enumerate}
 \end{definition}
 
-\begin{notenl}
-    Some immediate consequences and remarks of Definition~\ref{def:sigma-algebra} are:
-    \begin{itemize}
-        \item By (i) and (ii), we have $\emptyset \in \mathcal{A}$.
-        \item Condition (iii) states that $\sigma$-algebras are closed under countable unions (and hence also under countable intersections).
-        \item $\sigma$-algebras provide the formal framework for measurable events in probability theory.
-        \item More complex $\sigma$-algebras can be constructed from simpler ones, for example via products.
-    \end{itemize}
-\end{notenl}
-
 \medskip
 
-An important construction is that of the \emph{generated $\sigma$-algebra}. Given any collection $\mathcal{F} \subseteq \mathcal{P}(X)$, there always exists the smallest $\sigma$-algebra containing $\mathcal{F}$, denoted by $\sigma(\mathcal{F})$~\cite[Cor.~1.1.3]{MeasureTheoryCohn}. Formally,
-\begin{equation}
-    \sigma(\mathcal{F}) \coloneq \bigcap \mathcal{A}_\mathcal{F},\label{eq:generated-sigma-algebra-def}
-\end{equation}
-where
-\begin{equation}
-    \mathcal{A}_{\mathcal{F}}
-    \in \{\mathcal{A} \subseteq  \mathcal{P}(X) \mid \mathcal{F} \subseteq \mathcal{A}, \ \mathcal{A} \text{ is a } \sigma\text{-algebra} \}.\label{eq:generated-sigma-algebra}
-\end{equation}
-
-\begin{remarknl}
-    By~\eqref{eq:generated-sigma-algebra-def}, $\sigma(\mathcal{F})$ always exists and is unique. Indeed:
-    \begin{itemize}
-        \item The family in~\eqref{eq:generated-sigma-algebra} is non-empty, since $\mathcal{P}(X)$ is always a $\sigma$-algebra containing $\mathcal{F}$.
-        \item Intersections of $\sigma$-algebras are again $\sigma$-algebras~\cite[Prop.~1.1.2]{MeasureTheoryCohn}, so $\sigma(\mathcal{F})$ is itself a $\sigma$-algebra.
-    \end{itemize}
-\end{remarknl}
+From Definition~\ref{def:sigma-algebra} several basic consequences follow. First, $\emptyset \in \mathcal{A}$ since $\emptyset = X \setminus X$. Second, $\sigma$-algebras are closed under finite unions and finite intersections: for the union, note that if $E_1, \dots, E_k \in \mathcal{A}$, then
+\[
+    \bigcup_{i=1}^k E_i = \bigcup_{i=1}^\infty F_i \quad \text{where }
+    F_i =
+    \begin{cases}
+        E_i & 1 \leq i \leq k,\\
+        \emptyset & i > k,
+    \end{cases}
+\]
+and similarly finite intersections follow from De Morgan’s law and closure under complements.
 
 \medskip
+An important observation is that the intersection of an arbitrary family of $\sigma$-algebras on a set $X$ is itself a $\sigma$-algebra~\cite[Prop.~1.1.2]{MeasureTheoryCohn}. This fact makes it possible to define the \emph{smallest} $\sigma$-algebra containing a given collection of subsets. Indeed, given $\mathcal{C} \subseteq \mathcal{P}(X)$, one may consider the intersection of all $\sigma$-algebras on $X$ that contain $\mathcal{C}$. By~\cite[Cor.~1.1.3]{MeasureTheoryCohn}, this intersection is guaranteed to exist and yields the minimal $\sigma$-algebra containing $\mathcal{C}$. We record this construction in the following definition.
+
+\begin{definition}[$\sigma$-algebra generated by a collection \textnormal{\cite[Def.~1.2]{MeasureTheoryLeGall}}]
+    \label{def:sigma-generated}
+    Let $\mathcal{C} \subseteq \mathcal{P}(X)$. The \emph{$\sigma$-algebra generated by $\mathcal{C}$}, denoted $\sigma(\mathcal{C})$, is the intersection of all $\sigma$-algebras on $X$ that contain $\mathcal{C}$. Equivalently, $\sigma(\mathcal{C})$ is the smallest $\sigma$-algebra on $X$ such that $\mathcal{C} \subseteq \sigma(\mathcal{C})$.
+\end{definition}
 
 This notion of generation also provides a natural way to define the \emph{product $\sigma$-algebra}. Given $\sigma$-algebras $\mathcal{A}_1$ on $X_1$ and $\mathcal{A}_2$ on $X_2$, we first consider the collection of measurable rectangles $\{A_1 \times A_2 \mid A_1 \in \mathcal{A}_1, A_2 \in \mathcal{A}_2\}$. These rectangles alone do not form a $\sigma$-algebra, but we can generate one by closing under the operations of complements and countable unions. This leads to the following definition.
 
